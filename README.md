@@ -8,6 +8,21 @@ and one of them has a glitch nobody has diagnosed yet.
 
 > Work in progress — built on 30 September 2026. This README is updated with every milestone.
 
+## The mission
+
+The keynote clock counts down from 10:00 (about six minutes of real time). Everything has to be
+done by the three robots together:
+
+1. **Biggy** shoves the wall of sponsor crates out of the Megacandy bottleneck — the only way from
+   the foyer into the central corridor. Voxxy and Droid are too light to move a crate at all.
+2. **Voxxy** squeezes between the queue barriers of the speakers' lounge (too narrow for the other
+   two) and picks up the speaker's HDMI adapter.
+3. **Droid** restores power at the old fuse panel by the grand staircase…
+4. …and opens the Room 8 service door.
+5. **Voxxy** carries the adapter onto the Room 8 stage. The projector starts, you win.
+
+If the clock reaches zero first, the keynote starts in the dark.
+
 ## Play
 
 - **Live:** https://deii.github.io/devoxx-belgium-2026-game/
@@ -38,6 +53,8 @@ No build step, no dependencies — plain HTML, CSS and JavaScript on a 2D canvas
 |-----|--------|
 | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys | Drive the selected robot |
 | <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or <kbd>Tab</kbd> | Switch between Voxxy, Droid and Biggy |
+| <kbd>E</kbd> or <kbd>Space</kbd> | Interact (pick up / drop, fuse panel, service door) |
+| <kbd>Enter</kbd> / <kbd>R</kbd> | Start / play again |
 
 The robots are physically simulated: each has its own mass, motor force, turning speed and grip.
 Voxxy reaches 4.5 m/s in about a second and skids in tight turns; Biggy needs five seconds to get

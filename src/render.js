@@ -1,5 +1,8 @@
 // Canvas renderer: venue first, then robots, camera centred on the active robot.
 
+import {
+  drawAdapter, drawBarriers, drawCrates, drawDoor, drawFusePanel, drawRoom8, drawRoom8Darkness,
+} from './render-props.js';
 import { drawRobotBody, drawRobotShadow } from './robot-art.js';
 
 const VISIBLE_METRES_MIN = 24;  // the shorter screen side always shows at least this many metres
@@ -7,6 +10,7 @@ const MIN_PIXELS_PER_METRE = 18;
 const MAX_PIXELS_PER_METRE = 42;
 const PLAN_LINE_RGB = [150, 160, 180];
 const PLAN_OPACITY = 0.3;
+const WALL_WIDTH = 0.3;
 
 const COLORS = {
   void: '#0b0d12',
@@ -59,12 +63,25 @@ export function createRenderer(canvas, level) {
       ctx.drawImage(planOverlay, 0, 0, planOverlay.width * scale, planOverlay.height * scale);
       ctx.globalAlpha = 1;
     }
+    const mission = state.mission;
+    drawRoom8(ctx, level, mission);
     drawWalls(ctx, level);
+    drawBarriers(ctx, level);
+    drawFusePanel(ctx, level, mission, state.time);
+    drawDoor(ctx, level, mission);
+    drawCrates(ctx, mission.crates);
+    if (!mission.adapter.carrier) {
+      drawAdapter(ctx, mission.adapter, state.time);
+    }
 
     const robots = state.robots;
     robots.forEach(robot => drawRobotShadow(ctx, robot));
     drawSelection(ctx, state.robots[state.activeIndex], state.time);
     robots.forEach(robot => drawRobotBody(ctx, robot));
+    if (mission.adapter.carrier) {
+      drawAdapter(ctx, mission.adapter, state.time);
+    }
+    drawRoom8Darkness(ctx, level, mission);
     ctx.restore();
 
     drawLabels(ctx, level, toScreen);
@@ -91,12 +108,18 @@ function drawWalls(ctx, level) {
   }
   ctx.strokeStyle = COLORS.wall;
   ctx.lineCap = 'round';
-  ctx.lineWidth = level.segments[0]?.halfThickness * 2 || 0.3;
+  ctx.lineJoin = 'round';
+  ctx.lineWidth = WALL_WIDTH;
+  const tracePath = (points, closed) => {
+    points.forEach((point, index) => (index === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y)));
+    if (closed) {
+      ctx.closePath();
+    }
+  };
   ctx.beginPath();
-  for (const segment of level.segments) {
-    ctx.moveTo(segment.ax, segment.ay);
-    ctx.lineTo(segment.bx, segment.by);
-  }
+  tracePath(level.outline, false);
+  level.walls.forEach(polyline => tracePath(polyline, false));
+  level.blocks.forEach(polygon => tracePath(polygon, true));
   ctx.stroke();
 }
 

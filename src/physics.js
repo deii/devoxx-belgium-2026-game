@@ -62,8 +62,11 @@ function collideCircleSegment(body, segment) {
   return -normalSpeed;
 }
 
-/** Mass-weighted impulse between two circles; returns the impact speed (m/s), 0 if none. */
-export function collideBodies(a, b) {
+/**
+ * Mass-weighted impulse between two circles; returns the impact speed (m/s), 0 if none.
+ * The effective masses may be overridden — Infinity makes a body immovable for this contact.
+ */
+export function collideBodies(a, b, massA = a.mass, massB = b.mass) {
   let nx = b.x - a.x;
   let ny = b.y - a.y;
   const minDistance = a.radius + b.radius;
@@ -81,8 +84,8 @@ export function collideBodies(a, b) {
     ny /= distance;
   }
 
-  const inverseMassA = 1 / a.mass;
-  const inverseMassB = 1 / b.mass;
+  const inverseMassA = 1 / massA;
+  const inverseMassB = 1 / massB;
   const inverseMassSum = inverseMassA + inverseMassB;
 
   const penetration = minDistance - distance;

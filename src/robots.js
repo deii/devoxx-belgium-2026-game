@@ -9,7 +9,7 @@ export const ROBOT_SPECS = {
     name: 'Voxxy',
     tagline: 'Light, curious and quick. Slips through gaps, carries small things.',
     color: '#ff8a1f',
-    radius: 0.45,
+    radius: 0.4,
     mass: 45,           // kg
     driveForce: 450,    // N   -> top speed ≈ force / (mass · drag) ≈ 4.5 m/s
     drag: 2.2,          // 1/s

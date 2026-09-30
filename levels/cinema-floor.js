@@ -10,7 +10,7 @@ const ROOM8_SOUTH = 1190;
 
 // Pillars along the corridor, two rows (see the small squares on the plan).
 const PILLAR_ROWS_X = [710, 757];
-const PILLAR_FIRST_Y = 420;
+const PILLAR_FIRST_Y = 485;   // the first rows are left out: the crates stand there
 const PILLAR_LAST_Y = 1120;
 const PILLAR_SPACING = 65;
 const PILLAR_HALF_SIZE = 3;
@@ -55,6 +55,27 @@ export default {
     [[CORRIDOR_EAST, ROOM8_SOUTH], [855, ROOM8_SOUTH]],
   ],
 
+  // Queue barriers across the speakers' lounge. The gap is 1.25 m: wide enough for Voxxy
+  // (0.8 m + wall clearance), too narrow for Droid and Biggy.
+  barriers: [
+    [[440, 370], [468.75, 370]],
+    [[481.25, 370], [510, 370]],
+  ],
+
+  // Everything the mission needs, in plan pixels.
+  mission: {
+    // A wall of sponsor crates across the corridor mouth, just past the Megacandy. The gaps
+    // between crates (0.2 m) are too narrow even for Voxxy.
+    crates: [[732.5, 405], [752.5, 405], [772.5, 405], [792.5, 405]],
+    bottleneck: { x1: 720, y1: 390, x2: CORRIDOR_EAST, y2: 420 },
+    adapter: { x: 485, y: 560 },
+    fusePanel: { x: 668, y: 1330 },
+    room8Door: { x1: CORRIDOR_EAST, y1: ROOM8_DOOR_TOP, x2: CORRIDOR_EAST, y2: ROOM8_SOUTH },
+    room8: { x1: CORRIDOR_EAST, y1: 960, x2: 1105, y2: ROOM8_SOUTH },
+    screen: { x: 1095, y1: 985, y2: 1165 },
+    stage: { x: 1070, y: 1075, radius: 25 },
+  },
+
   // Solid obstacles (closed polygons).
   blocks: [
     rect(510, 345, CORRIDOR_WEST, 470),                   // Room 1
@@ -63,7 +84,7 @@ export default {
     rect(TOILET_BLOCK.x1, TOILET_BLOCK.y1, TOILET_BLOCK.x2, TOILET_BLOCK.y2), // toilets
     [[485, 300], [600, 270], [655, 325], [660, 345], [490, 345]],               // concession B1
     [[620, 195], [645, 190], [668, 330], [648, 335]],                           // wall of fame
-    [[705, 265], [770, 225], [805, 250], [805, 345], [770, 395], [730, 380], [705, 330]], // Megacandy
+    [[705, 265], [770, 225], [805, 250], [805, 345], [785, 375], [755, 370], [720, 330]], // Megacandy
     rect(CORRIDOR_EAST, 1000, 858, ROOM8_DOOR_TOP),       // Room 8 projection booth
     ...pillars(),
   ],
@@ -75,6 +96,8 @@ export default {
 
   labels: [
     { text: 'FOYER', x: 560, y: 150 },
+    { text: "SPEAKERS' LOUNGE", x: 485, y: 470 },
+    { text: 'FUSE PANEL', x: 695, y: 1352 },
     { text: 'MEGACANDY', x: 755, y: 310 },
     { text: 'ROOM 1', x: 585, y: 408 },
     { text: 'ROOM 2', x: 585, y: 578 },

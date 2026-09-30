@@ -9,10 +9,12 @@ export function loadLevel(data) {
   const outline = data.outline.map(toWorld);
   const walls = data.walls.map(polyline => polyline.map(toWorld));
   const blocks = data.blocks.map(polygon => polygon.map(toWorld));
+  const barriers = data.barriers.map(polyline => polyline.map(toWorld));
 
   const segments = [
     ...polylineSegments(outline, false),
     ...walls.flatMap(polyline => polylineSegments(polyline, false)),
+    ...barriers.flatMap(polyline => polylineSegments(polyline, false)),
     ...blocks.flatMap(polygon => polylineSegments(polygon, true)),
   ];
 
@@ -22,7 +24,9 @@ export function loadLevel(data) {
     outline,
     walls,
     blocks,
+    barriers,
     segments,
+    mission: scaleMission(data.mission, scale),
     zones: data.zones.map(zone => ({
       ...zone, x1: zone.x1 * scale, y1: zone.y1 * scale, x2: zone.x2 * scale, y2: zone.y2 * scale,
     })),
@@ -30,6 +34,24 @@ export function loadLevel(data) {
     spawns: Object.fromEntries(Object.entries(data.spawns).map(
       ([id, spawn]) => [id, { ...toWorld([spawn.x, spawn.y]), heading: spawn.heading }])),
   };
+}
+
+/** Scales every coordinate-like number (x*, y*, radius) of the mission description to metres. */
+function scaleMission(mission, scale) {
+  const scaleValue = value => {
+    if (Array.isArray(value)) {
+      return value.map(scaleValue);
+    }
+    if (typeof value === 'number') {
+      return value * scale;
+    }
+    return Object.fromEntries(Object.entries(value).map(([key, inner]) => [key, scaleValue(inner)]));
+  };
+  return scaleValue(mission);
+}
+
+export function segmentOf(line) {
+  return { ax: line.x1, ay: line.y1, bx: line.x2, by: line.y2, halfThickness: WALL_HALF_THICKNESS };
 }
 
 function polylineSegments(points, closed) {

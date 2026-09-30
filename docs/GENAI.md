@@ -61,3 +61,26 @@ launches Voxxy at 2.49 m/s.
 with no input — traced to keyboard state leaking between scripted Playwright runs, not the game.
 The model sheets are kept out of the repository (`assets/reference/` is git-ignored); only the
 floor plan is shipped, with attribution.
+
+### M3 — the playable mission (13:45)
+**Prompt:** "Go ahead".
+
+- The model designed the mission so that each robot's physics *is* its role: crate collisions use
+  an effective-mass override (a crate is immovable for any robot under 300 kg, a normal 300 kg body
+  for Biggy); the speakers' lounge barrier gap is sized from the robot radii (1.25 m: Voxxy needs
+  1.1 m, Droid 1.3 m) — Voxxy's radius was reduced from 0.45 to 0.4 m to make the margin readable.
+- Mission logic is in `src/mission.js`; props, clock and objectives in the level data.
+
+**Iterations caught by a headless Node simulation of the real modules:**
+1. First crate placement put three of five crates directly above the toilet block — there was
+   nowhere to shove them. Moved the crate wall 4 m south, into the corridor mouth.
+2. The crate row then sat on the first pair of corridor pillars; Biggy could not push through.
+   The first pillar rows were removed from the level.
+3. "Crates cleared" was first a crate count; the simulation showed Voxxy slipping through while the
+   count still said blocked. Replaced by the width of the widest free gap (≥ 2 m, Biggy is 1.7 m).
+4. Prompts: a dropped adapter hid Droid's own "open the door" prompt. Prompts and actions now
+   prefer what the *active* robot can do.
+
+**Verified:** Voxxy and Droid cannot pass the crates; Biggy opens a path on its second push;
+only Voxxy passes the barriers; the fuse panel and door react only to Droid, the door only with
+power; win on delivery; loss when the clock runs out (6 real minutes).
