@@ -26,12 +26,23 @@ const ACTION_KEYS = new Set(['KeyE', 'Space']);
 const START_KEYS = new Set(['Enter', 'NumpadEnter', 'Space']);
 const RESTART_KEYS = new Set(['KeyR', 'Enter', 'NumpadEnter']);
 const MUTE_KEY = 'KeyM';
+const ZOOM_IN_KEYS = new Set(['Equal', 'NumpadAdd']);
+const ZOOM_OUT_KEYS = new Set(['Minus', 'NumpadSubtract']);
+const ZOOM_RESET_KEYS = new Set(['Digit0', 'Numpad0']);
+const WHEEL_DELTA_PER_STEP = 100;   // px of wheel scroll per zoom step (one mouse-wheel notch)
 
 const level = loadLevel(cinemaFloor, exhibitionHall);
 const input = createInput();
-const renderer = createRenderer(document.getElementById('game'), level);
+const canvas = document.getElementById('game');
+const renderer = createRenderer(canvas, level);
 const hud = createHud(document.getElementById('hud'));
 const audio = createAudio();
+
+canvas.addEventListener('wheel', event => {
+  event.preventDefault();
+  const steps = -event.deltaY / WHEEL_DELTA_PER_STEP;
+  renderer.zoomBy(Math.max(-1, Math.min(1, steps)));
+}, { passive: false });
 
 let state = createGameState('title');
 let effects = createEffects();
@@ -58,6 +69,14 @@ function handlePresses() {
     audio.unlock();
     if (code === MUTE_KEY) {
       audio.toggleMute();
+      continue;
+    }
+    if (ZOOM_IN_KEYS.has(code) || ZOOM_OUT_KEYS.has(code)) {
+      renderer.zoomBy(ZOOM_IN_KEYS.has(code) ? 1 : -1);
+      continue;
+    }
+    if (ZOOM_RESET_KEYS.has(code)) {
+      renderer.resetZoom();
       continue;
     }
     if (state.phase === 'title') {

@@ -11,6 +11,10 @@ import { drawSpeech } from './speech.js';
 const VISIBLE_METRES_MIN = 24;  // the shorter screen side always shows at least this many metres
 const MIN_PIXELS_PER_METRE = 18;
 const MAX_PIXELS_PER_METRE = 42;
+const ZOOM_MIN = 0.5;           // player zoom, relative to the size-based default
+const ZOOM_MAX = 2;
+const ZOOM_STEP = 1.25;         // factor per key press or mouse-wheel notch
+const ZOOM_RATE = 12;           // 1/s — how quickly the view eases to the requested zoom
 const PLAN_LINE_RGB = [150, 160, 180];
 const PLAN_OPACITY = 0.3;
 const WALL_WIDTH = 0.3;
@@ -27,6 +31,9 @@ export function createRenderer(canvas, level) {
   const ctx = canvas.getContext('2d');
   const lighting = createLighting();
   let pixelsPerMetre = MIN_PIXELS_PER_METRE;
+  let zoom = 1;
+  let targetZoom = 1;
+  let lastDrawTime = null;
 
   const planOverlays = level.plans.map(() => null);
   level.plans.forEach((plan, index) => {
@@ -51,27 +58,45 @@ export function createRenderer(canvas, level) {
     const shake = cameraShakeOffset(effects, state.time);
     const centerX = state.camera.x + shake.x;
     const centerY = state.camera.y + shake.y;
+    const scale = pixelsPerMetre * zoom;
     return {
       width,
       height,
       centerX,
       centerY,
-      halfWidth: width / 2 / pixelsPerMetre,
-      halfHeight: height / 2 / pixelsPerMetre,
+      halfWidth: width / 2 / scale,
+      halfHeight: height / 2 / scale,
       applyWorldTransform(context) {
         context.setTransform(ratio, 0, 0, ratio, 0, 0);
         context.translate(width / 2, height / 2);
-        context.scale(pixelsPerMetre, pixelsPerMetre);
+        context.scale(scale, scale);
         context.translate(-centerX, -centerY);
       },
       toScreen(x, y) {
-        return { x: width / 2 + (x - centerX) * pixelsPerMetre, y: height / 2 + (y - centerY) * pixelsPerMetre };
+        return { x: width / 2 + (x - centerX) * scale, y: height / 2 + (y - centerY) * scale };
       },
     };
   }
 
+  /** Zooms in (positive steps) or out (negative); fractional steps come from smooth scrolling. */
+  function zoomBy(steps) {
+    targetZoom = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, targetZoom * ZOOM_STEP ** steps));
+  }
+
+  function resetZoom() {
+    targetZoom = 1;
+  }
+
+  function easeZoom() {
+    const now = performance.now();
+    const dt = lastDrawTime === null ? 0 : Math.min(0.1, (now - lastDrawTime) / 1000);
+    lastDrawTime = now;
+    zoom += (targetZoom - zoom) * (1 - Math.exp(-ZOOM_RATE * dt));
+  }
+
   function draw(state, effects, speech) {
     const ratio = window.devicePixelRatio || 1;
+    easeZoom();
     const view = createView(state, effects);
     const mission = state.mission;
     const robots = state.robots;
@@ -119,7 +144,7 @@ export function createRenderer(canvas, level) {
     drawSpeech(ctx, speech, state, view.toScreen);
   }
 
-  return { draw };
+  return { draw, zoomBy, resetZoom };
 }
 
 function drawFloor(ctx, level) {

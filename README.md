@@ -88,6 +88,7 @@ or affiliated with this game, and apart from the well-known "Bootiful" no line i
 | <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or <kbd>Tab</kbd> | Switch between Voxxy, Droid and Biggy |
 | <kbd>E</kbd> or <kbd>Space</kbd> | Interact (pick up / drop, stairs, lift, main breaker, service door) |
 | <kbd>Enter</kbd> / <kbd>R</kbd> | Start / play again |
+| <kbd>+</kbd> / <kbd>−</kbd> or mouse wheel, <kbd>0</kbd> | Zoom in / out, reset zoom |
 | <kbd>M</kbd> | Sound on / off |
 
 Your best time is remembered in this browser (`localStorage`) and shown on the title screen.

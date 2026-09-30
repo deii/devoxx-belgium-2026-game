@@ -207,3 +207,9 @@ start in the basement."
 - The "cleared" band now hugs the crate row, so a crate shoved north into the pocket under
   Megacandy stops counting as blocking — the old band still counted it and underreported.
 - Full run simulated from the new spawn: booth 18 s, breaker, lift 16 s, crates open in one ram.
+
+### Zoom (15:17)
+**Prompt:** "Implement zoom in and out."
+<kbd>+</kbd>/<kbd>−</kbd>, the mouse wheel and <kbd>0</kbd> (reset) scale the camera between 0.5× and 2×
+of the screen-size default, eased over about a tenth of a second. Everything already worked in
+metres, so the change was one scale factor in the renderer's view; lighting and labels followed.
