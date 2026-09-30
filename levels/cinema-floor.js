@@ -16,6 +16,24 @@ const PILLAR_SPACING = 65;
 const PILLAR_HALF_SIZE = 3;
 const TOILET_BLOCK = { x1: 660, y1: 378, x2: 720, y2: 610 };
 
+// Room 8 seat rows, parallel to the screen. They fan out towards the back of the room, leaving
+// side aisles that are wider at the back and still wide enough for Biggy at the front.
+const ROOM8_SCREEN_X = 1095;
+const SEAT_ROW_FIRST_X = 880;
+const SEAT_ROW_LAST_X = 1035;
+const SEAT_ROW_SPACING = 11;
+const SEAT_ROW_AISLE = 22;          // minimum side aisle at the front
+const SEAT_ROW_FAN = 35;            // extra aisle width at the back of the room
+
+function seatRows() {
+  const rows = [];
+  for (let x = SEAT_ROW_FIRST_X; x <= SEAT_ROW_LAST_X; x += SEAT_ROW_SPACING) {
+    const fan = SEAT_ROW_FAN * (ROOM8_SCREEN_X - x) / (ROOM8_SCREEN_X - CORRIDOR_EAST);
+    rows.push([[x, 960 + SEAT_ROW_AISLE + fan], [x + 4, ROOM8_SOUTH - SEAT_ROW_AISLE - fan]]);
+  }
+  return rows;
+}
+
 function rect(x1, y1, x2, y2) {
   return [[x1, y1], [x2, y1], [x2, y2], [x1, y2]];
 }
@@ -61,6 +79,8 @@ export default {
     [[440, 370], [468.75, 370]],
     [[481.25, 370], [510, 370]],
   ],
+
+  seatRows: seatRows(),
 
   // Everything the mission needs, in plan pixels.
   mission: {

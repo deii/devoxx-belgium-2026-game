@@ -1,6 +1,7 @@
 // Converts hand-traced level data (plan pixels) into world geometry (metres).
 
 const WALL_HALF_THICKNESS = 0.15;
+const SEAT_ROW_HALF_THICKNESS = 0.2;
 
 export function loadLevel(data) {
   const scale = data.plan.metresPerPx;
@@ -10,11 +11,13 @@ export function loadLevel(data) {
   const walls = data.walls.map(polyline => polyline.map(toWorld));
   const blocks = data.blocks.map(polygon => polygon.map(toWorld));
   const barriers = data.barriers.map(polyline => polyline.map(toWorld));
+  const seatRows = data.seatRows.map(polyline => polyline.map(toWorld));
 
   const segments = [
     ...polylineSegments(outline, false),
     ...walls.flatMap(polyline => polylineSegments(polyline, false)),
     ...barriers.flatMap(polyline => polylineSegments(polyline, false)),
+    ...seatRows.flatMap(polyline => polylineSegments(polyline, false, SEAT_ROW_HALF_THICKNESS)),
     ...blocks.flatMap(polygon => polylineSegments(polygon, true)),
   ];
 
@@ -25,6 +28,7 @@ export function loadLevel(data) {
     walls,
     blocks,
     barriers,
+    seatRows,
     segments,
     mission: scaleCoordinates(data.mission, scale),
     lighting: scaleCoordinates(data.lighting, scale),
@@ -55,13 +59,13 @@ export function segmentOf(line) {
   return { ax: line.x1, ay: line.y1, bx: line.x2, by: line.y2, halfThickness: WALL_HALF_THICKNESS };
 }
 
-function polylineSegments(points, closed) {
+function polylineSegments(points, closed, halfThickness = WALL_HALF_THICKNESS) {
   const segments = [];
   const count = closed ? points.length : points.length - 1;
   for (let i = 0; i < count; i++) {
     const a = points[i];
     const b = points[(i + 1) % points.length];
-    segments.push({ ax: a.x, ay: a.y, bx: b.x, by: b.y, halfThickness: WALL_HALF_THICKNESS });
+    segments.push({ ax: a.x, ay: a.y, bx: b.x, by: b.y, halfThickness });
   }
   return segments;
 }

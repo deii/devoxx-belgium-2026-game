@@ -3,21 +3,25 @@
 import { DIAGNOSTIC_DURATION } from './glitch.js';
 
 const STANCHION_SPACING = 0.9;
-const SEAT_ROW_SPACING = 1.1;
-const SEAT_ROW_MARGIN = 2.2;
+const SEAT_ROW_WIDTH = 0.4;
 
 export function drawRoom8(ctx, level, mission) {
-  const room = level.mission.room8;
   const screen = level.mission.screen;
 
-  // Seat rows fan towards the screen, like the auditorium on the plan.
-  ctx.strokeStyle = 'rgba(120, 60, 60, 0.45)';
-  ctx.lineWidth = 0.35;
-  for (let x = room.x1 + SEAT_ROW_MARGIN + 3; x < screen.x - 6; x += SEAT_ROW_SPACING) {
-    const spread = 0.35 * (screen.x - x) / (screen.x - room.x1);
+  // Seat rows: red upholstery with a darker backrest edge.
+  ctx.lineCap = 'butt';
+  for (const [start, end] of level.seatRows) {
+    ctx.strokeStyle = '#5a2a2e';
+    ctx.lineWidth = SEAT_ROW_WIDTH;
     ctx.beginPath();
-    ctx.moveTo(x, room.y1 + SEAT_ROW_MARGIN + spread * 10);
-    ctx.lineTo(x + 0.4, room.y2 - SEAT_ROW_MARGIN - spread * 10);
+    ctx.moveTo(start.x, start.y);
+    ctx.lineTo(end.x, end.y);
+    ctx.stroke();
+    ctx.strokeStyle = '#34181b';
+    ctx.lineWidth = SEAT_ROW_WIDTH / 3;
+    ctx.beginPath();
+    ctx.moveTo(start.x - SEAT_ROW_WIDTH / 3, start.y);
+    ctx.lineTo(end.x - SEAT_ROW_WIDTH / 3, end.y);
     ctx.stroke();
   }
 
