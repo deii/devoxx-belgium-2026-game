@@ -21,7 +21,7 @@ const SCREENS = {
       <li style="--robot-color: ${ROBOT_SPECS.droid.color}"><b>Droid</b> has been here for years — knows the fuse panel and the service doors</li>
       <li style="--robot-color: ${ROBOT_SPECS.biggy.color}"><b>Biggy</b> 460 kg of armour — slow to start, hard to stop, moves what nobody else can</li>
     </ul>
-    <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact</p>
+    <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>M</kbd> sound on/off</p>
     <p class="start">Press <kbd>Enter</kbd> to start</p>`,
   won: (clock, verdict) => `
     <h1>The screen lights up<span>with ${clock} to spare</span></h1>
@@ -45,7 +45,7 @@ export function createHud(root) {
     <div class="log"><div class="log-title">/var/log/robots</div><div class="log-lines"></div></div>
     <div class="prompt"></div>
     <div class="controls">
-      <kbd>WASD</kbd>/<kbd>arrows</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> or <kbd>Tab</kbd> switch · <kbd>E</kbd> interact
+      <kbd>WASD</kbd>/<kbd>arrows</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> or <kbd>Tab</kbd> switch · <kbd>E</kbd> interact · <kbd>M</kbd> sound
     </div>
     <div class="screen"><div class="panel"></div></div>`;
 

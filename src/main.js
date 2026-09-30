@@ -2,6 +2,7 @@ import cinemaFloor from '../levels/cinema-floor.js';
 import {
   applyGlitch, createHeisenbug, heisenbugAct, heisenbugPrompt, updateDiagnostic, updateHeisenbug,
 } from './glitch.js';
+import { createAudio } from './audio.js';
 import { createEffects, updateEffects } from './effects.js';
 import { createHud } from './hud.js';
 import { createInput } from './input.js';
@@ -19,11 +20,13 @@ const SWITCH_KEYS = { Digit1: 0, Digit2: 1, Digit3: 2 };
 const ACTION_KEYS = new Set(['KeyE', 'Space']);
 const START_KEYS = new Set(['Enter', 'NumpadEnter', 'Space']);
 const RESTART_KEYS = new Set(['KeyR', 'Enter', 'NumpadEnter']);
+const MUTE_KEY = 'KeyM';
 
 const level = loadLevel(cinemaFloor);
 const input = createInput();
 const renderer = createRenderer(document.getElementById('game'), level);
 const hud = createHud(document.getElementById('hud'));
+const audio = createAudio();
 
 let state = createGameState('title');
 let effects = createEffects();
@@ -45,6 +48,11 @@ function createGameState(phase) {
 
 function handlePresses() {
   for (const code of input.consumePresses()) {
+    audio.unlock();
+    if (code === MUTE_KEY) {
+      audio.toggleMute();
+      continue;
+    }
     if (state.phase === 'title') {
       if (START_KEYS.has(code)) {
         state.phase = 'playing';
@@ -147,6 +155,7 @@ function frame(now) {
   }
   updateCamera(frameTime);
   updateEffects(effects, state, frameTime);
+  audio.update(state);
   renderer.draw(state, effects);
   hud.update(state);
   state.robots.forEach(robot => { robot.lastImpact = 0; });
