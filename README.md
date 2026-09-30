@@ -155,7 +155,8 @@ style of classic platformer level-end jingles, synthesised like everything else.
 
 ## How generative AI was used
 
-See [docs/GENAI.md](docs/GENAI.md).
+See [docs/GENAI.md](docs/GENAI.md) for how the tool was directed, and
+[docs/PROMPTS.md](docs/PROMPTS.md) for every prompt, verbatim.
 
 ## Credits
 

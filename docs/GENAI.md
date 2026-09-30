@@ -5,7 +5,8 @@ tool — for research, game design, architecture and code. This file records how
 directed: the key prompts, the iterations, and what was corrected by hand.
 
 Every prompt submitted during development is also captured automatically by a Claude Code
-`UserPromptSubmit` hook ([.claude/hooks/record-prompt.js](../.claude/hooks/record-prompt.js)).
+`UserPromptSubmit` hook ([.claude/hooks/record-prompt.js](../.claude/hooks/record-prompt.js)). The full, trimmed log is
+published in [PROMPTS.md](PROMPTS.md).
 
 ## 1. Research and concept (before any code)
 
