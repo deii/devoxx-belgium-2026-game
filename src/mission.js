@@ -12,6 +12,7 @@ const CLEARED_GAP = 2;                            // m — a gap Biggy (1.7 m wi
 const WALL_CLEARANCE = 0.15;                      // m — half the wall thickness
 const ADAPTER_CARRY_OFFSET = 0.55;                // m in front of Voxxy's centre
 const DOOR_OPEN_SPEED = 1.2;                      // fraction of the door per second
+const OPENING_HINT_DURATION = 30;                 // s of keynote clock the opening tip stays up
 
 const CRATE = {
   radius: 0.9,
@@ -206,7 +207,13 @@ function promptFor(mission, level, robot) {
   }
 
   const best = candidates.find(candidate => candidate.canAct) || candidates[0];
-  return best ? best.text : '';
+  if (best) {
+    return best.text;
+  }
+  if (mission.clock > KEYNOTE_CLOCK_START - OPENING_HINT_DURATION) {
+    return 'Tip: Biggy (3) takes ages to get going — start it towards the crates first.';
+  }
+  return '';
 }
 
 function near(robot, point) {

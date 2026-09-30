@@ -294,3 +294,8 @@ kbd {
   .log { width: 340px; }
   .controls { left: auto; right: 16px; transform: none; }
 }
+
+.screen .record {
+  color: #ff8a1f;
+  font-weight: 600;
+}

@@ -3,12 +3,13 @@
 
 import { culpritName } from './glitch.js';
 import { formatClock } from './mission.js';
+import { loadBestClockLeft } from './records.js';
 import { ROBOT_ORDER, ROBOT_SPECS } from './robots.js';
 
 const CLOCK_WARNING_SECONDS = 120;
 
 const SCREENS = {
-  title: `
+  title: () => `
     <h1>Heisenbug<span>Keynote in 10</span></h1>
     <p>Kinepolis Antwerp, Devoxx morning. The opening keynote in <strong>Room 8</strong> starts in ten
     minutes — and the floor is dark, the room is locked, and the speaker's HDMI adapter is lying in
@@ -22,12 +23,14 @@ const SCREENS = {
       <li style="--robot-color: ${ROBOT_SPECS.biggy.color}"><b>Biggy</b> 460 kg of armour — slow to start, hard to stop, moves what nobody else can</li>
     </ul>
     <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>M</kbd> sound on/off</p>
+    ${bestLine()}
     <p class="start">Press <kbd>Enter</kbd> to start</p>`,
-  won: (clock, verdict) => `
+  won: (clock, verdict, record) => `
     <h1>The screen lights up<span>with ${clock} to spare</span></h1>
     <p>Room 8 fills, the projector hums, the speaker's first slide appears. Nobody in the audience
     will ever know about the crates, the fuses or the adapter.</p>
     <p class="verdict">${verdict}</p>
+    ${record?.isNewBest ? '<p class="record">New best time on this machine.</p>' : bestLine()}
     <p class="start">Press <kbd>R</kbd> to play again</p>`,
   lost: (clock, verdict) => `
     <h1>09:30 — the keynote starts<span>in the dark</span></h1>
@@ -117,11 +120,16 @@ export function createHud(root) {
     setIfChanged('screen', screenKey, () => {
       const screen = SCREENS[state.phase];
       elements.screen.classList.toggle('visible', Boolean(screen));
-      elements.panel.innerHTML = typeof screen === 'function' ? screen(clock, verdictFor(bug)) : (screen || '');
+      elements.panel.innerHTML = screen ? screen(clock, verdictFor(bug), state.record) : '';
     });
   }
 
   return { update };
+}
+
+function bestLine() {
+  const best = loadBestClockLeft();
+  return best ? `<p class="record">Best on this machine: ${formatClock(best)} to spare.</p>` : '';
 }
 
 function verdictFor(bug) {

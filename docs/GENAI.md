@@ -129,3 +129,17 @@ generator (tiny first value), confirmed by re-running against `Math.random`.
 4. Dust was too faint to read; bigger, more opaque particles.
 
 **Measured:** 61 fps in Chromium at 1366×800 with all lights on.
+
+### M5 — sound, solid seat rows, replay polish (13:40)
+**Prompt:** "Go ahead" (with the proposed order: sound → seat rows → polish).
+
+- **Sound** (`src/audio.js`) is synthesised with Web Audio: one continuous motor voice per robot
+  (oscillator → low-pass → gain, pitch and volume from speed and distance to the camera) and
+  one-shot sounds detected by diffing state between frames — no other module had to change.
+  The model cannot listen to its own output; the sound design was checked by a human.
+- **Seat rows** became real geometry with a single source of truth in the level data, used by both
+  rendering and collision. A simulated drive confirmed Voxxy and Biggy reach the stage through the
+  south aisle (9 s / 19 s from the door) and neither can cut through the rows. The first simulated
+  route failed for Biggy — the waypoint hugged the row ends; the aisle itself was wide enough.
+- **Replay:** best time per browser in `localStorage` (guarded for private windows), an opening tip
+  that points first-time players at Biggy, and the README screenshots (taken with Playwright).

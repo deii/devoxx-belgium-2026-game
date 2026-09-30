@@ -9,6 +9,7 @@ import { createInput } from './input.js';
 import { loadLevel } from './level.js';
 import { activeSegments, crateMassFor, createMission, slowCrate, updateMission } from './mission.js';
 import { collideBodies, collideWithWalls, integrate } from './physics.js';
+import { recordWin } from './records.js';
 import { createRenderer } from './render.js';
 import { createRobot, driveRobot, idleCommand, ROBOT_ORDER } from './robots.js';
 
@@ -100,6 +101,9 @@ function step(dt) {
   mission.prompt = heisenbugPrompt(state, activeRobot) || mission.prompt;
   if (mission.outcome) {
     state.phase = mission.outcome;
+    if (mission.outcome === 'won') {
+      state.record = recordWin(Math.ceil(mission.clock));
+    }
   }
   state.time += dt;
 }

@@ -6,7 +6,7 @@ The keynote in Room 8 at Kinepolis Antwerp starts in ten minutes, the auditorium
 speaker's HDMI adapter is on the wrong side of the building. Three robots have to fix it together —
 and one of them has a glitch nobody has diagnosed yet.
 
-> Work in progress — built on 30 September 2026. This README is updated with every milestone.
+![Droid's torch in the dark central corridor, Voxxy carrying the adapter](docs/screenshot-corridor.png)
 
 ## The mission
 
@@ -68,6 +68,9 @@ No build step, no dependencies — plain HTML, CSS and JavaScript on a 2D canvas
 | <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or <kbd>Tab</kbd> | Switch between Voxxy, Droid and Biggy |
 | <kbd>E</kbd> or <kbd>Space</kbd> | Interact (pick up / drop, fuse panel, service door) |
 | <kbd>Enter</kbd> / <kbd>R</kbd> | Start / play again |
+| <kbd>M</kbd> | Sound on / off |
+
+Your best time is remembered in this browser (`localStorage`) and shown on the title screen.
 
 The robots are physically simulated: each has its own mass, motor force, turning speed and grip.
 Voxxy reaches 4.5 m/s in about a second and skids in tight turns; Biggy needs five seconds to get
@@ -81,8 +84,19 @@ Droid's amber eyes are a real torch, Voxxy's visor glows. Resetting the fuse pan
 ceiling lamps back with a fluorescent flicker, turns on Room 8's house lights and starts the
 projector — a blue "no signal" beam until the adapter is plugged in.
 
+![Room 8 with the house lights on and the projector's "no signal" beam](docs/screenshot-room8.png)
+
 Weight is visible, too: Voxxy kicks up dust when it skids, Biggy's footfalls puff dust and nudge
-the camera, and every hard impact shakes the view in proportion to mass × speed.
+the camera, and every hard impact shakes the view in proportion to mass × speed. Room 8's seat rows
+are solid: robots reach the stage through the side aisles, the way people do.
+
+## Sound
+
+All sound is synthesised with the Web Audio API — there are no audio files. Each robot has a motor
+voice whose pitch and volume follow its speed (Voxxy whines, Droid's servos buzz, Biggy growls),
+Biggy's footfalls thud, impacts thump in proportion to mass × speed, crates scrape, and the
+Heisenbug announces itself with a zap. Browsers start audio only after a key press; <kbd>M</kbd>
+toggles sound.
 
 ## How generative AI was used
 
