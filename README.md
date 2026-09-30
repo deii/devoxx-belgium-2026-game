@@ -80,7 +80,7 @@ speech bubbles — in its own words:
 Robot-history fans should drive each robot past the wall of fame in the foyer at least once.
 
 Bumping into walls or into each other winds the robots up. Every hard bump raises a robot's
-frustration (shown next to its name as ANNOYED or FURIOUS) and it complains — politely at first,
+frustration (its portrait frame turns amber, then red and shaking) and it complains — politely at first,
 less so the angrier it gets. Frustration cools down after about 25 seconds without crashes.
 
 This is an affectionate fan tribute written for the competition. The speakers are not involved in

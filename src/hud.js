@@ -84,6 +84,14 @@ export function createHud(root) {
     screen: root.querySelector('.screen'),
     panel: root.querySelector('.screen .panel'),
   };
+  elements.roster.innerHTML = ROBOT_ORDER.map((type, index) => {
+    const spec = ROBOT_SPECS[type];
+    return `<div class="robot" style="--robot-color: ${spec.color}">
+        <div class="portrait"><img src="assets/portraits/${type}.jpg" alt=""><span class="key">${index + 1}</span></div>
+        <span class="name">${spec.name}</span>
+      </div>`;
+  }).join('');
+  elements.rosterCards = [...elements.roster.querySelectorAll('.robot')];
   const shown = {};
 
   function setIfChanged(key, value, apply) {
@@ -97,27 +105,15 @@ export function createHud(root) {
     const mission = state.mission;
     const clock = formatClock(mission.clock);
 
-    setIfChanged('roster', state.activeIndex, activeIndex => {
-      elements.roster.innerHTML = ROBOT_ORDER.map((type, index) => {
-        const spec = ROBOT_SPECS[type];
-        const active = index === activeIndex ? ' active' : '';
-        return `<div class="robot${active}" style="--robot-color: ${spec.color}">
-          <span class="key">${index + 1}</span>
-          <span class="name">${spec.name} <span class="mood" data-robot="${type}"></span></span>
-          ${active ? `<span class="tagline">${spec.tagline}</span>` : ''}
-        </div>`;
-      }).join('');
-    });
-
-    for (const robot of state.robots) {
+    // The cards are built once; switching robots only moves the 'active' class, so the size change
+    // animates. A wound-up robot's frame turns amber, a furious one's red and shaking.
+    state.robots.forEach((robot, index) => {
+      const card = elements.rosterCards[index];
+      card.classList.toggle('active', index === state.activeIndex);
       const mood = state.phase === 'playing' ? moodOf(robot) : 'calm';
-      // Checked against the element itself: the roster is re-rendered when the active robot changes.
-      const element = elements.roster.querySelector(`.mood[data-robot="${robot.type}"]`);
-      if (element.className !== `mood ${mood}`) {
-        element.textContent = mood === 'calm' ? '' : mood;
-        element.className = `mood ${mood}`;
-      }
-    }
+      card.classList.toggle('annoyed', mood === 'annoyed');
+      card.classList.toggle('furious', mood === 'furious');
+    });
 
     setIfChanged('clock', clock, value => { elements.clockValue.textContent = value; });
     elements.clock.classList.toggle('warning', mission.clock < CLOCK_WARNING_SECONDS);

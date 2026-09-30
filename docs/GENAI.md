@@ -363,3 +363,12 @@ sound when robots collide with something — wall, robot, box… Improve the mai
   status lamps (amber ready, blinking blue while scanning, green or red after), a sweeping scanner
   arm and progress ring during the self-test, a console that reads READY / SCAN / FIXED / NO FAULT /
   CLEAN, a cable to the pad and a red tool chest with a spanner on top.
+
+### Game-style robot roster (17:24)
+**Prompt:** "Make the graphic in the top left corner showing the selected robot more like in games.
+Portrait, name and number only — big when selected, smaller otherwise."
+Square head portraits cropped from the model sheets (5 kB each; Droid's from the sheet's close-up).
+Each card is the portrait with the key number in a corner tab and the name underneath; the selected
+robot's card grows from 56 to 96 px with a glow in its colour, the others shrink and dim. The cards
+are built once and switching only moves a class, so the resize animates. The frustration moods
+lost their text and now tint the portrait frame — amber, then red and shaking.

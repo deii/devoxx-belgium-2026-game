@@ -24,63 +24,94 @@ html, body {
   top: 16px;
   left: 16px;
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  max-width: 320px;
+  align-items: flex-start;
+  gap: 10px;
 }
 
+/* One card per robot: portrait with the key number, name underneath. The selected robot's card is
+   large and lit, the others small and dimmed. */
 .robot {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: 8px;
-  align-items: baseline;
-  padding: 6px 10px;
-  border-left: 3px solid var(--robot-color);
-  background: rgba(11, 13, 18, 0.72);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
   opacity: 0.55;
+  transition: opacity 0.2s;
 }
 
 .robot.active {
   opacity: 1;
 }
 
+.robot .portrait {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  border: 3px solid #3a404c;
+  border-radius: 10px;
+  overflow: hidden;
+  background: #eceae6;
+  transition: width 0.2s ease-out, height 0.2s ease-out, border-color 0.2s, box-shadow 0.2s;
+}
+
+.robot.active .portrait {
+  width: 96px;
+  height: 96px;
+  border-color: var(--robot-color);
+  box-shadow: 0 0 14px var(--robot-color);
+}
+
+.robot .portrait img {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
 .robot .key {
-  color: var(--robot-color);
-  font-weight: 700;
+  position: absolute;
+  left: 0;
+  top: 0;
+  min-width: 18px;
+  padding: 1px 5px;
+  border-bottom-right-radius: 7px;
+  background: var(--robot-color);
+  color: #15171c;
+  font-size: 13px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.robot.active .key {
+  font-size: 16px;
+  min-width: 24px;
 }
 
 .robot .name {
-  font-weight: 600;
-}
-
-.robot .mood {
-  display: inline-block;
-  margin-left: 4px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
+  text-shadow: 0 1px 3px #000;
 }
 
-.robot .mood.annoyed {
-  color: #ffb347;
+.robot.active .name {
+  font-size: 15px;
+  color: var(--robot-color);
 }
 
-.robot .mood.furious {
-  color: #ff5a4f;
+.robot.annoyed .portrait {
+  border-color: #ffb347;
+}
+
+.robot.furious .portrait {
+  border-color: #ff5a4f;
   animation: mood-shake 0.3s linear infinite;
 }
 
 @keyframes mood-shake {
   0%, 100% { transform: translateX(0); }
-  25% { transform: translateX(-1px); }
-  75% { transform: translateX(1px); }
-}
-
-.robot .tagline {
-  grid-column: 2;
-  font-size: 13px;
-  color: #b8bcc6;
+  25% { transform: translateX(-2px); }
+  75% { transform: translateX(2px); }
 }
 
 .controls {
@@ -366,7 +397,6 @@ kbd {
 
 @media (max-width: 720px) {
   .objectives, .controls { display: none; }
-  .roster { max-width: 200px; }
 }
 
 .log {
