@@ -432,3 +432,5 @@ screenshot".
 - Caught by hand afterwards: the exhibition-hall screenshot showed the breaker reset while the
   booth still blocked the electrical room — also unreachable. Retaken with the power off, Biggy at
   the booth and Droid's torch on it, from a headless run of the real opening.
+- The Room 8 screenshot was retaken the same way (from the autopilot run just before delivery) so
+  all three README images show the current HUD, including the `R R restart` hint.
