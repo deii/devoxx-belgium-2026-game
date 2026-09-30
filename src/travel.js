@@ -3,7 +3,7 @@
 // cabin, then arrives.
 
 const STAIR_CLIMBERS = new Set(['voxxy', 'droid']);
-const LIFT_RIDE_DURATION = 2.5;   // s
+export const LIFT_RIDE_DURATION = 6;   // s — long enough for a few bars of the elevator music
 
 export function createTravel() {
   return { rides: [] };            // { robot, destination, remaining }

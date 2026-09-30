@@ -3,6 +3,8 @@
 // triggered by diffing the game state between frames, so the rest of the game does not need to know
 // sound exists.
 
+import { LIFT_RIDE_DURATION } from './travel.js';
+
 const MASTER_VOLUME = 0.5;
 const HEARING_RANGE = 22;            // m — robots further from the camera are silent
 const BIGGY_STEP_LENGTH = 0.9;       // m, matches the footfall dust in effects.js
@@ -175,7 +177,7 @@ export function createAudio() {
       const active = state.robots[state.activeIndex];
       const volume = LIFT_MUSIC_VOLUME * (biggy?.robot === active ? 1 : LIFT_MUSIC_BACKGROUND_SHARE);
       if (!biggy || !startLiftMusic(volume)) {
-        whoosh(2.5, 180, 420);
+        whoosh(LIFT_RIDE_DURATION, 180, 420);
       }
     } else if (rides.length < ridesBefore) {
       blip(LIFT_DING, 0.35);

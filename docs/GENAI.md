@@ -250,3 +250,6 @@ and as an exception in the README's licence section. The music starts when Biggy
 quieter if another robot is selected, and fades out on arrival with a two-tone ding; other robots'
 rides keep the synthesised whoosh. Checked in the browser that the file loads and a 24 s buffer
 starts on Biggy's ride.
+
+**Follow-up** (16:05): "Yes, make it a bit longer." — the lift ride went from 2.5 s to 6 s for
+everyone, so the music gets a few bars; the whoosh for Voxxy and Droid reads the same constant.
