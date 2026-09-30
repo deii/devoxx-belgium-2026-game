@@ -346,4 +346,4 @@ another; spots inside booths or pillars are rejected and every path is sampled a
 nobody walks through one. When a robot comes within ~2 m a person turns to it and says a line that
 depends on their role and the robot (speaker to Voxxy: "Have you seen my adapter?"). They never
 collide, so they cannot change the mission. The bubble drawing moved into a shared `drawBubble`.
-Simulated for two simulated minutes: every person moved, and nobody came closer than 0.37 m to a wall.
+Two simulated minutes: every person moved, and nobody came closer than 0.37 m to a wall.
