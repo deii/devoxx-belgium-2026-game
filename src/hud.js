@@ -87,7 +87,7 @@ export function createHud(root) {
   elements.roster.innerHTML = ROBOT_ORDER.map((type, index) => {
     const spec = ROBOT_SPECS[type];
     return `<div class="robot" style="--robot-color: ${spec.color}">
-        <div class="portrait"><img src="assets/portraits/${type}.jpg" alt=""><span class="key">${index + 1}</span></div>
+        <div class="portrait"><img src="assets/portraits/${type}.png" alt=""><span class="key">${index + 1}</span></div>
         <span class="name">${spec.name}</span>
       </div>`;
   }).join('');

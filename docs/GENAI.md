@@ -367,8 +367,14 @@ sound when robots collide with something — wall, robot, box… Improve the mai
 ### Game-style robot roster (17:24)
 **Prompt:** "Make the graphic in the top left corner showing the selected robot more like in games.
 Portrait, name and number only — big when selected, smaller otherwise."
-Square head portraits cropped from the model sheets (5 kB each; Droid's from the sheet's close-up).
+Square head portraits cropped from the model sheets (Droid's from the sheet's close-up).
 Each card is the portrait with the key number in a corner tab and the name underneath; the selected
 robot's card grows from 56 to 96 px with a glow in its colour, the others shrink and dim. The cards
 are built once and switching only moves a class, so the resize animates. The frustration moods
 lost their text and now tint the portrait frame — amber, then red and shaking.
+
+**Follow-up** (17:28): "Make it a bit smaller. Can you do something with the portrait
+background? It's too bright in a darker game." — the light studio background was cut out with
+ImageMagick flood fills from the corners (fuzz 9 %) into transparent PNGs; the portraits now sit on a
+dark radial backdrop faintly lit in each robot's colour. Cards shrank to 72 px selected / 44 px
+otherwise.

@@ -45,20 +45,22 @@ html, body {
 
 .robot .portrait {
   position: relative;
-  width: 56px;
-  height: 56px;
-  border: 3px solid #3a404c;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border: 2px solid #3a404c;
+  border-radius: 8px;
   overflow: hidden;
-  background: #eceae6;
+  /* the portraits are cut out; a dark backdrop lit faintly in the robot's colour sits behind them */
+  background: radial-gradient(circle at 50% 35%, color-mix(in srgb, var(--robot-color) 35%, #1b2029), #0d1016 75%);
   transition: width 0.2s ease-out, height 0.2s ease-out, border-color 0.2s, box-shadow 0.2s;
 }
 
 .robot.active .portrait {
-  width: 96px;
-  height: 96px;
+  width: 72px;
+  height: 72px;
+  border-width: 3px;
   border-color: var(--robot-color);
-  box-shadow: 0 0 14px var(--robot-color);
+  box-shadow: 0 0 10px var(--robot-color);
 }
 
 .robot .portrait img {
@@ -71,23 +73,23 @@ html, body {
   position: absolute;
   left: 0;
   top: 0;
-  min-width: 18px;
-  padding: 1px 5px;
-  border-bottom-right-radius: 7px;
+  min-width: 14px;
+  padding: 0 4px;
+  border-bottom-right-radius: 6px;
   background: var(--robot-color);
   color: #15171c;
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 800;
   text-align: center;
 }
 
 .robot.active .key {
-  font-size: 16px;
-  min-width: 24px;
+  font-size: 14px;
+  min-width: 20px;
 }
 
 .robot .name {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -95,7 +97,7 @@ html, body {
 }
 
 .robot.active .name {
-  font-size: 15px;
+  font-size: 13px;
   color: var(--robot-color);
 }
 
