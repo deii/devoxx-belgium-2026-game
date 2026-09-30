@@ -73,6 +73,17 @@ The robots are physically simulated: each has its own mass, motor force, turning
 Voxxy reaches 4.5 m/s in about a second and skids in tight turns; Biggy needs five seconds to get
 up to speed, coasts for two metres after you let go, and knocks Voxxy aside on contact.
 
+## Light and weight
+
+The cinema floor starts without power. Daylight falls through the glass facade of the foyer; the
+central corridor has only green exit signs and emergency lights, and Room 8 is pitch black.
+Droid's amber eyes are a real torch, Voxxy's visor glows. Resetting the fuse panel brings the
+ceiling lamps back with a fluorescent flicker, turns on Room 8's house lights and starts the
+projector — a blue "no signal" beam until the adapter is plugged in.
+
+Weight is visible, too: Voxxy kicks up dust when it skids, Biggy's footfalls puff dust and nudge
+the camera, and every hard impact shakes the view in proportion to mass × speed.
+
 ## How generative AI was used
 
 See [docs/GENAI.md](docs/GENAI.md).

@@ -38,15 +38,6 @@ export function drawRoom8(ctx, level, mission) {
   ctx.setLineDash([]);
 }
 
-export function drawRoom8Darkness(ctx, level, mission) {
-  if (mission.power) {
-    return;
-  }
-  const room = level.mission.room8;
-  ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-  ctx.fillRect(room.x1, room.y1, room.x2 - room.x1, room.y2 - room.y1);
-}
-
 export function drawBarriers(ctx, level) {
   for (const [start, end] of level.barriers) {
     const length = Math.hypot(end.x - start.x, end.y - start.y);

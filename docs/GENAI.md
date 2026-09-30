@@ -106,3 +106,26 @@ are altered; wrong guess −30 s, right guess patches and stops all further glit
 aborts the self-test; browser run shows the log, progress ring and the verdict on the end screen.
 **Caught in testing:** a seeded test RNG always picked the same culprit — a flaw of the test's
 generator (tiny first value), confirmed by re-running against `Math.random`.
+
+### M4 — light and weight (13:35)
+**Prompt:** "Glitches are noticeable — not frustrating. Go ahead."
+
+- Lighting is a darkness mask on an offscreen canvas with lights cut out (`destination-out`),
+  then a thin additive pass for coloured glow. Lights come from level data: facade daylight,
+  exit signs, emergency lights, ceiling lamps (power only), Room 8 house lights and the projector.
+- Robots are light sources with character: Droid's eyes are a 10 m torch cone, Voxxy's visor a
+  small glow, Biggy only its antenna. A Heisenbug sensor blackout also turns the culprit's lights
+  off — a fair clue, visible only while you drive the culprit.
+- Effects are driven by the physics: sideways slip → skid dust, distance walked → Biggy footfalls,
+  impact speed × mass → dust burst and camera shake with distance falloff.
+
+**Caught in screenshots and fixed by hand-directed iterations:**
+1. The idle projector beam rendered as an opaque blue slab — the glow pass replaced the alpha with
+   the full intensity instead of scaling it; the beam helper now takes an RGB triple and an alpha.
+2. The start screen was too gloomy: daylight did not reach the spawn and the floor colour was so
+   dark that lit areas still looked dark. Added foyer skylights, a warm daylight glow and a lighter
+   floor.
+3. The Room 8 label sat on top of the robots; moved to the top of the room.
+4. Dust was too faint to read; bigger, more opaque particles.
+
+**Measured:** 61 fps in Chromium at 1366×800 with all lights on.

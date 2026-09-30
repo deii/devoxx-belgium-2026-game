@@ -78,6 +78,22 @@ export default {
     maintenanceBay: { x: 685, y: 850, radius: 16 },
   },
 
+  // Light sources. Daylight and exit signs work without power; ceiling lamps need the fuse panel.
+  lighting: {
+    daylight: [
+      [335, 195], [380, 250], [420, 315], [440, 380], [452, 450], [452, 520], [448, 590], // glass facade
+      [500, 95], [620, 95], [740, 95],                                                     // north windows
+      [560, 190], [690, 180], [600, 265],                                                  // foyer skylights
+    ],
+    exitSigns: [[668, 700], [798, 640], [668, 1100], [798, 900], [848, 1380], [1098, 1180]],
+    emergencyLights: [[733, 560], [733, 760], [733, 960], [780, 1165], [733, 1330]],
+    ceilingLamps: [
+      [733, 430], [733, 495], [733, 560], [733, 625], [733, 690], [733, 755], [733, 820], [733, 885],
+      [733, 950], [733, 1015], [733, 1080], [733, 1145], [760, 1250], [760, 1340], [580, 120], [700, 130],
+    ],
+    projector: { x: 862, y: 1075 },
+  },
+
   // Solid obstacles (closed polygons).
   blocks: [
     rect(510, 345, CORRIDOR_WEST, 470),                   // Room 1
@@ -109,7 +125,7 @@ export default {
     { text: 'ROOM 5', x: 510, y: 1075 },
     { text: 'ROOM 6', x: 535, y: 1290 },
     { text: 'ROOM 7', x: 980, y: 1290 },
-    { text: 'ROOM 8 · KEYNOTE', x: 975, y: 1075 },
+    { text: 'ROOM 8 · KEYNOTE', x: 955, y: 978 },
     { text: 'ROOM 9', x: 930, y: 875 },
     { text: 'ROOM 10', x: 905, y: 715 },
     { text: 'ROOM 11', x: 880, y: 578 },

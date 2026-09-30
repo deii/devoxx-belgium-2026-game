@@ -2,6 +2,7 @@ import cinemaFloor from '../levels/cinema-floor.js';
 import {
   applyGlitch, createHeisenbug, heisenbugAct, heisenbugPrompt, updateDiagnostic, updateHeisenbug,
 } from './glitch.js';
+import { createEffects, updateEffects } from './effects.js';
 import { createHud } from './hud.js';
 import { createInput } from './input.js';
 import { loadLevel } from './level.js';
@@ -25,6 +26,7 @@ const renderer = createRenderer(document.getElementById('game'), level);
 const hud = createHud(document.getElementById('hud'));
 
 let state = createGameState('title');
+let effects = createEffects();
 let actionPending = false;
 
 function createGameState(phase) {
@@ -57,6 +59,7 @@ function handlePresses() {
       }
     } else if (RESTART_KEYS.has(code)) {
       state = createGameState('playing');
+      effects = createEffects();
     }
   }
 }
@@ -143,7 +146,8 @@ function frame(now) {
     state.time += frameTime;
   }
   updateCamera(frameTime);
-  renderer.draw(state);
+  updateEffects(effects, state, frameTime);
+  renderer.draw(state, effects);
   hud.update(state);
   state.robots.forEach(robot => { robot.lastImpact = 0; });
   requestAnimationFrame(frame);

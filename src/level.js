@@ -26,7 +26,8 @@ export function loadLevel(data) {
     blocks,
     barriers,
     segments,
-    mission: scaleMission(data.mission, scale),
+    mission: scaleCoordinates(data.mission, scale),
+    lighting: scaleCoordinates(data.lighting, scale),
     zones: data.zones.map(zone => ({
       ...zone, x1: zone.x1 * scale, y1: zone.y1 * scale, x2: zone.x2 * scale, y2: zone.y2 * scale,
     })),
@@ -36,8 +37,8 @@ export function loadLevel(data) {
   };
 }
 
-/** Scales every coordinate-like number (x*, y*, radius) of the mission description to metres. */
-function scaleMission(mission, scale) {
+/** Scales every number in a nested description (coordinates, radii) from plan pixels to metres. */
+function scaleCoordinates(mission, scale) {
   const scaleValue = value => {
     if (Array.isArray(value)) {
       return value.map(scaleValue);

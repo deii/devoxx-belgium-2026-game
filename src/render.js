@@ -1,8 +1,9 @@
-// Canvas renderer: venue first, then robots, camera centred on the active robot.
+// Canvas renderer: venue, props and robots in world space, then lighting, then screen-space labels.
 
+import { cameraShakeOffset, drawParticles } from './effects.js';
+import { createLighting } from './lighting.js';
 import {
   drawAdapter, drawBarriers, drawCrates, drawDoor, drawFusePanel, drawMaintenanceBay, drawRoom8,
-  drawRoom8Darkness,
 } from './render-props.js';
 import { drawRobotBody, drawRobotShadow } from './robot-art.js';
 
@@ -15,7 +16,7 @@ const WALL_WIDTH = 0.3;
 
 const COLORS = {
   void: '#0b0d12',
-  floor: '#1a1d25',
+  floor: '#262a33',
   wall: '#566077',
   block: '#23262f',
   label: 'rgba(210, 215, 225, 0.55)',
@@ -23,6 +24,7 @@ const COLORS = {
 
 export function createRenderer(canvas, level) {
   const ctx = canvas.getContext('2d');
+  const lighting = createLighting();
   let planOverlay = null;
   let pixelsPerMetre = MIN_PIXELS_PER_METRE;
 
@@ -39,24 +41,44 @@ export function createRenderer(canvas, level) {
   window.addEventListener('resize', resize);
   resize();
 
-  function draw(state) {
+  function createView(state, effects) {
     const ratio = window.devicePixelRatio || 1;
     const width = window.innerWidth;
     const height = window.innerHeight;
-    const toScreen = (x, y) => ({
-      x: width / 2 + (x - state.camera.x) * pixelsPerMetre,
-      y: height / 2 + (y - state.camera.y) * pixelsPerMetre,
-    });
+    const shake = cameraShakeOffset(effects, state.time);
+    const centerX = state.camera.x + shake.x;
+    const centerY = state.camera.y + shake.y;
+    return {
+      width,
+      height,
+      centerX,
+      centerY,
+      halfWidth: width / 2 / pixelsPerMetre,
+      halfHeight: height / 2 / pixelsPerMetre,
+      applyWorldTransform(context) {
+        context.setTransform(ratio, 0, 0, ratio, 0, 0);
+        context.translate(width / 2, height / 2);
+        context.scale(pixelsPerMetre, pixelsPerMetre);
+        context.translate(-centerX, -centerY);
+      },
+      toScreen(x, y) {
+        return { x: width / 2 + (x - centerX) * pixelsPerMetre, y: height / 2 + (y - centerY) * pixelsPerMetre };
+      },
+    };
+  }
+
+  function draw(state, effects) {
+    const ratio = window.devicePixelRatio || 1;
+    const view = createView(state, effects);
+    const mission = state.mission;
+    const robots = state.robots;
 
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     ctx.fillStyle = COLORS.void;
-    ctx.fillRect(0, 0, width, height);
+    ctx.fillRect(0, 0, view.width, view.height);
 
     ctx.save();
-    ctx.translate(width / 2, height / 2);
-    ctx.scale(pixelsPerMetre, pixelsPerMetre);
-    ctx.translate(-state.camera.x, -state.camera.y);
-
+    view.applyWorldTransform(ctx);
     drawFloor(ctx, level);
     if (planOverlay) {
       ctx.globalAlpha = PLAN_OPACITY;
@@ -64,29 +86,29 @@ export function createRenderer(canvas, level) {
       ctx.drawImage(planOverlay, 0, 0, planOverlay.width * scale, planOverlay.height * scale);
       ctx.globalAlpha = 1;
     }
-    const mission = state.mission;
     drawRoom8(ctx, level, mission);
     drawMaintenanceBay(ctx, level, state.heisenbug);
     drawWalls(ctx, level);
     drawBarriers(ctx, level);
-    drawFusePanel(ctx, level, mission, state.time);
     drawDoor(ctx, level, mission);
     drawCrates(ctx, mission.crates);
-    if (!mission.adapter.carrier) {
-      drawAdapter(ctx, mission.adapter, state.time);
-    }
-
-    const robots = state.robots;
     robots.forEach(robot => drawRobotShadow(ctx, robot));
-    drawSelection(ctx, state.robots[state.activeIndex], state.time);
+    drawParticles(ctx, effects);
     robots.forEach(robot => drawRobotBody(ctx, robot));
-    if (mission.adapter.carrier) {
-      drawAdapter(ctx, mission.adapter, state.time);
-    }
-    drawRoom8Darkness(ctx, level, mission);
     ctx.restore();
 
-    drawLabels(ctx, level, toScreen);
+    lighting.draw(ctx, state, view);
+
+    // Things the player must be able to find in the dark are drawn on top of the lighting.
+    ctx.save();
+    view.applyWorldTransform(ctx);
+    drawFusePanel(ctx, level, mission, state.time);
+    drawAdapter(ctx, mission.adapter, state.time);
+    drawSelection(ctx, robots[state.activeIndex], state.time);
+    ctx.restore();
+
+    ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+    drawLabels(ctx, level, view.toScreen);
   }
 
   return { draw };
