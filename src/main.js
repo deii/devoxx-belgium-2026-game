@@ -26,6 +26,7 @@ const ACTION_KEYS = new Set(['KeyE', 'Space']);
 const START_KEYS = new Set(['Enter', 'NumpadEnter', 'Space']);
 const RESTART_KEYS = new Set(['KeyR', 'Enter', 'NumpadEnter']);
 const MUTE_KEY = 'KeyM';
+const CAROUSEL_KEYS = { ArrowLeft: -1, KeyA: -1, ArrowRight: 1, KeyD: 1 };
 const ZOOM_IN_KEYS = new Set(['Equal', 'NumpadAdd']);
 const ZOOM_OUT_KEYS = new Set(['Minus', 'NumpadSubtract']);
 const ZOOM_RESET_KEYS = new Set(['Digit0', 'Numpad0']);
@@ -86,6 +87,8 @@ function handlePresses() {
     if (state.phase === 'title') {
       if (START_KEYS.has(code)) {
         state.phase = 'playing';
+      } else if (code in CAROUSEL_KEYS) {
+        hud.stepCarousel(CAROUSEL_KEYS[code]);
       }
     } else if (state.phase === 'playing') {
       if (code in SWITCH_KEYS) {

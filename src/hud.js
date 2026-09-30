@@ -8,6 +8,24 @@ import { IDOLS, moodOf } from './speech.js';
 import { ROBOT_ORDER, ROBOT_SPECS } from './robots.js';
 
 const CLOCK_WARNING_SECONDS = 120;
+const CAROUSEL_INTERVAL = 6000;   // ms between slides until the player takes over
+
+// One carousel slide per robot on the title screen. Pictures are front views cropped from the
+// official Devoxx Robot Games model sheets.
+const CAST = {
+  voxxy: {
+    role: "Light and quick — fits where others don't and carries the small things.",
+    facts: '45 kg · top speed 4.5 m/s · takes the stairs',
+  },
+  droid: {
+    role: 'Has been in this building for years — knows the stairs, the breakers and the service doors.',
+    facts: '140 kg · top speed 2.9 m/s · takes the stairs',
+  },
+  biggy: {
+    role: '460 kg of armour — slow to start, hard to stop, moves what nobody else can.',
+    facts: '460 kg · top speed 2.5 m/s · no stairs, takes the lift',
+  },
+};
 
 const SCREENS = {
   title: () => `
@@ -19,15 +37,11 @@ const SCREENS = {
     <p>Three robots are awake. None of them can do this alone — and one of them has a bug nobody
     has diagnosed yet. Watch the system log, work out which robot misbehaves, and run diagnostics
     on it in the maintenance bay. Guess wrong and it costs you keynote time.</p>
-    <ul class="cast">
-      <li style="--robot-color: ${ROBOT_SPECS.voxxy.color}"><b>Voxxy</b> light and quick — fits where others don't, carries small things${idolLine('voxxy')}</li>
-      <li style="--robot-color: ${ROBOT_SPECS.droid.color}"><b>Droid</b> has been here for years — knows the stairs, the breakers and the service doors${idolLine('droid')}</li>
-      <li style="--robot-color: ${ROBOT_SPECS.biggy.color}"><b>Biggy</b> 460 kg of armour — slow to start, hard to stop, moves what nobody else can${idolLine('biggy')}</li>
-    </ul>
+    ${castCarousel()}
     <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd>/wheel zoom · <kbd>M</kbd> sound on/off</p>
     ${bestLine()}
     <p class="start">Press <kbd>Enter</kbd> to start</p>
-    <p class="credit">Elevator music: "Local Forecast – Elevator" by Kevin MacLeod (incompetech.com),
+    <p class="credit">Robot pictures: Devoxx Robot Games model sheets. Elevator music: "Local Forecast – Elevator" by Kevin MacLeod (incompetech.com),
     licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, trimmed.</p>`,
   won: (clock, verdict, record) => `
     <h1>The screen lights up<span>with ${clock} to spare</span></h1>
@@ -135,15 +149,77 @@ export function createHud(root) {
       const screen = SCREENS[state.phase];
       elements.screen.classList.toggle('visible', Boolean(screen));
       elements.panel.innerHTML = screen ? screen(clock, verdictFor(bug), state.record) : '';
+      attachCarousel();
     });
   }
 
-  return { update };
+  let carousel = null;
+
+  /** Moves the title-screen carousel by delta slides; the player's choice stops the autoplay. */
+  function stepCarousel(delta) {
+    carousel?.show(carousel.index + delta, true);
+  }
+
+  function attachCarousel() {
+    carousel?.stop();
+    carousel = null;
+    const root = elements.panel.querySelector('.carousel');
+    if (root) {
+      carousel = createCarousel(root);
+    }
+  }
+
+  return { update, stepCarousel };
 }
 
-function idolLine(type) {
-  const idol = IDOLS[type];
-  return `<span class="idol">Idol: ${idol.name} — ${idol.why}.</span>`;
+function castCarousel() {
+  const slides = ROBOT_ORDER.map((type, index) => {
+    const spec = ROBOT_SPECS[type];
+    const idol = IDOLS[type];
+    return `<figure class="slide${index === 0 ? ' active' : ''}" style="--robot-color: ${spec.color}">
+        <img src="assets/robots/${type}.jpg" alt="${spec.name}, front view from the Devoxx model sheet">
+        <figcaption>
+          <h2><span class="key">${index + 1}</span> ${spec.name}</h2>
+          <p>${CAST[type].role}</p>
+          <p class="facts">${CAST[type].facts}</p>
+          <p class="idol"><b>Idol: ${idol.name}</b> — ${idol.why}.</p>
+        </figcaption>
+      </figure>`;
+  }).join('');
+  const dots = ROBOT_ORDER.map((type, index) =>
+    `<button class="dot${index === 0 ? ' active' : ''}" data-index="${index}" aria-label="${ROBOT_SPECS[type].name}"></button>`).join('');
+  return `<div class="carousel">
+      <button class="nav prev" aria-label="Previous robot">‹</button>
+      <div class="slides">${slides}</div>
+      <button class="nav next" aria-label="Next robot">›</button>
+      <div class="dots">${dots}</div>
+    </div>`;
+}
+
+function createCarousel(root) {
+  const slides = [...root.querySelectorAll('.slide')];
+  const dots = [...root.querySelectorAll('.dot')];
+  const carousel = { index: 0, show, stop };
+  let timer = setInterval(() => show(carousel.index + 1, false), CAROUSEL_INTERVAL);
+
+  function show(index, byPlayer) {
+    carousel.index = (index + slides.length) % slides.length;
+    slides.forEach((slide, i) => slide.classList.toggle('active', i === carousel.index));
+    dots.forEach((dot, i) => dot.classList.toggle('active', i === carousel.index));
+    if (byPlayer) {
+      stop();
+    }
+  }
+
+  function stop() {
+    clearInterval(timer);
+    timer = null;
+  }
+
+  root.querySelector('.prev').addEventListener('click', () => show(carousel.index - 1, true));
+  root.querySelector('.next').addEventListener('click', () => show(carousel.index + 1, true));
+  dots.forEach(dot => dot.addEventListener('click', () => show(Number(dot.dataset.index), true)));
+  return carousel;
 }
 
 function bestLine() {

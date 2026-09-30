@@ -135,7 +135,9 @@ See [docs/GENAI.md](docs/GENAI.md).
 
 ## Credits
 
-- Robot designs based on the Devoxx Robot Games model sheets.
+- Robot designs based on the Devoxx Robot Games model sheets. The robot pictures on the title screen
+  (`assets/robots/`) are front views cropped from those sheets, which Devoxx provides to entrants on
+  the [references](https://game.devoxx.be/references.html) page.
 - Venue layout traced from the Kinepolis Antwerp cinema-floor plan provided by Devoxx
   ([references](https://game.devoxx.be/references.html)); the plan itself is shown as a faint
   overlay (`assets/cinema-floor-plan.png`).
@@ -150,4 +152,5 @@ See [docs/GENAI.md](docs/GENAI.md).
 ## License
 
 [MIT](LICENSE) — except the elevator music in `assets/audio/`, which is Kevin MacLeod's and stays
-under CC BY 4.0 (see Credits).
+under CC BY 4.0, and the robot pictures in `assets/robots/` and the floor plans in `assets/`,
+which are Devoxx material (see Credits).

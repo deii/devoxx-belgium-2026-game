@@ -269,3 +269,16 @@ scroll wheel zooms in and out."
 Cause: the whole HUD ignores the mouse (`pointer-events: none`), so the wheel fell through the panel
 to the canvas, whose zoom handler swallowed it. The panel now takes pointer events and contains its
 own scrolling, and the wheel zooms only while playing.
+
+### Title-screen robot carousel (16:27)
+**Prompt:** "On the title panel replace the robot descriptions with a carousel — one slide per robot
+with a picture and a description including the idol part."
+- Pictures: front views cropped (ImageMagick) from the official model sheets and shrunk to 13–17 kB
+  each. This reverses the M1 choice of shipping nothing from the sheets; the model re-read the
+  references page first, which offers the sheets to entrants to build with, and credited them in
+  the README and on the title screen.
+- Each slide: picture, role, facts taken from the physics parameters (mass, top speed, stairs or
+  lift) and the idol with the reason. Previous/next buttons, dots, ←/→ or A/D keys; it advances on
+  its own every 6 s until the player takes over. A fixed slide height keeps the panel from jumping.
+- Checked in the browser: keys, buttons and dots switch slides, images load, the game stays on the
+  title screen while browsing.
