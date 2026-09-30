@@ -37,7 +37,7 @@ GitHub Pages. **Fixed by hand / redirected:** the `gh` git protocol was SSH and 
 switched the remote to HTTPS with `gh` as credential helper. Commit e-mail set to the GitHub
 noreply address so no corporate address ends up in public history.
 
-### M1 + M2 — robots in the venue (13:00)
+### M1 + M2 — robots in the venue (12:40)
 **Prompt:** "Go ahead with next step" (M1: loop, input, physics, Voxxy driving with inertia in the
 foyer traced from the floor plan, plus the Heisenbug command filter).
 
@@ -62,7 +62,7 @@ with no input — traced to keyboard state leaking between scripted Playwright r
 The model sheets are kept out of the repository (`assets/reference/` is git-ignored); only the
 floor plan is shipped, with attribution.
 
-### M3 — the playable mission (13:45)
+### M3 — the playable mission (12:50)
 **Prompt:** "Go ahead".
 
 - The model designed the mission so that each robot's physics *is* its role: crate collisions use
