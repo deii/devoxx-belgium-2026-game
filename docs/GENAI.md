@@ -429,3 +429,6 @@ screenshot".
 - The corridor screenshot showed Voxxy holding the adapter while the crates still blocked the
   corridor — a state the game cannot reach. It was retaken from a state recorded by that autopilot
   run: power on, crates shoved aside by Biggy, Voxxy carrying the adapter through the gap.
+- Caught by hand afterwards: the exhibition-hall screenshot showed the breaker reset while the
+  booth still blocked the electrical room — also unreachable. Retaken with the power off, Biggy at
+  the booth and Droid's torch on it, from a headless run of the real opening.
