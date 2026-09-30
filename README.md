@@ -6,7 +6,7 @@ The keynote in Room 8 at Kinepolis Antwerp starts in ten minutes, the power is o
 speaker's HDMI adapter is on the wrong side of the building. Three robots have to fix it together —
 and one of them has a glitch nobody has diagnosed yet.
 
-![Droid's torch in the dark central corridor, Voxxy carrying the adapter](docs/screenshot-corridor.png)
+![Droid's torch in the dark corridor upstairs, Voxxy carrying the adapter](docs/screenshot-corridor.png)
 
 ## The mission
 
@@ -27,6 +27,8 @@ ground floor:
 6. **Voxxy** carries the adapter onto the Room 8 stage. The projector starts, you win.
 
 If the clock reaches zero first, the keynote starts in the dark.
+
+![The exhibition hall: Biggy at the toppled booth in front of the electrical room, Droid lighting the way](docs/screenshot-hall.png)
 
 ### The Heisenbug
 

@@ -401,3 +401,12 @@ Devoxx website are met."
   do; the exhibition hall, the cinema floor and stairs between them; playable by a newcomer with an
   opening tip and objective list; README from clone to playing; MIT LICENSE; public repository;
   GenAI use and prompts documented here.
+
+### README screenshots
+
+Prompt: "Recreate README screenshots - graphic changed."
+
+- The model staged three scenes through the `window.heisenbug()` debug hook in a headless browser
+  (1366×768), checked each image, and reframed the corridor shot so Droid's torch actually falls on
+  Voxxy: the dark corridor upstairs, Room 8 with the projector's "no signal" beam, and a new shot of
+  the exhibition hall with Biggy at the toppled booth.
