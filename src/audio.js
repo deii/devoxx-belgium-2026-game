@@ -8,11 +8,32 @@ const BIGGY_STEP_LENGTH = 0.9;       // m, matches the footfall dust in effects.
 const IMPACT_THRESHOLD = 0.6;        // m/s
 const CRATE_SCRAPE_THRESHOLD = 0.15; // m/s
 const MOTOR_SMOOTHING = 0.05;        // s time constant for motor parameter changes
+const WANDER_SMOOTHING = 1.5;        // 1/s — how quickly the pitch drifts towards a new random offset
+const WANDER_INTERVAL = [0.4, 1.4];  // s between new random pitch offsets
 
+// A motor is two slightly detuned oscillators (they beat against each other), a low-pass filter
+// that opens with speed and strain, a pulse that follows the distance travelled (wheel turns,
+// servo steps, footfalls), a noise layer for the surface, and a slow random pitch drift, so that
+// even at a steady top speed the sound keeps moving.
+//   pulse:  LFO shape, pulses per metre travelled, depth of the volume modulation
+//   strain: extra pitch (Hz) and brightness while the motor pulls harder than the speed it has
+//   turnHz: pitch change at full turn rate (servos whine up, Biggy's gearbox grinds down)
 const MOTORS = {
-  voxxy: { type: 'sawtooth', baseHz: 160, hzPerMps: 55, filterHz: 1800, volume: 0.05 },
-  droid: { type: 'square', baseHz: 70, hzPerMps: 40, filterHz: 700, volume: 0.045 },
-  biggy: { type: 'sawtooth', baseHz: 38, hzPerMps: 18, filterHz: 260, volume: 0.12 },
+  voxxy: {
+    type: 'sawtooth', baseHz: 160, hzPerMps: 55, detuneCents: 14, filterHz: 1800, volume: 0.05,
+    pulse: { type: 'triangle', perMetre: 2.5, depth: 0.35 }, strainHz: 45, turnHz: 70, wander: 0.025,
+    surface: { hz: 3200, q: 1.2, volume: 0.025 },                    // tyre hiss
+  },
+  droid: {
+    type: 'square', baseHz: 70, hzPerMps: 40, detuneCents: 22, filterHz: 700, volume: 0.045,
+    pulse: { type: 'square', perMetre: 3, depth: 0.5 }, strainHz: 20, turnHz: 35, wander: 0.04,
+    surface: { hz: 1300, q: 5, volume: 0.02 },                       // servo chatter
+  },
+  biggy: {
+    type: 'sawtooth', baseHz: 38, hzPerMps: 18, detuneCents: 30, filterHz: 260, volume: 0.12,
+    pulse: { type: 'sine', perMetre: 1 / BIGGY_STEP_LENGTH, depth: 0.6 }, strainHz: 10, turnHz: -8, wander: 0.05,
+    surface: { hz: 170, q: 0.8, volume: 0.07 },                      // rumble through the floor
+  },
 };
 
 export function createAudio() {
@@ -22,6 +43,7 @@ export function createAudio() {
   let muted = false;
   const motors = {};
   let scrape = null;
+  let lastUpdateTime = null;
   const previous = {};
 
   /** Browsers only allow audio after a user gesture; call this from a key handler. */
@@ -40,7 +62,7 @@ export function createAudio() {
     master.connect(context.destination);
     noise = createNoiseBuffer(context);
     for (const [type, spec] of Object.entries(MOTORS)) {
-      motors[type] = createMotorVoice(context, master, spec);
+      motors[type] = createMotorVoice(context, master, noise, spec);
     }
     scrape = createScrapeVoice(context, master, noise);
   }
@@ -58,15 +80,13 @@ export function createAudio() {
       return;
     }
     const now = context.currentTime;
+    const dt = lastUpdateTime === null ? 0 : Math.min(0.1, now - lastUpdateTime);
+    lastUpdateTime = now;
     const playing = state.phase === 'playing';
 
     for (const robot of state.robots) {
-      const spec = MOTORS[robot.type];
-      const speed = Math.hypot(robot.vx, robot.vy);
       const presence = playing ? proximity(state, robot) : 0;
-      const voice = motors[robot.type];
-      voice.oscillator.frequency.setTargetAtTime(spec.baseHz + speed * spec.hzPerMps, now, MOTOR_SMOOTHING);
-      voice.gain.gain.setTargetAtTime(spec.volume * Math.min(1, speed) * presence, now, MOTOR_SMOOTHING);
+      updateMotorVoice(motors[robot.type], MOTORS[robot.type], robot, presence, now, dt);
 
       if (robot.lastImpact > IMPACT_THRESHOLD && presence > 0) {
         thump(robot.lastImpact * robot.mass / 300 * presence, robot.type === 'biggy' ? 90 : 400);
@@ -250,20 +270,73 @@ function createNoiseBuffer(context) {
   return buffer;
 }
 
-function createMotorVoice(context, destination, spec) {
-  const oscillator = context.createOscillator();
-  oscillator.type = spec.type;
-  oscillator.frequency.value = spec.baseHz;
+function createMotorVoice(context, destination, noiseBuffer, spec) {
+  const oscillators = [-spec.detuneCents / 2, spec.detuneCents / 2].map(detune => {
+    const oscillator = context.createOscillator();
+    oscillator.type = spec.type;
+    oscillator.frequency.value = spec.baseHz;
+    oscillator.detune.value = detune;
+    return oscillator;
+  });
   const filter = context.createBiquadFilter();
   filter.type = 'lowpass';
   filter.frequency.value = spec.filterHz;
+  filter.Q.value = 2;
   const gain = context.createGain();
   gain.gain.value = 0;
-  oscillator.connect(filter);
+
+  // The pulse modulates the volume around its current level: gain = level + level·depth·lfo.
+  const pulse = context.createOscillator();
+  pulse.type = spec.pulse.type;
+  pulse.frequency.value = 0;
+  const pulseDepth = context.createGain();
+  pulseDepth.gain.value = 0;
+  pulse.connect(pulseDepth);
+  pulseDepth.connect(gain.gain);
+
+  const surfaceSource = context.createBufferSource();
+  surfaceSource.buffer = noiseBuffer;
+  surfaceSource.loop = true;
+  const surfaceFilter = context.createBiquadFilter();
+  surfaceFilter.type = 'bandpass';
+  surfaceFilter.frequency.value = spec.surface.hz;
+  surfaceFilter.Q.value = spec.surface.q;
+  const surfaceGain = context.createGain();
+  surfaceGain.gain.value = 0;
+
+  oscillators.forEach(oscillator => oscillator.connect(filter));
   filter.connect(gain);
   gain.connect(destination);
-  oscillator.start();
-  return { oscillator, gain };
+  surfaceSource.connect(surfaceFilter);
+  surfaceFilter.connect(surfaceGain);
+  surfaceGain.connect(destination);
+  [...oscillators, pulse, surfaceSource].forEach(source => source.start());
+  return { oscillators, filter, gain, pulse, pulseDepth, surfaceGain, wander: 0, wanderTarget: 0, nextWander: 0 };
+}
+
+function updateMotorVoice(voice, spec, robot, presence, now, dt) {
+  const speed = Math.hypot(robot.vx, robot.vy);
+  const topSpeed = robot.spec.driveForce / (robot.spec.mass * robot.spec.drag);
+  const speedShare = Math.min(1, speed / topSpeed);
+  const strain = Math.max(0, robot.throttle - speedShare);        // pulling harder than it moves
+  const turn = Math.min(1, Math.abs(robot.angularVelocity) / robot.spec.maxTurnRate);
+
+  voice.nextWander -= dt;
+  if (voice.nextWander <= 0) {
+    voice.wanderTarget = (Math.random() * 2 - 1) * spec.wander;
+    voice.nextWander = WANDER_INTERVAL[0] + Math.random() * (WANDER_INTERVAL[1] - WANDER_INTERVAL[0]);
+  }
+  voice.wander += (voice.wanderTarget - voice.wander) * (1 - Math.exp(-WANDER_SMOOTHING * dt));
+
+  const pitch = (spec.baseHz + speed * spec.hzPerMps + strain * spec.strainHz + turn * spec.turnHz) * (1 + voice.wander);
+  voice.oscillators.forEach(oscillator => oscillator.frequency.setTargetAtTime(pitch, now, MOTOR_SMOOTHING));
+  voice.filter.frequency.setTargetAtTime(spec.filterHz * (0.6 + 0.7 * speedShare + 0.8 * strain), now, MOTOR_SMOOTHING);
+
+  const level = spec.volume * Math.min(1, speed) * (0.8 + 0.4 * strain) * presence;
+  voice.gain.gain.setTargetAtTime(level, now, MOTOR_SMOOTHING);
+  voice.pulse.frequency.setTargetAtTime(speed * spec.pulse.perMetre, now, MOTOR_SMOOTHING);
+  voice.pulseDepth.gain.setTargetAtTime(level * spec.pulse.depth, now, MOTOR_SMOOTHING);
+  voice.surfaceGain.gain.setTargetAtTime(spec.surface.volume * speedShare * presence, now, MOTOR_SMOOTHING);
 }
 
 function createScrapeVoice(context, destination, noiseBuffer) {

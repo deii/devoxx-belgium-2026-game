@@ -220,3 +220,11 @@ broken Biggy. It also makes sense to have it downstairs."
 The maintenance bay moved from the corridor upstairs to the exhibition hall, between four pillars
 12 m south of where the robots start, with its own emergency light. A glitching Biggy no longer
 has to take the lift up and cross the corridor for a three-second self-test.
+
+### Playtest fix — livelier motor sound (15:26)
+**Prompt:** "Improve robot drive sound — when going on full speed it sounds too much the same."
+At top speed every input to the old motor voice (one oscillator, pitch and volume from speed) was
+constant, hence the drone. Each motor now has two detuned oscillators, a filter that opens with
+speed and strain, a volume pulse tied to distance travelled (wheel turns, servo steps, Biggy's
+footfalls), a surface noise layer (tyre hiss, servo chatter, floor rumble), pitch bend when
+turning, and a slow random pitch drift. The model cannot hear the result; it was checked by ear.

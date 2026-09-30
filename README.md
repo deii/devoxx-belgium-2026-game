@@ -115,7 +115,10 @@ are solid: robots reach the stage through the side aisles, the way people do.
 ## Sound
 
 All sound is synthesised with the Web Audio API — there are no audio files. Each robot has a motor
-voice whose pitch and volume follow its speed (Voxxy whines, Droid's servos buzz, Biggy growls),
+voice whose pitch and volume follow its speed (Voxxy whines, Droid's servos buzz, Biggy growls).
+Two detuned oscillators beat against each other, the tone strains when a motor pulls harder than
+it moves and bends when it turns, the volume pulses with wheel turns, servo steps or footfalls, and
+the pitch drifts a little, so even top speed never settles into one flat drone.
 Biggy's footfalls thud, impacts thump in proportion to mass × speed, crates scrape, and the
 Heisenbug announces itself with a zap. Browsers start audio only after a key press; <kbd>M</kbd>
 toggles sound.
