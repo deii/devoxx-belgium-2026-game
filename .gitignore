@@ -1,0 +1,7 @@
+# Local Claude Code settings (absolute paths, machine-specific)
+.claude/settings.local.json
+# Raw prompt log - curated into docs/GENAI.md instead
+.claude/prompts.jsonl
+node_modules/
+.DS_Store
+Thumbs.db
