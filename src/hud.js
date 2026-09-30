@@ -4,6 +4,7 @@
 import { culpritName } from './glitch.js';
 import { formatClock } from './mission.js';
 import { loadBestClockLeft } from './records.js';
+import { rurLine } from './rur.js';
 import { IDOLS, moodOf } from './speech.js';
 import { ROBOT_ORDER, ROBOT_SPECS } from './robots.js';
 
@@ -43,18 +44,20 @@ const SCREENS = {
     <p class="start">Press <kbd>Enter</kbd> to start</p>
     <p class="credit">Robot pictures: Devoxx Robot Games model sheets. Elevator music: "Local Forecast – Elevator" by Kevin MacLeod (incompetech.com),
     licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, trimmed.</p>`,
-  won: (clock, verdict, record) => `
+  won: (clock, verdict, record, extra) => `
     <h1>The screen lights up<span>with ${clock} to spare</span></h1>
     <p>Room 8 fills, the projector hums, the speaker's first slide appears. Nobody in the audience
     will ever know about the crates, the fallen booth or the adapter.</p>
     <p class="verdict">${verdict}</p>
+    ${extra}
     ${record?.isNewBest ? '<p class="record">New best time on this machine.</p>' : bestLine()}
     <p class="start">Press <kbd>R</kbd> to play again</p>`,
-  lost: (clock, verdict) => `
+  lost: (clock, verdict, record, extra) => `
     <h1>09:30 — the keynote starts<span>in the dark</span></h1>
     <p>Two thousand developers stare at a black screen. Somewhere, a speaker is still holding a laptop
     with no way to plug it in.</p>
     <p class="verdict">${verdict}</p>
+    ${extra}
     <p class="start">Press <kbd>R</kbd> to try again</p>`,
 };
 
@@ -148,7 +151,9 @@ export function createHud(root) {
     setIfChanged('screen', screenKey, () => {
       const screen = SCREENS[state.phase];
       elements.screen.classList.toggle('visible', Boolean(screen));
-      elements.panel.innerHTML = screen ? screen(clock, verdictFor(bug), state.record) : '';
+      const easterEgg = rurLine(state.rur);
+      const extra = easterEgg ? `<p class="easter-egg">${easterEgg}</p>` : '';
+      elements.panel.innerHTML = screen ? screen(clock, verdictFor(bug), state.record, extra) : '';
       attachCarousel();
     });
   }

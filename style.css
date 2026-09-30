@@ -396,6 +396,15 @@ kbd {
   color: #555c68;
 }
 
+.log-lines .lore {
+  color: #e0b25a;
+}
+
+.screen .easter-egg {
+  color: #e0b25a;
+  font-size: 14px;
+}
+
 .log-lines .glitch {
   color: #ff6b5b;
 }

@@ -13,6 +13,7 @@ import { collideBodies, collideWithWalls, integrate } from './physics.js';
 import { recordWin } from './records.js';
 import { createRenderer } from './render.js';
 import { createSpeech, updateSpeech } from './speech.js';
+import { createRur, updateRur } from './rur.js';
 import { createTravel, isRiding, travelAct, travelPrompt, updateTravel } from './travel.js';
 import { createRobot, driveRobot, idleCommand, ROBOT_ORDER } from './robots.js';
 
@@ -63,6 +64,7 @@ function createGameState(phase) {
     mission: createMission(level),
     heisenbug: createHeisenbug(),
     travel: createTravel(),
+    rur: createRur(),
     activeIndex: 0,
     time: 0,
     camera: { x: robots[0].x, y: robots[0].y },
@@ -130,6 +132,7 @@ function step(dt) {
   }
   updateTravel(state, dt);
   updateMission(mission, level, robots, activeRobot, dt);
+  updateRur(state);
   updateHeisenbug(state, dt);
   updateDiagnostic(state, dt);
   mission.prompt = heisenbugPrompt(state, activeRobot) || travelPrompt(state, activeRobot) || mission.prompt;

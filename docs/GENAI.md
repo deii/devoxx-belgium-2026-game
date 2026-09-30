@@ -282,3 +282,14 @@ with a picture and a description including the idol part."
   its own every 6 s until the player takes over. A fixed slide height keeps the panel from jumping.
 - Checked in the browser: keys, buttons and dots switch slides, images load, the game stays on the
   title screen while browsing.
+
+### Karel Čapek easter egg (16:37)
+**Prompt:** "Go ahead with your pick" — the model's pick from its own list: a Karel Čapek easter egg,
+furnished rooms, richer robot animation.
+A red R.U.R. poster (with a 1920s-style robot silhouette) hangs on the foyer's wall of fame.
+Čapek's 1920 play *R.U.R. — Rossum's Universal Robots* introduced the word "robot", suggested by his
+brother Josef from the Czech *robota*, forced labour. Each robot that drives up to it reacts once
+(Voxxy: "Great-great-grandpa. Bootiful."; Droid: "Čapek, 1920. Where our name began."; Biggy:
+"Robota. Still robota."), the log records it, and the end screen reports how many of the three paid
+their respects — and says nothing if nobody found it. The poster title first rendered blank:
+canvas fonts below 1 px do not draw, so the text is drawn at 100× and scaled down.

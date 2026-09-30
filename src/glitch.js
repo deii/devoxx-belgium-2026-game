@@ -199,7 +199,7 @@ export function culpritName(bug) {
   return ROBOT_SPECS[bug.culprit].name;
 }
 
-function addLog(state, text, kind) {
+export function addLog(state, text, kind) {
   const bug = state.heisenbug;
   bug.log.push({ time: wallClock(state.mission.clock), text, kind });
   if (bug.log.length > LOG_LENGTH) {

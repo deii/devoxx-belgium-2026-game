@@ -95,6 +95,38 @@ export function drawMainBreaker(ctx, level, mission, time) {
   ctx.fill();
 }
 
+// The R.U.R. poster lies flat against the wall of fame, whose west face leans about 11° from north.
+const RUR_POSTER_ANGLE = -0.197;   // rad
+const RUR_POSTER_SIZE = { width: 1.1, height: 1.6 };
+
+export function drawRurPoster(ctx, level) {
+  const poster = level.mission.rurPoster;
+  const { width, height } = RUR_POSTER_SIZE;
+  ctx.save();
+  ctx.translate(poster.x, poster.y);
+  ctx.rotate(RUR_POSTER_ANGLE);
+  ctx.fillStyle = '#b3261e';
+  ctx.fillRect(-width / 2, -height / 2, width, height);
+  ctx.fillStyle = '#f1e4c8';
+  ctx.fillRect(-width / 2 + 0.08, -height / 2 + 0.08, width - 0.16, 0.5);
+  ctx.fillStyle = '#b3261e';
+  // Canvas fonts misbehave below 1 px, so the title is drawn at 100× and scaled down.
+  ctx.save();
+  ctx.scale(0.01, 0.01);
+  ctx.font = 'bold 30px system-ui, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText('R.U.R.', 0, (-height / 2 + 0.34) * 100);
+  ctx.restore();
+  // a robot silhouette, the way the 1920s posters drew them
+  ctx.fillStyle = '#1a1a1a';
+  ctx.fillRect(-0.12, 0.0, 0.24, 0.2);
+  ctx.fillRect(-0.2, 0.22, 0.4, 0.36);
+  ctx.fillRect(-0.17, 0.6, 0.12, 0.12);
+  ctx.fillRect(0.05, 0.6, 0.12, 0.12);
+  ctx.restore();
+}
+
 export function drawDoor(ctx, level, mission) {
   const door = level.mission.room8Door;
   const closedLength = door.y2 - door.y1;

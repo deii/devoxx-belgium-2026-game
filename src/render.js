@@ -3,7 +3,8 @@
 import { cameraShakeOffset, drawParticles } from './effects.js';
 import { createLighting } from './lighting.js';
 import {
-  drawAdapter, drawBarriers, drawCrates, drawDoor, drawMainBreaker, drawMaintenanceBay, drawRoom8, drawTravelPoints,
+  drawAdapter, drawBarriers, drawCrates, drawDoor, drawMainBreaker, drawMaintenanceBay, drawRoom8, drawRurPoster,
+  drawTravelPoints,
 } from './render-props.js';
 import { drawRobotBody, drawRobotShadow } from './robot-art.js';
 import { drawSpeech } from './speech.js';
@@ -121,6 +122,7 @@ export function createRenderer(canvas, level) {
     drawMaintenanceBay(ctx, level, state.heisenbug);
     drawTravelPoints(ctx, level);
     drawWalls(ctx, level);
+    drawRurPoster(ctx, level);
     drawBarriers(ctx, level);
     drawDoor(ctx, level, mission);
     drawCrates(ctx, mission.crates);

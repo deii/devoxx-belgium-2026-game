@@ -43,6 +43,11 @@ const LINES = {
     droid: ['Understood. And fixed.'],
     biggy: ['Clean again. Refactored from the inside.'],
   },
+  rur: {
+    voxxy: ['R.U.R.! Great-great-grandpa. Bootiful.'],
+    droid: ['Čapek, 1920. Where our name began.'],
+    biggy: ['Robota. Still robota.'],
+  },
   wrongGuess: {
     voxxy: ['Works on my machine!'],
     droid: ['Works on my machine.'],
@@ -142,6 +147,10 @@ export function updateSpeech(speech, state, dt) {
   }
   if (changedTo('patched', bug.patched) && bug.patched) {
     say(speech, state, 'patched', bug.culprit);
+  }
+  const rurVisits = state.rur.visited.length;
+  if (changedTo('rur', rurVisits) && rurVisits > 0) {
+    say(speech, state, 'rur', state.rur.visited[rurVisits - 1]);
   }
   const lastDiagnosed = bug.lastDiagnosedType;
   if (changedTo('wrongGuesses', bug.wrongGuesses) && lastDiagnosed) {
