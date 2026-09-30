@@ -72,6 +72,9 @@ export function createRobot(type, spawn) {
     restitution: spec.restitution,
     command: idleCommand(),
     lastImpact: 0,
+    wallImpact: 0,          // m/s, strongest wall hit this frame
+    bump: null,             // { other, speed } — strongest hit by another robot this frame
+    frustration: 0,         // 0..1, rises with collisions and cools down over time
   };
 }
 

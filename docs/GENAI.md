@@ -228,3 +228,14 @@ constant, hence the drone. Each motor now has two detuned oscillators, a filter 
 speed and strain, a volume pulse tied to distance travelled (wheel turns, servo steps, Biggy's
 footfalls), a surface noise layer (tyre hiss, servo chatter, floor rumble), pitch bend when
 turning, and a slow random pitch drift. The model cannot hear the result; it was checked by ear.
+
+### Frustration (15:33)
+**Prompt:** "Now add some frustration level. When colliding with solid walls or with robots, say
+something."
+Physics now reports wall hits and robot-on-robot hits separately. Each hard bump (debounced so a
+bounce counts once) raises that robot's frustration by its impact speed; it cools down over about
+25 s. Lines come in three moods per robot (calm → annoyed → furious), name the robot that was hit,
+stay in character (Droid stays deliberate, Biggy blames code smells), and the roster shows ANNOYED /
+FURIOUS next to the name. Crates and the booth are excluded — shoving them is Biggy's job, not an
+accident. Checked in the browser (four wall crashes took Voxxy from calm to furious) and headlessly
+(Biggy into Droid: both complain, each naming the other).

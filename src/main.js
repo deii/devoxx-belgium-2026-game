@@ -139,7 +139,10 @@ function resolveContacts(robots, mission) {
   const crates = mission.crates;
   for (let i = 0; i < robots.length; i++) {
     for (let j = i + 1; j < robots.length; j++) {
-      recordImpact(collideBodies(robots[i], robots[j]), robots[i], robots[j]);
+      const hit = collideBodies(robots[i], robots[j]);
+      recordImpact(hit, robots[i], robots[j]);
+      recordBump(hit, robots[i], robots[j]);
+      recordBump(hit, robots[j], robots[i]);
     }
     for (const crate of crates) {
       recordImpact(collideBodies(robots[i], crate, robots[i].mass, crateMassFor(robots[i], crate)), robots[i]);
@@ -151,12 +154,22 @@ function resolveContacts(robots, mission) {
     }
   }
   const walls = activeSegments(level, mission);
-  robots.forEach(robot => recordImpact(collideWithWalls(robot, walls), robot));
+  robots.forEach(robot => {
+    const hit = collideWithWalls(robot, walls);
+    recordImpact(hit, robot);
+    robot.wallImpact = Math.max(robot.wallImpact, hit);
+  });
   crates.forEach(crate => collideWithWalls(crate, walls));
 }
 
 function recordImpact(impact, ...bodies) {
   bodies.forEach(body => { body.lastImpact = Math.max(body.lastImpact, impact); });
+}
+
+function recordBump(speed, robot, other) {
+  if (speed > 0 && speed > (robot.bump?.speed ?? 0)) {
+    robot.bump = { other, speed };
+  }
 }
 
 function updateCamera(dt) {
@@ -195,7 +208,11 @@ function frame(now) {
   updateSpeech(speech, state, frameTime);
   renderer.draw(state, effects, speech);
   hud.update(state);
-  state.robots.forEach(robot => { robot.lastImpact = 0; });
+  state.robots.forEach(robot => {
+    robot.lastImpact = 0;
+    robot.wallImpact = 0;
+    robot.bump = null;
+  });
   requestAnimationFrame(frame);
 }
 

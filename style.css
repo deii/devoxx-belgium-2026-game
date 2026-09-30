@@ -53,6 +53,30 @@ html, body {
   font-weight: 600;
 }
 
+.robot .mood {
+  display: inline-block;
+  margin-left: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.robot .mood.annoyed {
+  color: #ffb347;
+}
+
+.robot .mood.furious {
+  color: #ff5a4f;
+  animation: mood-shake 0.3s linear infinite;
+}
+
+@keyframes mood-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-1px); }
+  75% { transform: translateX(1px); }
+}
+
 .robot .tagline {
   grid-column: 2;
   font-size: 13px;

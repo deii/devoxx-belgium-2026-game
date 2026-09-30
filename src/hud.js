@@ -4,7 +4,7 @@
 import { culpritName } from './glitch.js';
 import { formatClock } from './mission.js';
 import { loadBestClockLeft } from './records.js';
-import { IDOLS } from './speech.js';
+import { IDOLS, moodOf } from './speech.js';
 import { ROBOT_ORDER, ROBOT_SPECS } from './robots.js';
 
 const CLOCK_WARNING_SECONDS = 120;
@@ -84,11 +84,21 @@ export function createHud(root) {
         const active = index === activeIndex ? ' active' : '';
         return `<div class="robot${active}" style="--robot-color: ${spec.color}">
           <span class="key">${index + 1}</span>
-          <span class="name">${spec.name}</span>
+          <span class="name">${spec.name} <span class="mood" data-robot="${type}"></span></span>
           ${active ? `<span class="tagline">${spec.tagline}</span>` : ''}
         </div>`;
       }).join('');
     });
+
+    for (const robot of state.robots) {
+      const mood = state.phase === 'playing' ? moodOf(robot) : 'calm';
+      // Checked against the element itself: the roster is re-rendered when the active robot changes.
+      const element = elements.roster.querySelector(`.mood[data-robot="${robot.type}"]`);
+      if (element.className !== `mood ${mood}`) {
+        element.textContent = mood === 'calm' ? '' : mood;
+        element.className = `mood ${mood}`;
+      }
+    }
 
     setIfChanged('clock', clock, value => { elements.clockValue.textContent = value; });
     elements.clock.classList.toggle('warning', mission.clock < CLOCK_WARNING_SECONDS);

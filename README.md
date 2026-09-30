@@ -77,6 +77,10 @@ speech bubbles — in its own words:
 - **Biggy** idolises **Victor Rentea** — once he starts refactoring, nothing in the way survives.
   Biggy feels the same about crates.
 
+Bumping into walls or into each other winds the robots up. Every hard bump raises a robot's
+frustration (shown next to its name as ANNOYED or FURIOUS) and it complains — politely at first,
+less so the angrier it gets. Frustration cools down after about 25 seconds without crashes.
+
 This is an affectionate fan tribute written for the competition. The speakers are not involved in
 or affiliated with this game, and apart from the well-known "Bootiful" no line in it is theirs.
 
