@@ -6,7 +6,7 @@ The keynote in Room 8 at Kinepolis Antwerp starts in ten minutes, the power is o
 speaker's HDMI adapter is on the wrong side of the building. Three robots have to fix it together —
 and one of them has a glitch nobody has diagnosed yet.
 
-![Droid's torch in the dark corridor upstairs, Voxxy carrying the adapter](docs/screenshot-corridor.png)
+![Upstairs at the Megacandy bottleneck: Biggy has shoved the crates aside, Voxxy carries the adapter through the gap, Droid lights the way](docs/screenshot-corridor.png)
 
 ## The mission
 

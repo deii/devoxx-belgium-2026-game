@@ -411,3 +411,21 @@ Prompt: "Recreate README screenshots - graphic changed."
   (1366×768), checked each image, and reframed the corridor shot so Droid's torch actually falls on
   Voxxy: the dark corridor upstairs, Room 8 with the projector's "no signal" beam, and a new shot of
   the exhibition hall with Biggy at the toppled booth.
+
+### Judge review and fixes
+
+Prompt: "Review the game I created here for Devoxx Belgium 2026 competition. […] Test, play and
+score it as a Devoxx judge." Then: "Yes, fix both" and "commit and push and then fix README
+screenshot".
+
+- Playing it in the browser, the model found a softlock: from the parking spot the obvious move is
+  to hold W with Biggy, which rammed the booth *into* the 3 m electrical-room doorway. Robots only
+  push, so nothing could pull it out, Droid was cut off from the breaker, and there was no restart
+  during play. Reproduced headlessly, then fixed with a 2 m door (Droid needs 1 m, the booth is
+  2.6 m) with drawn jambs, a regression test that rams the booth head-on, and a double-R restart
+  (R sits next to E, so one stray press does not end a run).
+- A headless autopilot through the real modules confirmed the whole mission is winnable with about
+  5 minutes left on the clock.
+- The corridor screenshot showed Voxxy holding the adapter while the crates still blocked the
+  corridor — a state the game cannot reach. It was retaken from a state recorded by that autopilot
+  run: power on, crates shoved aside by Biggy, Voxxy carrying the adapter through the gap.
