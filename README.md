@@ -10,16 +10,19 @@ and one of them has a glitch nobody has diagnosed yet.
 
 ## The mission
 
-The keynote clock counts down from 10:00 (about six minutes of real time). Everything has to be
+The keynote clock counts down from 10:00 (seven and a half minutes of real time). Everything has to be
 done by the three robots together:
 
 1. **Biggy** shoves the wall of sponsor crates out of the Megacandy bottleneck — the only way from
    the foyer into the central corridor. Voxxy and Droid are too light to move a crate at all.
 2. **Voxxy** squeezes between the queue barriers of the speakers' lounge (too narrow for the other
    two) and picks up the speaker's HDMI adapter.
-3. **Droid** restores power at the old fuse panel by the grand staircase…
-4. …and opens the Room 8 service door.
-5. **Voxxy** carries the adapter onto the Room 8 stage. The projector starts, you win.
+3. The main breaker downstairs has tripped, and a sponsor booth has toppled in front of the
+   electrical room in the **exhibition hall** on the ground floor. **Biggy** cannot take the stairs,
+   so it rides the **service lift** by Room 10 down and shoves the booth clear…
+4. …then **Droid** takes the stairs by Room 4 or Room 9, resets the main breaker…
+5. …climbs back up and opens the Room 8 service door.
+6. **Voxxy** carries the adapter onto the Room 8 stage. The projector starts, you win.
 
 If the clock reaches zero first, the keynote starts in the dark.
 
@@ -81,7 +84,7 @@ or affiliated with this game, and apart from the well-known "Bootiful" no line i
 |-----|--------|
 | <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys | Drive the selected robot |
 | <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or <kbd>Tab</kbd> | Switch between Voxxy, Droid and Biggy |
-| <kbd>E</kbd> or <kbd>Space</kbd> | Interact (pick up / drop, fuse panel, service door) |
+| <kbd>E</kbd> or <kbd>Space</kbd> | Interact (pick up / drop, stairs, lift, main breaker, service door) |
 | <kbd>Enter</kbd> / <kbd>R</kbd> | Start / play again |
 | <kbd>M</kbd> | Sound on / off |
 
@@ -95,7 +98,7 @@ up to speed, coasts for two metres after you let go, and knocks Voxxy aside on c
 
 The cinema floor starts without power. Daylight falls through the glass facade of the foyer; the
 central corridor has only green exit signs and emergency lights, and Room 8 is pitch black.
-Droid's amber eyes are a real torch, Voxxy's visor glows. Resetting the fuse panel brings the
+Droid's amber eyes are a real torch, Voxxy's visor glows. Resetting the main breaker downstairs brings the
 ceiling lamps back with a fluorescent flicker, turns on Room 8's house lights and starts the
 projector — a blue "no signal" beam until the adapter is plugged in.
 
@@ -123,6 +126,10 @@ See [docs/GENAI.md](docs/GENAI.md).
 - Venue layout traced from the Kinepolis Antwerp cinema-floor plan provided by Devoxx
   ([references](https://game.devoxx.be/references.html)); the plan itself is shown as a faint
   overlay (`assets/cinema-floor-plan.png`).
+- The exhibition hall is traced from the "Hollywood" ground-floor plan from the same references
+  (`assets/exhibition-hall-plan.png`). The plan has no scale; 4.15 cm per pixel gives the hall its
+  2 400 m² and the same 6.5 m pillar grid as upstairs. One pillar in front of the electrical room is
+  left out so Biggy has room to push the booth.
 
 ## License
 

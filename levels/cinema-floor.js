@@ -55,6 +55,7 @@ function pillars() {
 export default {
   name: 'Kinepolis Antwerp — cinema floor',
   plan: { src: 'assets/cinema-floor-plan.png', metresPerPx: 0.1 },
+  offset: { x: 0, y: 0 },
 
   // Outer boundary of the walkable area (open polyline; the gap is the Room 8 door).
   outline: [
@@ -89,13 +90,12 @@ export default {
     crates: [[732.5, 455], [752.5, 455], [772.5, 455], [792.5, 455]],
     bottleneck: { x1: 720, y1: 440, x2: CORRIDOR_EAST, y2: 470 },
     adapter: { x: 485, y: 560 },
-    fusePanel: { x: 668, y: 1330 },
     room8Door: { x1: CORRIDOR_EAST, y1: ROOM8_DOOR_TOP, x2: CORRIDOR_EAST, y2: ROOM8_SOUTH },
     room8: { x1: CORRIDOR_EAST, y1: 960, x2: 1105, y2: ROOM8_SOUTH },
     screen: { x: 1095, y1: 985, y2: 1165 },
     stage: { x: 1070, y: 1075, radius: 25 },
     // Droid's old maintenance bay, an alcove against the Room 4 wall.
-    maintenanceBay: { x: 685, y: 850, radius: 16 },
+    maintenanceBay: { x: 685, y: 780, radius: 16 },
   },
 
   // Light sources. Daylight and exit signs work without power; ceiling lamps need the fuse panel.
@@ -127,6 +127,14 @@ export default {
     ...pillars(),
   ],
 
+  // Where robots change floors — the "Ground floor" stairs by Rooms 4 and 9, and the service lift
+  // by Room 10. Ends with the same link id (see exhibition-hall.js) are connected.
+  travel: [
+    { link: 'stairs-west', x: 672, y: 878, radius: 12, exit: [688, 905], label: 'Stairs down to the exhibition hall' },
+    { link: 'stairs-east', x: 793, y: 878, radius: 12, exit: [778, 905], label: 'Stairs down to the exhibition hall' },
+    { link: 'service-lift', x: 792, y: 740, radius: 14, exit: [770, 720], label: 'Service lift down to the exhibition hall' },
+  ],
+
   // Non-solid areas with a gameplay meaning (used from milestone 3 on).
   zones: [
     { id: 'grand-staircase', label: 'Grand staircase', x1: 710, y1: 1230, x2: 830, y2: 1295 },
@@ -135,8 +143,10 @@ export default {
   labels: [
     { text: 'FOYER', x: 560, y: 150 },
     { text: "SPEAKERS' LOUNGE", x: 485, y: 470 },
-    { text: 'FUSE PANEL', x: 695, y: 1352 },
-    { text: 'MAINTENANCE BAY', x: 700, y: 878 },
+    { text: 'MAINTENANCE BAY', x: 700, y: 808 },
+    { text: 'STAIRS ↓', x: 675, y: 855 },
+    { text: 'STAIRS ↓', x: 790, y: 855 },
+    { text: 'SERVICE LIFT', x: 772, y: 718 },
     { text: 'MEGACANDY', x: 755, y: 310 },
     { text: 'ROOM 1', x: 585, y: 408 },
     { text: 'ROOM 2', x: 585, y: 578 },

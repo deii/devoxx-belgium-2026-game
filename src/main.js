@@ -1,4 +1,5 @@
 import cinemaFloor from '../levels/cinema-floor.js';
+import exhibitionHall from '../levels/exhibition-hall.js';
 import {
   applyGlitch, createHeisenbug, heisenbugAct, heisenbugPrompt, updateDiagnostic, updateHeisenbug,
 } from './glitch.js';
@@ -12,11 +13,13 @@ import { collideBodies, collideWithWalls, integrate } from './physics.js';
 import { recordWin } from './records.js';
 import { createRenderer } from './render.js';
 import { createSpeech, updateSpeech } from './speech.js';
+import { createTravel, isRiding, travelAct, travelPrompt, updateTravel } from './travel.js';
 import { createRobot, driveRobot, idleCommand, ROBOT_ORDER } from './robots.js';
 
 const PHYSICS_STEP = 1 / 120;       // s — fixed step keeps collisions stable
 const MAX_FRAME_TIME = 0.25;        // s — after a stall, do not try to catch up for longer
 const CAMERA_FOLLOW_RATE = 5;       // 1/s
+const CAMERA_SNAP_DISTANCE = 30;    // m — further than this (another floor), cut instead of pan
 
 const SWITCH_KEYS = { Digit1: 0, Digit2: 1, Digit3: 2 };
 const ACTION_KEYS = new Set(['KeyE', 'Space']);
@@ -24,7 +27,7 @@ const START_KEYS = new Set(['Enter', 'NumpadEnter', 'Space']);
 const RESTART_KEYS = new Set(['KeyR', 'Enter', 'NumpadEnter']);
 const MUTE_KEY = 'KeyM';
 
-const level = loadLevel(cinemaFloor);
+const level = loadLevel(cinemaFloor, exhibitionHall);
 const input = createInput();
 const renderer = createRenderer(document.getElementById('game'), level);
 const hud = createHud(document.getElementById('hud'));
@@ -43,6 +46,7 @@ function createGameState(phase) {
     robots,
     mission: createMission(level),
     heisenbug: createHeisenbug(),
+    travel: createTravel(),
     activeIndex: 0,
     time: 0,
     camera: { x: robots[0].x, y: robots[0].y },
@@ -79,7 +83,7 @@ function handlePresses() {
 function step(dt) {
   const { robots, mission } = state;
   robots.forEach((robot, index) => {
-    const command = index === state.activeIndex
+    const command = index === state.activeIndex && !isRiding(state.travel, robot)
       ? { move: input.moveVector(), action: actionPending }
       : idleCommand();
     robot.command = applyGlitch(robot, command, state);
@@ -95,13 +99,14 @@ function step(dt) {
   resolveContacts(robots, mission);
 
   const activeRobot = robots[state.activeIndex];
-  if (heisenbugAct(state, activeRobot)) {
+  if (travelAct(state, activeRobot) || heisenbugAct(state, activeRobot)) {
     activeRobot.command.action = false;
   }
+  updateTravel(state, dt);
   updateMission(mission, level, robots, activeRobot, dt);
   updateHeisenbug(state, dt);
   updateDiagnostic(state, dt);
-  mission.prompt = heisenbugPrompt(state, activeRobot) || mission.prompt;
+  mission.prompt = heisenbugPrompt(state, activeRobot) || travelPrompt(state, activeRobot) || mission.prompt;
   if (mission.outcome) {
     state.phase = mission.outcome;
     if (mission.outcome === 'won') {
@@ -137,6 +142,11 @@ function recordImpact(impact, ...bodies) {
 
 function updateCamera(dt) {
   const target = state.robots[state.activeIndex];
+  if (Math.hypot(target.x - state.camera.x, target.y - state.camera.y) > CAMERA_SNAP_DISTANCE) {
+    state.camera.x = target.x;
+    state.camera.y = target.y;
+    return;
+  }
   const follow = 1 - Math.exp(-CAMERA_FOLLOW_RATE * dt);
   state.camera.x += (target.x - state.camera.x) * follow;
   state.camera.y += (target.y - state.camera.y) * follow;

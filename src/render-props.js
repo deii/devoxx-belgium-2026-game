@@ -83,14 +83,15 @@ export function drawCrates(ctx, crates) {
   }
 }
 
-export function drawFusePanel(ctx, level, mission, time) {
-  const panel = level.mission.fusePanel;
+export function drawMainBreaker(ctx, level, mission, time) {
+  const [x, y] = level.mission.mainBreaker;
+  const panel = { x, y };
   ctx.fillStyle = '#3a3f48';
-  ctx.fillRect(panel.x - 0.35, panel.y - 0.5, 0.5, 1);
+  ctx.fillRect(panel.x - 0.5, panel.y - 0.35, 1, 0.5);
   const lit = mission.power || Math.sin(time * 5) > 0;
   ctx.fillStyle = mission.power ? '#3ddc84' : (lit ? '#ff3b30' : '#5a1a18');
   ctx.beginPath();
-  ctx.arc(panel.x - 0.1, panel.y, 0.1, 0, Math.PI * 2);
+  ctx.arc(panel.x, panel.y - 0.1, 0.1, 0, Math.PI * 2);
   ctx.fill();
 }
 
@@ -153,5 +154,38 @@ export function drawMaintenanceBay(ctx, level, bug) {
     ctx.beginPath();
     ctx.arc(bay.x, bay.y, bay.radius - 0.25, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
     ctx.stroke();
+  }
+}
+
+const STAIR_TREADS = 5;
+
+/** Stairs as treads, the service lift as a door pair; each labelled by the level's text labels. */
+export function drawTravelPoints(ctx, level) {
+  for (const link of level.links) {
+    for (const end of link.ends) {
+      if (link.kind === 'stairs') {
+        ctx.strokeStyle = 'rgba(170, 180, 200, 0.55)';
+        ctx.lineWidth = 0.06;
+        for (let i = 0; i < STAIR_TREADS; i++) {
+          const offset = (i / (STAIR_TREADS - 1) - 0.5) * end.radius * 1.6;
+          ctx.beginPath();
+          ctx.moveTo(end.x - end.radius * 0.8, end.y + offset);
+          ctx.lineTo(end.x + end.radius * 0.8, end.y + offset);
+          ctx.stroke();
+        }
+      } else {
+        ctx.fillStyle = 'rgba(90, 200, 255, 0.08)';
+        ctx.strokeStyle = '#8fa3b8';
+        ctx.lineWidth = 0.08;
+        ctx.beginPath();
+        ctx.rect(end.x - end.radius, end.y - end.radius, end.radius * 2, end.radius * 2);
+        ctx.fill();
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(end.x, end.y - end.radius);
+        ctx.lineTo(end.x, end.y + end.radius);
+        ctx.stroke();
+      }
+    }
   }
 }

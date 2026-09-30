@@ -21,6 +21,8 @@ const LINES = {
   },
   door: { droid: ['I know every door in this building.', 'Service door. After you.'] },
   crates: { biggy: ['Refactored.', 'Legacy crates removed.', 'Nothing survives a proper refactoring.'] },
+  booth: { biggy: ['Dependency removed.', 'Refactored. Again.'] },
+  lift: { biggy: ['Stairs are a code smell.', 'Taking the lift. Obviously.'] },
   impact: { biggy: ['Just a small refactoring.', 'That wall had code smells.', 'Moving on.'] },
   delivered: { voxxy: ['Bootiful!!', 'Plugged in. Bootiful.'] },
   patched: {
@@ -71,6 +73,14 @@ export function updateSpeech(speech, state, dt) {
   }
   if (changedTo('crates', cratesCleared) && cratesCleared) {
     say(speech, state, 'crates', 'biggy');
+  }
+  const boothCleared = mission.objectives.find(objective => objective.id === 'booth').done;
+  if (changedTo('booth', boothCleared) && boothCleared) {
+    say(speech, state, 'booth', 'biggy');
+  }
+  const ridingBiggy = state.travel.rides.some(ride => ride.robot.type === 'biggy');
+  if (changedTo('liftBiggy', ridingBiggy) && ridingBiggy) {
+    say(speech, state, 'lift', 'biggy');
   }
   if (changedTo('delivered', mission.adapter.delivered) && mission.adapter.delivered) {
     say(speech, state, 'delivered', 'voxxy');

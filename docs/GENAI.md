@@ -171,3 +171,23 @@ likes something."
 The crate wall moved 5 m south (y 40.5 → 45.5 m) and the first corridor pillars moved with it, so
 the crates are not shoved straight into them. Simulated: Biggy now reaches the crates at 2.15 m/s
 instead of about 1 m/s and opens a path in one push; Voxxy and Droid are still blocked.
+
+### M7 — the exhibition hall and the service lift (14:55)
+**Prompt:** "Go ahead with elevator" — option A from the model's proposal: give Biggy's "cannot take
+the stairs" a real consequence by moving part of the mission to the ground floor.
+
+- A second area, the exhibition hall, traced over the ground-floor plan. `src/level.js` now loads
+  several areas, each with its own scale and offset (the hall sits 150 m east, out of view).
+- `src/travel.js`: the stairs are instant for Voxxy and Droid and refuse Biggy with an explanation;
+  the service lift takes anyone but rides for 2.5 s. The camera snaps instead of panning 150 m.
+- The fuse panel upstairs became the main breaker in the hall's electrical room, behind a fallen
+  sponsor booth that only Biggy can move — so Biggy has to take the lift, and Droid depends on it.
+  The real-time limit went from 6 to 7.5 minutes for the extra trip.
+- Found by simulation, not by eye: the booth first sat in the doorway and wedged there; the lift was
+  so far from the booth that Biggy needed about a minute (moved: now 13 s); one pillar from the
+  plan stood exactly where the booth has to go (left out, with a comment).
+- **A physics bug surfaced:** pushed bodies stuck to walls because wall friction removed 15 % of the
+  sliding speed every step regardless of how hard the body pressed. Replaced with Coulomb friction
+  proportional to the normal impulse. That changed how the crates spread, so the "bottleneck
+  cleared" check was re-tuned (1.4 m gap) and re-verified: Biggy still clears the crates, Voxxy and
+  Droid still cannot.

@@ -3,7 +3,7 @@
 import { cameraShakeOffset, drawParticles } from './effects.js';
 import { createLighting } from './lighting.js';
 import {
-  drawAdapter, drawBarriers, drawCrates, drawDoor, drawFusePanel, drawMaintenanceBay, drawRoom8,
+  drawAdapter, drawBarriers, drawCrates, drawDoor, drawMainBreaker, drawMaintenanceBay, drawRoom8, drawTravelPoints,
 } from './render-props.js';
 import { drawRobotBody, drawRobotShadow } from './robot-art.js';
 import { drawSpeech } from './speech.js';
@@ -26,10 +26,12 @@ const COLORS = {
 export function createRenderer(canvas, level) {
   const ctx = canvas.getContext('2d');
   const lighting = createLighting();
-  let planOverlay = null;
   let pixelsPerMetre = MIN_PIXELS_PER_METRE;
 
-  loadPlanOverlay(level.plan.src).then(overlay => { planOverlay = overlay; });
+  const planOverlays = level.plans.map(() => null);
+  level.plans.forEach((plan, index) => {
+    loadPlanOverlay(plan.src).then(overlay => { planOverlays[index] = overlay; });
+  });
 
   function resize() {
     const ratio = window.devicePixelRatio || 1;
@@ -81,14 +83,18 @@ export function createRenderer(canvas, level) {
     ctx.save();
     view.applyWorldTransform(ctx);
     drawFloor(ctx, level);
-    if (planOverlay) {
-      ctx.globalAlpha = PLAN_OPACITY;
-      const scale = level.plan.metresPerPx;
-      ctx.drawImage(planOverlay, 0, 0, planOverlay.width * scale, planOverlay.height * scale);
-      ctx.globalAlpha = 1;
-    }
+    ctx.globalAlpha = PLAN_OPACITY;
+    level.plans.forEach((plan, index) => {
+      const overlay = planOverlays[index];
+      if (overlay) {
+        const scale = plan.metresPerPx;
+        ctx.drawImage(overlay, plan.offset.x, plan.offset.y, overlay.width * scale, overlay.height * scale);
+      }
+    });
+    ctx.globalAlpha = 1;
     drawRoom8(ctx, level, mission);
     drawMaintenanceBay(ctx, level, state.heisenbug);
+    drawTravelPoints(ctx, level);
     drawWalls(ctx, level);
     drawBarriers(ctx, level);
     drawDoor(ctx, level, mission);
@@ -103,7 +109,7 @@ export function createRenderer(canvas, level) {
     // Things the player must be able to find in the dark are drawn on top of the lighting.
     ctx.save();
     view.applyWorldTransform(ctx);
-    drawFusePanel(ctx, level, mission, state.time);
+    drawMainBreaker(ctx, level, mission, state.time);
     drawAdapter(ctx, mission.adapter, state.time);
     drawSelection(ctx, robots[state.activeIndex], state.time);
     ctx.restore();
@@ -118,10 +124,12 @@ export function createRenderer(canvas, level) {
 
 function drawFloor(ctx, level) {
   ctx.fillStyle = COLORS.floor;
-  ctx.beginPath();
-  level.outline.forEach((point, index) => (index === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y)));
-  ctx.closePath();
-  ctx.fill();
+  for (const outline of level.outlines) {
+    ctx.beginPath();
+    outline.forEach((point, index) => (index === 0 ? ctx.moveTo(point.x, point.y) : ctx.lineTo(point.x, point.y)));
+    ctx.closePath();
+    ctx.fill();
+  }
 }
 
 function drawWalls(ctx, level) {
@@ -143,7 +151,7 @@ function drawWalls(ctx, level) {
     }
   };
   ctx.beginPath();
-  tracePath(level.outline, false);
+  level.outlines.forEach(outline => tracePath(outline, false));
   level.walls.forEach(polyline => tracePath(polyline, false));
   level.blocks.forEach(polygon => tracePath(polygon, true));
   ctx.stroke();

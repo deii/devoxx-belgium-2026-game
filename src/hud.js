@@ -13,14 +13,14 @@ const SCREENS = {
   title: () => `
     <h1>Heisenbug<span>Keynote in 10</span></h1>
     <p>Kinepolis Antwerp, Devoxx morning. The opening keynote in <strong>Room 8</strong> starts in ten
-    minutes — and the floor is dark, the room is locked, and the speaker's HDMI adapter is lying in
-    the speakers' lounge behind a queue of barriers.</p>
+    minutes — and the main breaker downstairs in the exhibition hall has tripped, the room is locked,
+    and the speaker's HDMI adapter is lying in the speakers' lounge behind a queue of barriers.</p>
     <p>Three robots are awake. None of them can do this alone — and one of them has a bug nobody
     has diagnosed yet. Watch the system log, work out which robot misbehaves, and run diagnostics
     on it in the maintenance bay. Guess wrong and it costs you keynote time.</p>
     <ul class="cast">
       <li style="--robot-color: ${ROBOT_SPECS.voxxy.color}"><b>Voxxy</b> light and quick — fits where others don't, carries small things${idolLine('voxxy')}</li>
-      <li style="--robot-color: ${ROBOT_SPECS.droid.color}"><b>Droid</b> has been here for years — knows the fuse panel and the service doors${idolLine('droid')}</li>
+      <li style="--robot-color: ${ROBOT_SPECS.droid.color}"><b>Droid</b> has been here for years — knows the stairs, the breakers and the service doors${idolLine('droid')}</li>
       <li style="--robot-color: ${ROBOT_SPECS.biggy.color}"><b>Biggy</b> 460 kg of armour — slow to start, hard to stop, moves what nobody else can${idolLine('biggy')}</li>
     </ul>
     <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>M</kbd> sound on/off</p>
@@ -29,7 +29,7 @@ const SCREENS = {
   won: (clock, verdict, record) => `
     <h1>The screen lights up<span>with ${clock} to spare</span></h1>
     <p>Room 8 fills, the projector hums, the speaker's first slide appears. Nobody in the audience
-    will ever know about the crates, the fuses or the adapter.</p>
+    will ever know about the crates, the fallen booth or the adapter.</p>
     <p class="verdict">${verdict}</p>
     ${record?.isNewBest ? '<p class="record">New best time on this machine.</p>' : bestLine()}
     <p class="start">Press <kbd>R</kbd> to play again</p>`,

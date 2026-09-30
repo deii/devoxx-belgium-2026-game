@@ -1,18 +1,31 @@
-// "Keynote in 10": the one mission of the game. Owns the props (crates, adapter, fuse panel,
+// "Keynote in 10": the one mission of the game. Owns the props (crates, booth, adapter, breaker,
 // Room 8 door), the keynote clock, the objective list and the win/lose conditions.
 
 import { segmentOf } from './level.js';
 
 const KEYNOTE_CLOCK_START = 600;                 // s shown on the clock (10:00)
-const REAL_TIME_LIMIT = 360;                      // s of real play time the clock covers
+const REAL_TIME_LIMIT = 450;                      // s of real play time the clock covers
 const CLOCK_RATE = KEYNOTE_CLOCK_START / REAL_TIME_LIMIT;
 const INTERACT_RANGE = 1.3;                       // m between robot edge and a prop
 const CRATE_HINT_RANGE = 0.4;                     // m between robot edge and crate edge
-const CLEARED_GAP = 2;                            // m — a gap Biggy (1.7 m wide) fits through
+const CLEARED_GAP = 1.4;                          // m — enough for Droid (1.0 m) and Voxxy; crates end up staggered, so Biggy slips through diagonal gaps the 1-D measure underrates
 const WALL_CLEARANCE = 0.15;                      // m — half the wall thickness
 const ADAPTER_CARRY_OFFSET = 0.55;                // m in front of Voxxy's centre
 const DOOR_OPEN_SPEED = 1.2;                      // fraction of the door per second
 const OPENING_HINT_DURATION = 30;                 // s of keynote clock the opening tip stays up
+
+const BOOTH_CLEARED_DISTANCE = 2.8;                // m between booth centre and the electrical room door
+
+// The sponsor booth that toppled in front of the electrical room: bigger and heavier than a crate.
+const BOOTH = {
+  radius: 1.3,
+  mass: 320,
+  restitution: 0.05,
+  drag: 1.5,
+  groundFriction: 0.6,
+  minPusherMass: 300,
+  isBooth: true,
+};
 
 const CRATE = {
   radius: 0.9,
@@ -32,13 +45,17 @@ export function createMission(level) {
     doorOpen: false,
     doorOpenAmount: 0,
     doorSegment: segmentOf(data.room8Door),
-    crates: data.crates.map(([x, y]) => ({ x, y, vx: 0, vy: 0, ...CRATE })),
+    crates: [
+      ...data.crates.map(([x, y]) => ({ x, y, vx: 0, vy: 0, ...CRATE })),
+      { x: data.booth[0], y: data.booth[1], vx: 0, vy: 0, ...BOOTH },
+    ],
     adapter: { x: data.adapter.x, y: data.adapter.y, carrier: null, delivered: false },
     prompt: '',
     objectives: [
       { id: 'crates', robot: 'biggy', text: 'Shove the sponsor crates out of the Megacandy bottleneck', done: false },
       { id: 'adapter', robot: 'voxxy', text: "Fetch the HDMI adapter from the speakers' lounge", done: false },
-      { id: 'power', robot: 'droid', text: 'Restore power at the fuse panel by the grand staircase', done: false },
+      { id: 'booth', robot: 'biggy', text: 'Take the service lift down and shove the fallen booth off the electrical room', done: false },
+      { id: 'power', robot: 'droid', text: 'Take the stairs down and reset the main breaker in the exhibition hall', done: false },
       { id: 'door', robot: 'droid', text: 'Open the Room 8 service door', done: false },
       { id: 'deliver', robot: 'voxxy', text: 'Plug the adapter into the projector on the Room 8 stage', done: false },
     ],
@@ -95,7 +112,7 @@ function act(mission, level, robot) {
   const data = level.mission;
   const adapter = mission.adapter;
   if (robot.type === 'droid') {
-    if (!mission.power && near(robot, data.fusePanel)) {
+    if (!mission.power && near(robot, pointOf(data.mainBreaker))) {
       mission.power = true;
     } else if (mission.power && !mission.doorOpen && near(robot, doorCentre(data))) {
       mission.doorOpen = true;
@@ -131,6 +148,7 @@ function checkDelivery(mission, level) {
 function updateObjectives(mission, level) {
   const done = {
     crates: widestBottleneckGap(mission, level) >= CLEARED_GAP,
+    booth: boothCleared(mission, level),
     adapter: mission.adapter.carrier !== null || mission.adapter.delivered,
     power: mission.power,
     door: mission.doorOpen,
@@ -180,18 +198,18 @@ function promptFor(mission, level, robot) {
       ? { canAct: true, text: 'E — pick up the HDMI adapter' }
       : { canAct: false, text: 'Only Voxxy can handle something this small.' });
   }
-  if (near(robot, data.fusePanel)) {
+  if (near(robot, pointOf(data.mainBreaker))) {
     if (mission.power) {
       candidates.push({ canAct: false, text: 'Power is back on.' });
     } else {
       candidates.push(isDroid
-        ? { canAct: true, text: 'E — restore power' }
-        : { canAct: false, text: 'An old fuse panel. Only Droid remembers how this one resets.' });
+        ? { canAct: true, text: 'E — reset the main breaker' }
+        : { canAct: false, text: 'The main breaker. Only Droid remembers how this one resets.' });
     }
   }
   if (!mission.doorOpen && near(robot, doorCentre(data))) {
     if (!mission.power) {
-      candidates.push({ canAct: false, text: 'Room 8 service door — dead. No power on this floor.' });
+      candidates.push({ canAct: false, text: 'Room 8 service door — dead. The main breaker downstairs has tripped.' });
     } else {
       candidates.push(isDroid
         ? { canAct: true, text: 'E — open the service door' }
@@ -214,6 +232,16 @@ function promptFor(mission, level, robot) {
     return 'Tip: Biggy (3) takes ages to get going — start it towards the crates first.';
   }
   return '';
+}
+
+function boothCleared(mission, level) {
+  const booth = mission.crates.find(crate => crate.isBooth);
+  const door = pointOf(level.mission.electricalDoor);
+  return Math.hypot(booth.x - door.x, booth.y - door.y) >= BOOTH_CLEARED_DISTANCE;
+}
+
+function pointOf([x, y]) {
+  return { x, y };
 }
 
 function near(robot, point) {

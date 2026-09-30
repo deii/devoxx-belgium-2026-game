@@ -1,7 +1,7 @@
 // Minimal rigid-body physics: circles (robots) against wall segments and against each other.
 // Masses matter: a collision moves the lighter body more, which is how Biggy shoves Voxxy aside.
 
-const WALL_SCRAPE_FRICTION = 0.15;
+const WALL_FRICTION = 0.3;   // Coulomb coefficient: sliding friction is proportional to how hard a body presses into the wall
 const EPSILON = 1e-6;
 
 export function integrate(body, dt) {
@@ -51,14 +51,16 @@ function collideCircleSegment(body, segment) {
   if (normalSpeed >= 0) {
     return 0;
   }
-  body.vx -= (1 + body.restitution) * normalSpeed * nx;
-  body.vy -= (1 + body.restitution) * normalSpeed * ny;
+  const normalImpulse = -(1 + body.restitution) * normalSpeed;
+  body.vx += normalImpulse * nx;
+  body.vy += normalImpulse * ny;
 
   const tx = -ny;
   const ty = nx;
   const tangentSpeed = body.vx * tx + body.vy * ty;
-  body.vx -= tangentSpeed * WALL_SCRAPE_FRICTION * tx;
-  body.vy -= tangentSpeed * WALL_SCRAPE_FRICTION * ty;
+  const frictionChange = Math.min(Math.abs(tangentSpeed), WALL_FRICTION * normalImpulse) * Math.sign(tangentSpeed);
+  body.vx -= frictionChange * tx;
+  body.vy -= frictionChange * ty;
   return -normalSpeed;
 }
 

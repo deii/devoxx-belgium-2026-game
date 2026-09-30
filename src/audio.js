@@ -103,6 +103,10 @@ export function createAudio() {
     if (changed('power', mission.power) && mission.power) {
       powerOn();
     }
+    const rides = state.travel.rides.length;
+    if (changed('rides', rides) && rides > 0) {
+      whoosh(2.5, 180, 420);
+    }
     if (changed('door', mission.doorOpen) && mission.doorOpen) {
       whoosh(1.2, 300, 1200);
     }
