@@ -165,3 +165,9 @@ likes something."
   Victor Rentea for unstoppable *refactoring*, not for anything physical.
 - README carries a short fan-tribute / no-affiliation note.
 - Caught in a screenshot: the longer title panel nearly filled a 768 px screen — it now scrolls.
+
+### Playtest tweak — crate run-up (14:30)
+**Prompt:** "Move boxes a bit lower so Biggy can get a moment after the corner around the wall."
+The crate wall moved 5 m south (y 40.5 → 45.5 m) and the first corridor pillars moved with it, so
+the crates are not shoved straight into them. Simulated: Biggy now reaches the crates at 2.15 m/s
+instead of about 1 m/s and opens a path in one push; Voxxy and Droid are still blocked.

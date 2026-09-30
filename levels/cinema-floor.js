@@ -10,7 +10,7 @@ const ROOM8_SOUTH = 1190;
 
 // Pillars along the corridor, two rows (see the small squares on the plan).
 const PILLAR_ROWS_X = [710, 757];
-const PILLAR_FIRST_Y = 485;   // the first rows are left out: the crates stand there
+const PILLAR_FIRST_Y = 550;   // the first rows are left out: the crates stand there
 const PILLAR_LAST_Y = 1120;
 const PILLAR_SPACING = 65;
 const PILLAR_HALF_SIZE = 3;
@@ -84,10 +84,10 @@ export default {
 
   // Everything the mission needs, in plan pixels.
   mission: {
-    // A wall of sponsor crates across the corridor mouth, just past the Megacandy. The gaps
-    // between crates (0.2 m) are too narrow even for Voxxy.
-    crates: [[732.5, 405], [752.5, 405], [772.5, 405], [792.5, 405]],
-    bottleneck: { x1: 720, y1: 390, x2: CORRIDOR_EAST, y2: 420 },
+    // A wall of sponsor crates across the corridor, about 5 m past the Megacandy corner so Biggy
+    // has room to build up speed. The gaps between crates (0.2 m) are too narrow even for Voxxy.
+    crates: [[732.5, 455], [752.5, 455], [772.5, 455], [792.5, 455]],
+    bottleneck: { x1: 720, y1: 440, x2: CORRIDOR_EAST, y2: 470 },
     adapter: { x: 485, y: 560 },
     fusePanel: { x: 668, y: 1330 },
     room8Door: { x1: CORRIDOR_EAST, y1: ROOM8_DOOR_TOP, x2: CORRIDOR_EAST, y2: ROOM8_SOUTH },
