@@ -128,6 +128,20 @@ export default {
     { type: 'rollup', x: 640, y: 68 },
     { type: 'rollup', x: 770, y: 68 },
     { type: 'rollup', x: 790, y: 590 },
+    // the speakers' lounge, behind the queue barriers: nothing in it is solid, so Voxxy's way to the
+    // adapter stays exactly as it was
+    { type: 'rug', x: 487, y: 530, width: 36, height: 150, color: '#2f5d62' },
+    { type: 'sign', x: 452, y: 358, name: 'SPEAKERS ONLY' },
+    { type: 'plant', x: 470, y: 385 },
+    { type: 'plant', x: 502, y: 385 },
+    { type: 'water', x: 472, y: 440 },
+    { type: 'sofa', x: 502, y: 425, width: 10, height: 38, color: '#6b3fa0' },
+    { type: 'table', x: 488, y: 425 },
+    { type: 'sofa', x: 502, y: 500, width: 10, height: 38, color: '#6b3fa0' },
+    { type: 'table', x: 488, y: 500 },
+    { type: 'table', x: 485, y: 560, size: 'large' },                 // the adapter lies on this one
+    { type: 'desk', x: 500, y: 605, width: 12, height: 26 },          // speaker-ready desk
+    { type: 'plant', x: 470, y: 628 },
   ],
 
   // Solid obstacles (closed polygons).

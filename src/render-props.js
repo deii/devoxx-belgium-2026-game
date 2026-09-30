@@ -268,18 +268,135 @@ function drawWarningSign(ctx, x, y) {
 // draw.
 const DEVOXX_ORANGE = '#ff8a1f';
 
+const DECOR_DRAWERS = {
+  booth: drawBooth,
+  counter: drawCounter,
+  beanbag: drawBeanbag,
+  rollup: drawRollup,
+  rug: drawRug,
+  sofa: drawSofa,
+  table: drawTable,
+  plant: drawPlant,
+  water: drawWaterStation,
+  desk: drawSpeakerDesk,
+  sign: drawSign,
+};
+
+/** Draws the furniture in list order, so rugs listed first end up underneath. */
 export function drawDecor(ctx, level) {
   for (const item of level.decor) {
-    if (item.type === 'booth') {
-      drawBooth(ctx, item);
-    } else if (item.type === 'counter') {
-      drawCounter(ctx, item);
-    } else if (item.type === 'beanbag') {
-      drawBeanbag(ctx, item);
-    } else if (item.type === 'rollup') {
-      drawRollup(ctx, item);
+    DECOR_DRAWERS[item.type](ctx, item);
+  }
+}
+
+function drawRug(ctx, rug) {
+  const left = rug.x - rug.width / 2;
+  const top = rug.y - rug.height / 2;
+  ctx.fillStyle = rug.color;
+  ctx.fillRect(left, top, rug.width, rug.height);
+  ctx.strokeStyle = 'rgba(241, 228, 200, 0.35)';
+  ctx.lineWidth = 0.08;
+  ctx.strokeRect(left + 0.25, top + 0.25, rug.width - 0.5, rug.height - 0.5);
+}
+
+/** A sofa with its back against a wall on its east side and two seat cushions. */
+function drawSofa(ctx, sofa) {
+  const left = sofa.x - sofa.width / 2;
+  const top = sofa.y - sofa.height / 2;
+  ctx.fillStyle = sofa.color;
+  ctx.fillRect(left, top, sofa.width, sofa.height);
+  ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+  ctx.fillRect(left + sofa.width - 0.3, top, 0.3, sofa.height);        // backrest
+  ctx.fillRect(left, top, sofa.width, 0.25);                            // armrests
+  ctx.fillRect(left, top + sofa.height - 0.25, sofa.width, 0.25);
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
+  ctx.lineWidth = 0.03;
+  ctx.beginPath();
+  ctx.moveTo(left + 0.1, sofa.y);
+  ctx.lineTo(left + sofa.width - 0.35, sofa.y);
+  ctx.stroke();
+}
+
+function drawTable(ctx, table) {
+  const radius = table.size === 'large' ? 0.75 : 0.45;
+  ctx.fillStyle = '#6e5a46';
+  ctx.beginPath();
+  ctx.arc(table.x, table.y, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+  ctx.lineWidth = 0.04;
+  ctx.beginPath();
+  ctx.arc(table.x, table.y, radius - 0.08, 0, Math.PI * 2);
+  ctx.stroke();
+  if (table.size !== 'large') {
+    ctx.fillStyle = '#f1e4c8';                                          // two coffee cups
+    for (const dy of [-0.15, 0.17]) {
+      ctx.beginPath();
+      ctx.arc(table.x + dy * 0.6, table.y + dy, 0.08, 0, Math.PI * 2);
+      ctx.fill();
     }
   }
+}
+
+function drawPlant(ctx, plant) {
+  ctx.fillStyle = '#5a4030';
+  ctx.beginPath();
+  ctx.arc(plant.x, plant.y, 0.3, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#3f7d4a';
+  for (let leaf = 0; leaf < 7; leaf++) {
+    const angle = leaf / 7 * Math.PI * 2;
+    ctx.beginPath();
+    ctx.ellipse(plant.x + Math.cos(angle) * 0.25, plant.y + Math.sin(angle) * 0.25, 0.28, 0.1, angle, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.fillStyle = '#5fa36a';
+  ctx.beginPath();
+  ctx.arc(plant.x, plant.y, 0.15, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawWaterStation(ctx, station) {
+  ctx.fillStyle = '#d8dde4';
+  ctx.fillRect(station.x - 0.35, station.y - 0.35, 0.7, 0.7);
+  ctx.fillStyle = '#5ac8ff';
+  ctx.beginPath();
+  ctx.arc(station.x, station.y, 0.22, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+  ctx.beginPath();
+  ctx.arc(station.x - 0.07, station.y - 0.07, 0.07, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+/** The speaker-ready desk: a monitor for checking slides and laptops charging. */
+function drawSpeakerDesk(ctx, desk) {
+  const left = desk.x - desk.width / 2;
+  const top = desk.y - desk.height / 2;
+  ctx.fillStyle = '#e6e1d6';
+  ctx.fillRect(left, top, desk.width, desk.height);
+  ctx.fillStyle = '#1c1f24';
+  ctx.fillRect(left + desk.width - 0.2, desk.y - 0.5, 0.1, 1);          // monitor, facing west
+  ctx.fillStyle = '#5a6272';
+  for (const dy of [-0.9, 0.7]) {                                       // laptops
+    ctx.fillRect(left + 0.15, desk.y + dy, 0.35, 0.3);
+  }
+  ctx.strokeStyle = '#1c1f24';                                          // charging cables
+  ctx.lineWidth = 0.02;
+  ctx.beginPath();
+  ctx.moveTo(left + 0.5, desk.y - 0.75);
+  ctx.lineTo(left + desk.width - 0.2, desk.y - 0.3);
+  ctx.moveTo(left + 0.5, desk.y + 0.85);
+  ctx.lineTo(left + desk.width - 0.2, desk.y + 0.3);
+  ctx.stroke();
+}
+
+function drawSign(ctx, sign) {
+  ctx.fillStyle = '#20232a';
+  ctx.fillRect(sign.x - 0.9, sign.y - 0.22, 1.8, 0.44);
+  ctx.fillStyle = DEVOXX_ORANGE;
+  ctx.fillRect(sign.x - 0.85, sign.y - 0.17, 1.7, 0.34);
+  drawText(ctx, sign.name, sign.x, sign.y + 0.01, 0.22, '#15171c', 1.6);
 }
 
 function drawBooth(ctx, booth) {

@@ -328,3 +328,11 @@ until Droid resets the breaker.
 - Service door: frame posts, a ribbed steel panel with a handle sliding into the wall, and a keypad
   that is dead without power, blinks amber, then turns green.
 All drawn with canvas primitives from existing level data; checked in the browser with screenshots.
+
+### Speakers' lounge (17:04)
+**Prompt:** "Improve the speakers' lounge graphic."
+An orange SPEAKERS ONLY sign at the queue barriers; behind them plants, a water station, two
+purple sofas against the Room 1 wall with coffee tables, a long teal rug, the round table the HDMI
+adapter lies on, and a speaker-ready desk with a monitor and laptops on charge. None of it is solid,
+so Voxxy's route through the 1.25 m barrier gap to the adapter is unchanged. The decor drawer became
+a type → function table so new furniture types are one entry each.
