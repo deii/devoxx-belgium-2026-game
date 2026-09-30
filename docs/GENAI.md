@@ -85,7 +85,7 @@ floor plan is shipped, with attribution.
 only Voxxy passes the barriers; the fuse panel and door react only to Droid, the door only with
 power; win on delivery; loss when the clock runs out (6 real minutes).
 
-### M3.5 — Heisenbug (13:30)
+### M3.5 — Heisenbug (13:05)
 **Prompt:** "Played by hand and fine. Agree with swap. Go ahead" — i.e. Heisenbug before lighting,
 because originality is worth 40 points and realism 20.
 
