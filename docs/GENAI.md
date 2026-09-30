@@ -130,7 +130,7 @@ generator (tiny first value), confirmed by re-running against `Math.random`.
 
 **Measured:** 61 fps in Chromium at 1366×800 with all lights on.
 
-### M5 — sound, solid seat rows, replay polish (13:40)
+### M5 — sound, solid seat rows, replay polish (13:35)
 **Prompt:** "Go ahead" (with the proposed order: sound → seat rows → polish).
 
 - **Sound** (`src/audio.js`) is synthesised with Web Audio: one continuous motor voice per robot
