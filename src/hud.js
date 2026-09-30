@@ -39,7 +39,7 @@ const SCREENS = {
     has diagnosed yet. Watch the system log, work out which robot misbehaves, and run diagnostics
     on it in the maintenance bay. Guess wrong and it costs you keynote time.</p>
     ${castCarousel()}
-    <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd>/wheel zoom · <kbd>M</kbd> sound on/off</p>
+    <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd>/wheel zoom · <kbd>M</kbd> sound on/off · <kbd>R</kbd><kbd>R</kbd> restart</p>
     ${bestLine()}
     <p class="start">Press <kbd>Enter</kbd> to start</p>
     <p class="credit">Robot pictures: Devoxx Robot Games model sheets. Elevator music: "Local Forecast – Elevator" by Kevin MacLeod (incompetech.com),
@@ -69,7 +69,7 @@ export function createHud(root) {
     <div class="log"><div class="log-title">/var/log/robots</div><div class="log-lines"></div></div>
     <div class="prompt"></div>
     <div class="controls">
-      <kbd>WASD</kbd>/<kbd>arrows</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> or <kbd>Tab</kbd> switch · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd> zoom · <kbd>M</kbd> sound
+      <kbd>WASD</kbd>/<kbd>arrows</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> or <kbd>Tab</kbd> switch · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd> zoom · <kbd>M</kbd> sound · <kbd>R</kbd><kbd>R</kbd> restart
     </div>
     <div class="screen"><div class="panel"></div></div>`;
 

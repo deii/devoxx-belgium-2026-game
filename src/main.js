@@ -27,6 +27,8 @@ const SWITCH_KEYS = { Digit1: 0, Digit2: 1, Digit3: 2 };
 const ACTION_KEYS = new Set(['KeyE', 'Space']);
 const START_KEYS = new Set(['Enter', 'NumpadEnter', 'Space']);
 const RESTART_KEYS = new Set(['KeyR', 'Enter', 'NumpadEnter']);
+const MID_RUN_RESTART_KEY = 'KeyR';
+const RESTART_CONFIRM_WINDOW = 2;   // s — R sits next to E, so one stray press must not end a run
 const MUTE_KEY = 'KeyM';
 const CAROUSEL_KEYS = { ArrowLeft: -1, KeyA: -1, ArrowRight: 1, KeyD: 1 };
 const ZOOM_IN_KEYS = new Set(['Equal', 'NumpadAdd']);
@@ -55,6 +57,7 @@ let state = createGameState('title');
 let effects = createEffects();
 let speech = createSpeech();
 let actionPending = false;
+let restartArmedUntil = -Infinity;  // state.time until which a second R restarts the run
 
 function createGameState(phase) {
   const robots = ROBOT_ORDER.map(type => createRobot(type, level.spawns[type]));
@@ -101,14 +104,25 @@ function handlePresses() {
         state.activeIndex = (state.activeIndex + 1) % state.robots.length;
       } else if (ACTION_KEYS.has(code)) {
         actionPending = true;
+      } else if (code === MID_RUN_RESTART_KEY) {
+        if (state.time < restartArmedUntil) {
+          restartRun();
+        } else {
+          restartArmedUntil = state.time + RESTART_CONFIRM_WINDOW;
+        }
       }
     } else if (RESTART_KEYS.has(code)) {
-      state = createGameState('playing');
-      effects = createEffects();
-      speech = createSpeech();
-      audio.reset();
+      restartRun();
     }
   }
+}
+
+function restartRun() {
+  state = createGameState('playing');
+  effects = createEffects();
+  speech = createSpeech();
+  audio.reset();
+  restartArmedUntil = -Infinity;
 }
 
 function step(dt) {
@@ -138,7 +152,9 @@ function step(dt) {
   updateRur(state);
   updateHeisenbug(state, dt);
   updateDiagnostic(state, dt);
-  mission.prompt = heisenbugPrompt(state, activeRobot) || travelPrompt(state, activeRobot) || mission.prompt;
+  mission.prompt = state.time < restartArmedUntil
+    ? 'Press R again to restart the run'
+    : heisenbugPrompt(state, activeRobot) || travelPrompt(state, activeRobot) || mission.prompt;
   if (mission.outcome) {
     state.phase = mission.outcome;
     if (mission.outcome === 'won') {

@@ -66,7 +66,8 @@ npm test             # or: node --test test/*.test.js   (Node 22+, nothing to in
 ```
 
 The tests play the real level headlessly: the lift refuses to move without power, Biggy cannot take
-the stairs, the crates stop Voxxy and Droid, a full run from the exhibition hall to the crates
+the stairs, the crates stop Voxxy and Droid,
+ramming the fallen booth head-on cannot wedge it into the electrical room, a full run from the exhibition hall to the crates
 upstairs, every robot can reach what it needs in the hall, only Voxxy fits into the speakers' lounge,
 people never walk through walls, and the Heisenbug's self-test.
 
@@ -107,6 +108,7 @@ or affiliated with this game, and apart from the well-known "Bootiful" no line i
 | <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or <kbd>Tab</kbd> | Switch between Voxxy, Droid and Biggy |
 | <kbd>E</kbd> or <kbd>Space</kbd> | Interact (pick up / drop, stairs, lift, main breaker, service door) |
 | <kbd>Enter</kbd> / <kbd>R</kbd> | Start / play again |
+| <kbd>R</kbd> <kbd>R</kbd> | Restart during a run (press twice) |
 | <kbd>+</kbd> / <kbd>−</kbd> or mouse wheel, <kbd>0</kbd> | Zoom in / out, reset zoom |
 | <kbd>M</kbd> | Sound on / off |
 

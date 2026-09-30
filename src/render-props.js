@@ -222,7 +222,10 @@ export function drawElectricalRoom(ctx, level, mission, time) {
   ctx.moveTo(room.x1 + width / 2, room.y1 + 0.9);
   ctx.lineTo(room.x1 + width / 2, room.y2 - 0.3);
   ctx.stroke();
-  drawHazardStripe(ctx, room.x1, room.y2 - 0.15, room.x2, room.y2 - 0.15, 0.2);
+  ctx.fillStyle = '#566077';                                        // door jambs, drawn over the room floor
+  ctx.fillRect(room.x1, room.y2 - room.jambDepth, room.door.x1 - room.x1, room.jambDepth);
+  ctx.fillRect(room.door.x2, room.y2 - room.jambDepth, room.x2 - room.door.x2, room.jambDepth);
+  drawHazardStripe(ctx, room.door.x1, room.y2 - 0.15, room.door.x2, room.y2 - 0.15, 0.2);
   drawWarningSign(ctx, room.x1 - 0.5, room.y2 + 0.45);
 }
 

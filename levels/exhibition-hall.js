@@ -12,6 +12,10 @@ const point = ([x, y]) => [v(x), v(y)];
 const rect = (x1, y1, x2, y2) => [[x1, y1], [x2, y1], [x2, y2], [x1, y2]].map(point);
 
 const ELECTRICAL_ROOM = { x1: 722, x2: 790, y1: 95, y2: 205 };
+// The door is 2 m wide: enough for Droid (1 m), too narrow for the toppled booth (2.6 m), so ramming
+// the booth head-on cannot wedge it into the room and cut Droid off from the breaker.
+const ELECTRICAL_DOOR = { x1: 735, x2: 778 };
+const DOOR_JAMB_DEPTH = 7;
 const PILLAR_HALF_SIZE = 7;
 // The plan also has a pillar at (725, 280), right in front of the electrical room; it is left out
 // so Biggy has room to shove the booth clear.
@@ -62,6 +66,8 @@ export default {
     rect(785, 340, 862, 630),    // east staircase
     rect(1185, 768, 1283, 1065), // stock bar
     rect(408, 1295, 930, 1400),  // tiered steps down to the reception
+    rect(ELECTRICAL_ROOM.x1, ELECTRICAL_ROOM.y2 - DOOR_JAMB_DEPTH, ELECTRICAL_DOOR.x1, ELECTRICAL_ROOM.y2), // door jambs
+    rect(ELECTRICAL_DOOR.x2, ELECTRICAL_ROOM.y2 - DOOR_JAMB_DEPTH, ELECTRICAL_ROOM.x2, ELECTRICAL_ROOM.y2),
     ...PILLARS.map(([x, y]) => rect(x - PILLAR_HALF_SIZE, y - PILLAR_HALF_SIZE, x + PILLAR_HALF_SIZE, y + PILLAR_HALF_SIZE)),
     ...BOOTHS.map(([x, y]) => rect(x - BOOTH_HALF.width, y - BOOTH_HALF.height, x + BOOTH_HALF.width, y + BOOTH_HALF.height)),
   ],
@@ -92,7 +98,10 @@ export default {
     booth: point([756, 237]),
     electricalDoor: point([756, 205]),
     mainBreaker: point([756, 112]),
-    electricalRoom: { x1: v(ELECTRICAL_ROOM.x1), y1: v(ELECTRICAL_ROOM.y1), x2: v(ELECTRICAL_ROOM.x2), y2: v(ELECTRICAL_ROOM.y2) },
+    electricalRoom: {
+      x1: v(ELECTRICAL_ROOM.x1), y1: v(ELECTRICAL_ROOM.y1), x2: v(ELECTRICAL_ROOM.x2), y2: v(ELECTRICAL_ROOM.y2),
+      door: { x1: v(ELECTRICAL_DOOR.x1), x2: v(ELECTRICAL_DOOR.x2) }, jambDepth: v(DOOR_JAMB_DEPTH),
+    },
     // Droid's old maintenance bay, between four pillars just south of where the robots park, so a
     // glitching robot does not have to drag itself across the building for a self-test.
     maintenanceBay: zone(656, 1115, 34),

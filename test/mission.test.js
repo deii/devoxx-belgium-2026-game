@@ -4,7 +4,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { isRiding, travelPrompt } from '../src/travel.js';
-import { BIGGY, DROID, VOXXY, act, createWorld, driveTo, level, place, reachable, settle } from './world.js';
+import { BIGGY, DROID, DT, VOXXY, act, createWorld, driveTo, level, place, reachable, settle, step } from './world.js';
 
 const UPSTAIRS_WEST = { x1: 40, y1: 10, x2: 82, y2: 70 };
 const CORRIDOR = [76, 60];
@@ -45,6 +45,25 @@ test('the crates stop Voxxy and Droid, and the corridor is cut off from the loun
     assert.ok(robot.y > 45.5, `${robot.spec.name} is still south of the crates`);
   }
   assert.equal(objective(world, 'crates'), false);
+});
+
+test('ramming the booth head-on cannot wedge it into the electrical room', () => {
+  const world = createWorld();
+  const booth = world.mission.crates.find(crate => crate.isBooth);
+  const door = level.mission.electricalDoor;
+  for (let seconds = 0; seconds < 25; seconds += DT) {
+    step(world, BIGGY, { x: 0, y: -1 });
+  }
+  settle(world, BIGGY, 3);
+  assert.ok(booth.y > door[1], 'the booth stays in the hall, in front of the door');
+
+  // Pushed along the wall from the west, it still slides clear.
+  assert.ok(driveTo(world, BIGGY, [[booth.x, booth.y + 5], [booth.x - 6, booth.y + 5], [booth.x - 6, booth.y], [booth.x - 3, booth.y]], 60, 1),
+    'Biggy gets beside the booth');
+  driveTo(world, BIGGY, [[booth.x + 8, booth.y]], 30, 1);
+  assert.equal(objective(world, 'booth'), true, 'the booth is shoved clear');
+  assert.ok(driveTo(world, DROID, [[178.5, 33], [178.5, 14], [185.1, 11.5], [185.1, 8], [BREAKER[0], BREAKER[1] + 0.8]], 40, 0.5),
+    'Droid reaches the breaker');
 });
 
 test('a full run: booth, breaker, lift, crates — and Voxxy can reach the adapter', () => {
