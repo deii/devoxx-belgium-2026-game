@@ -34,7 +34,14 @@ No build step, no dependencies — plain HTML, CSS and JavaScript on a 2D canvas
 
 ## Controls
 
-_To be documented as they are implemented._
+| Key | Action |
+|-----|--------|
+| <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or arrow keys | Drive the selected robot |
+| <kbd>1</kbd> <kbd>2</kbd> <kbd>3</kbd> or <kbd>Tab</kbd> | Switch between Voxxy, Droid and Biggy |
+
+The robots are physically simulated: each has its own mass, motor force, turning speed and grip.
+Voxxy reaches 4.5 m/s in about a second and skids in tight turns; Biggy needs five seconds to get
+up to speed, coasts for two metres after you let go, and knocks Voxxy aside on contact.
 
 ## How generative AI was used
 
@@ -43,7 +50,9 @@ See [docs/GENAI.md](docs/GENAI.md).
 ## Credits
 
 - Robot designs based on the Devoxx Robot Games model sheets.
-- Venue layout based on the Kinepolis Antwerp floor plans provided by Devoxx.
+- Venue layout traced from the Kinepolis Antwerp cinema-floor plan provided by Devoxx
+  ([references](https://game.devoxx.be/references.html)); the plan itself is shown as a faint
+  overlay (`assets/cinema-floor-plan.png`).
 
 ## License
 

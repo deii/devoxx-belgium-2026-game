@@ -31,4 +31,33 @@ considered (better lighting for realism) and rejected for delivery risk within t
 
 ## 2. Implementation log
 
-_Updated per milestone._
+### M0 — repository (11:30)
+Claude Code created the public repo with `gh`, MIT licence, README and this log, and enabled
+GitHub Pages. **Fixed by hand / redirected:** the `gh` git protocol was SSH and the push failed;
+switched the remote to HTTPS with `gh` as credential helper. Commit e-mail set to the GitHub
+noreply address so no corporate address ends up in public history.
+
+### M1 + M2 — robots in the venue (13:00)
+**Prompt:** "Go ahead with next step" (M1: loop, input, physics, Voxxy driving with inertia in the
+foyer traced from the floor plan, plus the Heisenbug command filter).
+
+- The model downloaded the official floor plan and model sheets, looked at them, and traced the
+  walkable area (foyer, central corridor, lobby above the grand staircase, Room 8) by hand into
+  `levels/cinema-floor.js` in plan pixels (1 px ≈ 10 cm).
+- Robots are drawn as top-down canvas vectors built from the model sheets — nothing from the
+  Robot Lab reference is shipped.
+- One shared drive model, three parameter sets (mass, motor force, drag, braking, spool-up,
+  turn acceleration, lateral grip). Because M2 cost little on top, all three robots and
+  mass-weighted robot-to-robot collisions landed in the same step.
+- Every command passes through `applyGlitch()` (a no-op for now) so Heisenbug needs no rework.
+
+**Verification:** Playwright drove the game in a browser; a Node script simulated the drive model
+headlessly. Measured: Voxxy 4.5 m/s after ~1 s, stops in 0.7 m; Droid 2.8 m/s, stops in 0.5 m;
+Biggy 2.1 m/s after 5 s, coasts 2 m; Biggy at 2.5 m/s hitting a resting Voxxy keeps 2.26 m/s and
+launches Voxxy at 2.49 m/s.
+
+**What went wrong:** `curl` downloads of the model sheets failed on a certificate revocation check
+(corporate Windows); re-downloaded with `--ssl-no-revoke`. Browser tests showed a robot moving
+with no input — traced to keyboard state leaking between scripted Playwright runs, not the game.
+The model sheets are kept out of the repository (`assets/reference/` is git-ignored); only the
+floor plan is shipped, with attribution.

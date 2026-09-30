@@ -18,3 +18,65 @@ html, body {
   inset: 0;
   pointer-events: none;
 }
+
+.roster {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-width: 320px;
+}
+
+.robot {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 8px;
+  align-items: baseline;
+  padding: 6px 10px;
+  border-left: 3px solid var(--robot-color);
+  background: rgba(11, 13, 18, 0.72);
+  opacity: 0.55;
+}
+
+.robot.active {
+  opacity: 1;
+}
+
+.robot .key {
+  color: var(--robot-color);
+  font-weight: 700;
+}
+
+.robot .name {
+  font-weight: 600;
+}
+
+.robot .tagline {
+  grid-column: 2;
+  font-size: 13px;
+  color: #b8bcc6;
+}
+
+.controls {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 6px 12px;
+  background: rgba(11, 13, 18, 0.72);
+  font-size: 13px;
+  color: #b8bcc6;
+  white-space: nowrap;
+}
+
+kbd {
+  display: inline-block;
+  padding: 0 5px;
+  margin: 0 1px;
+  border: 1px solid #4a5060;
+  border-radius: 3px;
+  font: 12px ui-monospace, monospace;
+  color: #e8e6e1;
+}
