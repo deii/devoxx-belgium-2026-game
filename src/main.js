@@ -15,6 +15,7 @@ import { createRenderer } from './render.js';
 import { createSpeech, updateSpeech } from './speech.js';
 import { createPeople, updatePeople } from './people.js';
 import { createRur, updateRur } from './rur.js';
+import { createTouchControls } from './touch.js';
 import { createTravel, isRiding, travelAct, travelPrompt, updateTravel } from './travel.js';
 import { createRobot, driveRobot, idleCommand, ROBOT_ORDER } from './robots.js';
 
@@ -42,6 +43,7 @@ const canvas = document.getElementById('game');
 const renderer = createRenderer(canvas, level);
 const hud = createHud(document.getElementById('hud'));
 const audio = createAudio();
+createTouchControls(document.getElementById('hud'), input, () => audio.unlock());
 
 // Zoom only during play; on the title and end screens the wheel scrolls the panel instead.
 canvas.addEventListener('wheel', event => {
@@ -153,7 +155,7 @@ function step(dt) {
   updateHeisenbug(state, dt);
   updateDiagnostic(state, dt);
   mission.prompt = state.time < restartArmedUntil
-    ? 'Press R again to restart the run'
+    ? (document.body.classList.contains('touch') ? 'Tap ⟲ again to restart the run' : 'Press R again to restart the run')
     : heisenbugPrompt(state, activeRobot) || travelPrompt(state, activeRobot) || mission.prompt;
   if (mission.outcome) {
     state.phase = mission.outcome;

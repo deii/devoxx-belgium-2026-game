@@ -112,6 +112,12 @@ or affiliated with this game, and apart from the well-known "Bootiful" no line i
 | <kbd>+</kbd> / <kbd>−</kbd> or mouse wheel, <kbd>0</kbd> | Zoom in / out, reset zoom |
 | <kbd>M</kbd> | Sound on / off |
 
+**Tablets and phones:** on a touch screen the keys give way to touch controls. Touch anywhere on the
+left half and drag to drive (a floating stick — push it only part of the way for part throttle), tap a
+portrait to switch robots, and use the buttons on the right: <kbd>E</kbd> interact, <kbd>+</kbd>
+<kbd>−</kbd> zoom, <kbd>♪</kbd> sound, <kbd>⟲</kbd> twice to restart. A landscape tablet is the most
+comfortable; on a narrow phone screen the objective list is hidden.
+
 Your best time is remembered in this browser (`localStorage`) and shown on the title screen.
 
 The robots are physically simulated: each has its own mass, motor force, turning speed and grip.
@@ -153,7 +159,7 @@ clang off walls, a hollow two-tone bonk between robots, a dull thud on crates �
 robots and harder hits. The one exception: when Biggy takes the service lift, it
 rides to the classic elevator-music meme, Kevin MacLeod's "Local Forecast – Elevator", and the lift
 dings on arrival. Winning plays a short 8-bit stage-clear fanfare: an original tune written in the
-style of classic platformer level-end jingles, synthesised like everything else. Browsers start audio only after a key press; <kbd>M</kbd> toggles sound.
+style of classic platformer level-end jingles, synthesised like everything else. Browsers start audio only after a key press or a tap; <kbd>M</kbd> toggles sound.
 
 ## How generative AI was used
 

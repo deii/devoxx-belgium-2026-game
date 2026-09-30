@@ -434,3 +434,19 @@ screenshot".
   the booth and Droid's torch on it, from a headless run of the real opening.
 - The Room 8 screenshot was retaken the same way (from the autopilot run just before delivery) so
   all three README images show the current HUD, including the `R R restart` hint.
+
+### Touch controls
+
+Prompt: "How to play this on tablets without physical keyboard?", then "yes, build it, then commit
+and push".
+
+- The model first answered that it was impossible: input was keyboard-only, so a tablet could not
+  even leave the title screen. It proposed a touch layer that feeds the existing input channels —
+  a floating stick sets the move vector (analog, which the drive model already accepted, so a half
+  push is half throttle), and every button queues the key press it stands for — so `main.js` and
+  the physics did not change.
+- Tested in Chromium with DevTools touch emulation and real `Input.dispatchTouchEvent` touches at
+  1024×768: tap to start, stick drove Voxxy 7 m north, portrait tap switched to Biggy, ⟲ asked for a
+  second tap and then restarted. A fresh desktop browser showed no touch UI and unchanged keys.
+- **Caught in a screenshot:** "Tap here to start" sat below the fold of the scrolling title panel;
+  it is now pinned to the panel's bottom edge on touch screens.

@@ -39,9 +39,10 @@ const SCREENS = {
     has diagnosed yet. Watch the system log, work out which robot misbehaves, and run diagnostics
     on it in the maintenance bay. Guess wrong and it costs you keynote time.</p>
     ${castCarousel()}
-    <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd>/wheel zoom · <kbd>M</kbd> sound on/off · <kbd>R</kbd><kbd>R</kbd> restart</p>
+    <p class="keys key-only"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd>/wheel zoom · <kbd>M</kbd> sound on/off · <kbd>R</kbd><kbd>R</kbd> restart</p>
+    <p class="keys touch-only">Left thumb drives — touch anywhere on the left half and drag · tap a portrait to switch robot · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd> zoom · <kbd>♪</kbd> sound · <kbd>⟲</kbd> twice restarts</p>
     ${bestLine()}
-    <p class="start">Press <kbd>Enter</kbd> to start</p>
+    <p class="start"><span class="key-only">Press <kbd>Enter</kbd> to start</span><span class="touch-only">Tap here to start</span></p>
     <p class="credit">Robot pictures: Devoxx Robot Games model sheets. Elevator music: "Local Forecast – Elevator" by Kevin MacLeod (incompetech.com),
     licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, trimmed.</p>`,
   won: (clock, verdict, record, extra) => `
@@ -51,14 +52,14 @@ const SCREENS = {
     <p class="verdict">${verdict}</p>
     ${extra}
     ${record?.isNewBest ? '<p class="record">New best time on this machine.</p>' : bestLine()}
-    <p class="start">Press <kbd>R</kbd> to play again</p>`,
+    <p class="start"><span class="key-only">Press <kbd>R</kbd> to play again</span><span class="touch-only">Tap here to play again</span></p>`,
   lost: (clock, verdict, record, extra) => `
     <h1>09:30 — the keynote starts<span>in the dark</span></h1>
     <p>Two thousand developers stare at a black screen. Somewhere, a speaker is still holding a laptop
     with no way to plug it in.</p>
     <p class="verdict">${verdict}</p>
     ${extra}
-    <p class="start">Press <kbd>R</kbd> to try again</p>`,
+    <p class="start"><span class="key-only">Press <kbd>R</kbd> to try again</span><span class="touch-only">Tap here to try again</span></p>`,
 };
 
 export function createHud(root) {

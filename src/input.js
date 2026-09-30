@@ -1,4 +1,5 @@
-// Keyboard input: held keys for movement, a queue of fresh presses for one-shot actions.
+// Keyboard input: held keys for movement, a queue of fresh presses for one-shot actions. The touch
+// controls (src/touch.js) feed the same two channels: a stick vector and synthetic key presses.
 
 const MOVE_KEYS = {
   KeyW: [0, -1], ArrowUp: [0, -1],
@@ -11,6 +12,7 @@ const GAME_KEYS = new Set([...Object.keys(MOVE_KEYS), 'Tab', 'Space', 'KeyE', 'D
 export function createInput(target = window) {
   const held = new Set();
   const presses = [];
+  let stick = { x: 0, y: 0 };
 
   target.addEventListener('keydown', event => {
     if (GAME_KEYS.has(event.code)) {
@@ -37,7 +39,18 @@ export function createInput(target = window) {
         }
       }
       const length = Math.hypot(x, y);
-      return length > 0 ? { x: x / length, y: y / length } : { x: 0, y: 0 };
+      if (length > 0) {
+        return { x: x / length, y: y / length };
+      }
+      return { ...stick };
+    },
+    /** Sets the touch stick; unlike the keys it is analog, length 0 to 1. */
+    setStick(vector) {
+      stick = vector;
+    },
+    /** Queues a key press as if it had been typed (a touch button). */
+    press(code) {
+      presses.push(code);
     },
     /** Key presses since the last call (each press reported once). */
     consumePresses() {

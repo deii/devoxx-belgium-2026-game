@@ -471,3 +471,135 @@ kbd {
   font-weight: 600;
 }
 
+
+/* Touch controls (src/touch.js). Hidden until the device turns out to have a touch screen; then the
+   keyboard hints give way to a stick on the left half and buttons on the right. */
+.touch-only,
+.touch-layer {
+  display: none;
+}
+
+body.touch .touch-only {
+  display: inline;
+}
+
+body.touch p.touch-only {
+  display: block;
+}
+
+body.touch .key-only,
+body.touch .controls {
+  display: none;
+}
+
+body.touch .touch-layer {
+  display: block;
+}
+
+#hud:has(.screen.visible) .touch-layer {
+  display: none;
+}
+
+body.touch,
+body.touch #game {
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+body.touch .roster .robot {
+  pointer-events: auto;
+}
+
+/* Pinned to the bottom of the scrolling panel, so the way into the game is always in sight. */
+body.touch .screen .start {
+  position: sticky;
+  bottom: -28px;          /* the panel's bottom padding */
+  margin: 16px -32px -28px;
+  padding: 14px 22px;
+  text-align: center;
+  background: #ff8a1f;
+  color: #11141b;
+  cursor: pointer;
+  animation: none;
+}
+
+body.touch .prompt {
+  bottom: 24px;
+  max-width: 50vw;
+  white-space: normal;
+  text-align: center;
+}
+
+.stick-zone {
+  position: absolute;
+  top: 130px;
+  bottom: 0;
+  left: 0;
+  width: 50%;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.stick-base {
+  position: absolute;
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+  border: 2px solid rgba(232, 230, 225, 0.35);
+  border-radius: 50%;
+  background: rgba(11, 13, 18, 0.35);
+  opacity: 0;
+  transition: opacity 0.1s;
+}
+
+.stick-base.visible {
+  opacity: 1;
+}
+
+.stick-knob {
+  position: absolute;
+  left: 35px;
+  top: 35px;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(255, 138, 31, 0.75);
+}
+
+.touch-buttons {
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  gap: 10px;
+  pointer-events: auto;
+}
+
+.touch-buttons button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 1px solid rgba(232, 230, 225, 0.3);
+  border-radius: 50%;
+  background: rgba(11, 13, 18, 0.72);
+  color: #e8e6e1;
+  font-size: 22px;
+  touch-action: manipulation;
+}
+
+.touch-buttons button:active {
+  background: rgba(255, 138, 31, 0.4);
+}
+
+.touch-buttons .act {
+  width: 84px;
+  height: 84px;
+  border: 2px solid #ff8a1f;
+  font-size: 30px;
+  font-weight: 700;
+  color: #ff8a1f;
+}
