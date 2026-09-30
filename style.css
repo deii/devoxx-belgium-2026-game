@@ -202,6 +202,8 @@ kbd {
   max-width: 560px;
   max-height: calc(100vh - 32px);
   overflow-y: auto;
+  overscroll-behavior: contain;
+  pointer-events: auto;   /* the HUD ignores the mouse, but the panel has to scroll */
   box-sizing: border-box;
   margin: 16px;
   padding: 28px 32px;
@@ -253,7 +255,6 @@ kbd {
 
 .screen .credit a {
   color: inherit;
-  pointer-events: auto;
 }
 
 .screen .start {

@@ -262,3 +262,10 @@ over C, A♭ and B♭ (a common chord move in game fanfares) that land on a held
 pulse wave (built with a PeriodicWave from its Fourier series) over a triangle bass with noise-snare
 hits, about 2.8 s. It replaces the plain win chord. Checked in the browser that all 28 notes are
 scheduled when the game is won.
+
+### Playtest fix — scrolling the title screen (16:15)
+**Prompt:** "On the initial screen with the description overlay scrolling does not work well. The mouse
+scroll wheel zooms in and out."
+Cause: the whole HUD ignores the mouse (`pointer-events: none`), so the wheel fell through the panel
+to the canvas, whose zoom handler swallowed it. The panel now takes pointer events and contains its
+own scrolling, and the wheel zooms only while playing.

@@ -38,8 +38,12 @@ const renderer = createRenderer(canvas, level);
 const hud = createHud(document.getElementById('hud'));
 const audio = createAudio();
 
+// Zoom only during play; on the title and end screens the wheel scrolls the panel instead.
 canvas.addEventListener('wheel', event => {
   event.preventDefault();
+  if (state.phase !== 'playing') {
+    return;
+  }
   const steps = -event.deltaY / WHEEL_DELTA_PER_STEP;
   renderer.zoomBy(Math.max(-1, Math.min(1, steps)));
 }, { passive: false });
