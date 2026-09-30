@@ -107,7 +107,7 @@ aborts the self-test; browser run shows the log, progress ring and the verdict o
 **Caught in testing:** a seeded test RNG always picked the same culprit — a flaw of the test's
 generator (tiny first value), confirmed by re-running against `Math.random`.
 
-### M4 — light and weight (13:35)
+### M4 — light and weight (13:20)
 **Prompt:** "Glitches are noticeable — not frustrating. Go ahead."
 
 - Lighting is a darkness mask on an offscreen canvas with lights cut out (`destination-out`),
