@@ -7,6 +7,7 @@ import {
   drawTravelPoints,
 } from './render-props.js';
 import { drawRobotBody, drawRobotShadow } from './robot-art.js';
+import { drawPeople, drawPeopleSpeech } from './people.js';
 import { drawSpeech } from './speech.js';
 
 const VISIBLE_METRES_MIN = 24;  // the shorter screen side always shows at least this many metres
@@ -129,6 +130,7 @@ export function createRenderer(canvas, level) {
     drawBarriers(ctx, level);
     drawDoor(ctx, level, mission, state.time);
     drawCrates(ctx, mission.crates);
+    drawPeople(ctx, state.people);
     robots.forEach(robot => drawRobotShadow(ctx, robot));
     drawParticles(ctx, effects);
     const bug = state.heisenbug;
@@ -149,6 +151,7 @@ export function createRenderer(canvas, level) {
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     drawLabels(ctx, level, view.toScreen);
     drawSpeech(ctx, speech, state, view.toScreen);
+    drawPeopleSpeech(ctx, state.people, view.toScreen);
   }
 
   return { draw, zoomBy, resetZoom };

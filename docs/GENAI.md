@@ -336,3 +336,14 @@ purple sofas against the Room 1 wall with coffee tables, a long teal rug, the ro
 adapter lies on, and a speaker-ready desk with a monitor and laptops on charge. None of it is solid,
 so Voxxy's route through the 1.25 m barrier gap to the adapter is unchanged. The decor drawer became
 a type → function table so new furniture types are one entry each.
+
+### People (17:10)
+**Prompt:** "Go ahead with people — no collision needed, just random lurking."
+Eighteen people in seven areas (`people` in the level data, one role per person): attendees in the
+foyer, corridor, lobby and hall, crew at the booths and an AV tech on the Room 8 stage, and a speaker
+rehearsing in the lounge. Each walks to a random spot in its area, stands for 2–9 s, and picks
+another; spots inside booths or pillars are rejected and every path is sampled against the walls, so
+nobody walks through one. When a robot comes within ~2 m a person turns to it and says a line that
+depends on their role and the robot (speaker to Voxxy: "Have you seen my adapter?"). They never
+collide, so they cannot change the mission. The bubble drawing moved into a shared `drawBubble`.
+Simulated for two simulated minutes: every person moved, and nobody came closer than 0.37 m to a wall.

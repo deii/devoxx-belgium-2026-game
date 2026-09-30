@@ -118,6 +118,15 @@ export default {
     projector: { x: 862, y: 1075 },
   },
 
+  // Where people lurk (see src/people.js): one role per person, each wandering inside its area.
+  people: [
+    { x1: 480, y1: 95, x2: 640, y2: 185, roles: ['attendee', 'attendee', 'attendee', 'attendee', 'crew'] }, // foyer
+    { x1: 470, y1: 395, x2: 500, y2: 610, roles: ['speaker'] },                                         // lounge
+    { x1: 672, y1: 640, x2: 795, y2: 1120, roles: ['attendee', 'attendee', 'crew'] },                    // corridor
+    { x1: 670, y1: 1200, x2: 845, y2: 1380, roles: ['attendee', 'attendee'] },                           // lobby
+    { x1: 1048, y1: 1000, x2: 1085, y2: 1150, roles: ['crew'] },                                         // AV tech on stage
+  ],
+
   // Furniture that is only drawn; solid pieces are also listed in blocks.
   decor: [
     { type: 'counter', x: (COFFEE_BAR.x1 + COFFEE_BAR.x2) / 2, y: (COFFEE_BAR.y1 + COFFEE_BAR.y2) / 2,

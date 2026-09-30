@@ -114,6 +114,10 @@ projector — a blue "no signal" beam until the adapter is plugged in.
 
 ![Room 8 with the house lights on and the projector's "no signal" beam](docs/screenshot-room8.png)
 
+People are around, too: early attendees in the foyer and corridor, crew setting up the booths and
+the stage, a speaker rehearsing in the lounge. They do not block the robots — they wander, stand
+around, and have something to say when a robot rolls up ("Biggy! Mind my toes!").
+
 The exhibition hall is full of (made-up) sponsor booths, the foyer has its coffee bar and bean
 bags, and the robots are animated: Voxxy blinks and looks into turns, Droid walks and scans the room
 with its torch, Biggy waddles. A robot hit by the Heisenbug flickers with a faint double while it

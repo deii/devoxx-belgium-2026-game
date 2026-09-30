@@ -66,6 +66,12 @@ export default {
     ...BOOTHS.map(([x, y]) => rect(x - BOOTH_HALF.width, y - BOOTH_HALF.height, x + BOOTH_HALF.width, y + BOOTH_HALF.height)),
   ],
 
+  // Where people lurk (see src/people.js): crew setting up the booths, one early visitor.
+  people: [
+    { x1: v(250), y1: v(700), x2: v(1100), y2: v(1250), roles: ['crew', 'crew', 'crew', 'crew', 'attendee'] },
+    { x1: v(880), y1: v(330), x2: v(1120), y2: v(640), roles: ['crew'] },
+  ],
+
   // Furniture that is only drawn; solid pieces are also listed in blocks.
   decor: BOOTHS.map(([x, y, name], index) => ({
     type: 'booth', ...labelAt(x, y), width: v(BOOTH_HALF.width * 2), height: v(BOOTH_HALF.height * 2),

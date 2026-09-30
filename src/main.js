@@ -13,6 +13,7 @@ import { collideBodies, collideWithWalls, integrate } from './physics.js';
 import { recordWin } from './records.js';
 import { createRenderer } from './render.js';
 import { createSpeech, updateSpeech } from './speech.js';
+import { createPeople, updatePeople } from './people.js';
 import { createRur, updateRur } from './rur.js';
 import { createTravel, isRiding, travelAct, travelPrompt, updateTravel } from './travel.js';
 import { createRobot, driveRobot, idleCommand, ROBOT_ORDER } from './robots.js';
@@ -65,6 +66,7 @@ function createGameState(phase) {
     heisenbug: createHeisenbug(),
     travel: createTravel(),
     rur: createRur(),
+    people: createPeople(level),
     activeIndex: 0,
     time: 0,
     camera: { x: robots[0].x, y: robots[0].y },
@@ -216,6 +218,7 @@ function frame(now) {
   updateEffects(effects, state, frameTime);
   audio.update(state);
   updateSpeech(speech, state, frameTime);
+  updatePeople(state, frameTime);
   renderer.draw(state, effects, speech);
   hud.update(state);
   state.robots.forEach(robot => {

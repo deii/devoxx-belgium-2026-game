@@ -23,6 +23,7 @@ export function loadLevel(...areaData) {
     links: linkTravelPoints(areas.flatMap(area => area.travel)),
     zones: primary.zones,
     decor: areas.flatMap(area => area.decor),
+    people: areas.flatMap(area => area.people),
     labels: areas.flatMap(area => area.labels),
     spawns: Object.assign({}, ...areas.map(area => area.spawns)),
   };
@@ -58,6 +59,7 @@ function loadArea(data) {
     mission: transform(data.mission || {}),
     lighting: transform(data.lighting || {}),
     decor: transform(data.decor || []),
+    people: transform(data.people || []),
     travel: (data.travel || []).map(end => ({ ...transform(end), exit: toWorld(end.exit) })),
     zones: transform(data.zones || []),
     labels: data.labels.map(label => ({ text: label.text, ...toWorld([label.x, label.y]) })),

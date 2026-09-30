@@ -196,31 +196,33 @@ function say(speech, state, event, type) {
 
 /** Draws bubbles in screen space; `toScreen` maps world metres to CSS pixels. */
 export function drawSpeech(ctx, speech, state, toScreen) {
+  for (const robot of state.robots) {
+    const bubble = speech.bubbles[robot.type];
+    if (bubble) {
+      drawBubble(ctx, bubble.text, toScreen(robot.x, robot.y - robot.radius), Math.min(1, bubble.remaining / 0.3));
+    }
+  }
+}
+
+/** One speech bubble in screen space, its tail pointing down at anchor. */
+export function drawBubble(ctx, text, anchor, alpha) {
   ctx.font = '600 14px system-ui, sans-serif';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
-  for (const robot of state.robots) {
-    const bubble = speech.bubbles[robot.type];
-    if (!bubble) {
-      continue;
-    }
-    const alpha = Math.min(1, bubble.remaining / 0.3);
-    const anchor = toScreen(robot.x, robot.y - robot.radius);
-    const width = ctx.measureText(bubble.text).width + 20;
-    const height = 26;
-    const x = anchor.x - width / 2;
-    const y = anchor.y - height - 16;
+  const width = ctx.measureText(text).width + 20;
+  const height = 26;
+  const x = anchor.x - width / 2;
+  const y = anchor.y - height - 16;
 
-    ctx.globalAlpha = alpha;
-    ctx.fillStyle = 'rgba(245, 243, 238, 0.95)';
-    ctx.beginPath();
-    ctx.roundRect(x, y, width, height, 8);
-    ctx.moveTo(anchor.x - 6, y + height);
-    ctx.lineTo(anchor.x, y + height + 8);
-    ctx.lineTo(anchor.x + 6, y + height);
-    ctx.fill();
-    ctx.fillStyle = '#15171c';
-    ctx.fillText(bubble.text, anchor.x, y + height / 2 + 1);
-    ctx.globalAlpha = 1;
-  }
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = 'rgba(245, 243, 238, 0.95)';
+  ctx.beginPath();
+  ctx.roundRect(x, y, width, height, 8);
+  ctx.moveTo(anchor.x - 6, y + height);
+  ctx.lineTo(anchor.x, y + height + 8);
+  ctx.lineTo(anchor.x + 6, y + height);
+  ctx.fill();
+  ctx.fillStyle = '#15171c';
+  ctx.fillText(text, anchor.x, y + height / 2 + 1);
+  ctx.globalAlpha = 1;
 }
