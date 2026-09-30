@@ -60,6 +60,21 @@ No build step, no dependencies — plain HTML, CSS and JavaScript on a 2D canvas
 | **Droid** | Has been in this building for years. Opens service doors, restores power, lights the way. |
 | **Biggy** | Heavy and hard to stop. Pushes crates and forces jammed doors — but cannot take the stairs. |
 
+## Their idols
+
+Every robot looks up to a Devoxx speaker whose strengths it shares, and reacts to what happens in
+speech bubbles — in its own words:
+
+- **Voxxy** idolises **Josh Long** — nobody gets from slide to live demo faster. Voxxy borrows his
+  "Bootiful" whenever something goes right.
+- **Droid** idolises **Dr. Venkat Subramaniam** — decades of making hard things clear. Droid tries
+  to light the way for others the same way.
+- **Biggy** idolises **Victor Rentea** — once he starts refactoring, nothing in the way survives.
+  Biggy feels the same about crates.
+
+This is an affectionate fan tribute written for the competition. The speakers are not involved in
+or affiliated with this game, and apart from the well-known "Bootiful" no line in it is theirs.
+
 ## Controls
 
 | Key | Action |

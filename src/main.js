@@ -11,6 +11,7 @@ import { activeSegments, crateMassFor, createMission, slowCrate, updateMission }
 import { collideBodies, collideWithWalls, integrate } from './physics.js';
 import { recordWin } from './records.js';
 import { createRenderer } from './render.js';
+import { createSpeech, updateSpeech } from './speech.js';
 import { createRobot, driveRobot, idleCommand, ROBOT_ORDER } from './robots.js';
 
 const PHYSICS_STEP = 1 / 120;       // s — fixed step keeps collisions stable
@@ -31,6 +32,7 @@ const audio = createAudio();
 
 let state = createGameState('title');
 let effects = createEffects();
+let speech = createSpeech();
 let actionPending = false;
 
 function createGameState(phase) {
@@ -69,6 +71,7 @@ function handlePresses() {
     } else if (RESTART_KEYS.has(code)) {
       state = createGameState('playing');
       effects = createEffects();
+      speech = createSpeech();
     }
   }
 }
@@ -160,7 +163,8 @@ function frame(now) {
   updateCamera(frameTime);
   updateEffects(effects, state, frameTime);
   audio.update(state);
-  renderer.draw(state, effects);
+  updateSpeech(speech, state, frameTime);
+  renderer.draw(state, effects, speech);
   hud.update(state);
   state.robots.forEach(robot => { robot.lastImpact = 0; });
   requestAnimationFrame(frame);

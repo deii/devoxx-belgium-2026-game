@@ -143,3 +143,25 @@ generator (tiny first value), confirmed by re-running against `Math.random`.
   route failed for Biggy — the waypoint hugged the row ends; the aisle itself was wide enough.
 - **Replay:** best time per browser in `localStorage` (guarded for private windows), an opening tip
   that points first-time players at Biggy, and the README screenshots (taken with Playwright).
+
+### M6 — the robots' idols (14:00)
+**Prompt (first version):** style the robots *after* three conference speakers — Voxxy as Josh
+Long, Droid as Dr. Venkat Subramaniam, Biggy as Victor Rentea.
+
+**The model pushed back before building anything:** real, named people in a public, MIT-licensed
+entry that could be demoed on the Devoxx keynote stage need their consent; mapping Biggy's traits
+("heavy, short legs, slow, can't take the stairs") onto a named person reads as a body joke; and
+the brief requires the three robots themselves to appear, so a rename or reskin would cost points.
+It offered: ask the speakers first, use speaker archetypes, or go ahead with softened wording.
+
+**Prompt (refined by the author):** "Instead of personifying the robot, the robots could look up to
+these speakers as idols because of the abilities mentioned. Voxxy could say 'Bootiful' when he
+likes something."
+
+- Implemented as a fan tribute: an "Idol:" line per robot on the title screen and event-driven
+  speech bubbles (`src/speech.js`), detected by diffing state like the audio.
+- Rule the model kept: robots speak in their own words. The only borrowed phrase is Josh Long's
+  public catchphrase "Bootiful"; no quote is invented and attributed to a speaker. Biggy admires
+  Victor Rentea for unstoppable *refactoring*, not for anything physical.
+- README carries a short fan-tribute / no-affiliation note.
+- Caught in a screenshot: the longer title panel nearly filled a 768 px screen — it now scrolls.

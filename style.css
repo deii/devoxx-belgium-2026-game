@@ -176,6 +176,9 @@ kbd {
 
 .screen .panel {
   max-width: 560px;
+  max-height: calc(100vh - 32px);
+  overflow-y: auto;
+  box-sizing: border-box;
   margin: 16px;
   padding: 28px 32px;
   background: #11141b;
@@ -298,4 +301,11 @@ kbd {
 .screen .record {
   color: #ff8a1f;
   font-weight: 600;
+}
+
+.screen .cast .idol {
+  display: block;
+  font-size: 13px;
+  font-style: italic;
+  color: #8f95a3;
 }

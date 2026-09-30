@@ -4,6 +4,7 @@
 import { culpritName } from './glitch.js';
 import { formatClock } from './mission.js';
 import { loadBestClockLeft } from './records.js';
+import { IDOLS } from './speech.js';
 import { ROBOT_ORDER, ROBOT_SPECS } from './robots.js';
 
 const CLOCK_WARNING_SECONDS = 120;
@@ -18,9 +19,9 @@ const SCREENS = {
     has diagnosed yet. Watch the system log, work out which robot misbehaves, and run diagnostics
     on it in the maintenance bay. Guess wrong and it costs you keynote time.</p>
     <ul class="cast">
-      <li style="--robot-color: ${ROBOT_SPECS.voxxy.color}"><b>Voxxy</b> light and quick — fits where others don't, carries small things</li>
-      <li style="--robot-color: ${ROBOT_SPECS.droid.color}"><b>Droid</b> has been here for years — knows the fuse panel and the service doors</li>
-      <li style="--robot-color: ${ROBOT_SPECS.biggy.color}"><b>Biggy</b> 460 kg of armour — slow to start, hard to stop, moves what nobody else can</li>
+      <li style="--robot-color: ${ROBOT_SPECS.voxxy.color}"><b>Voxxy</b> light and quick — fits where others don't, carries small things${idolLine('voxxy')}</li>
+      <li style="--robot-color: ${ROBOT_SPECS.droid.color}"><b>Droid</b> has been here for years — knows the fuse panel and the service doors${idolLine('droid')}</li>
+      <li style="--robot-color: ${ROBOT_SPECS.biggy.color}"><b>Biggy</b> 460 kg of armour — slow to start, hard to stop, moves what nobody else can${idolLine('biggy')}</li>
     </ul>
     <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>M</kbd> sound on/off</p>
     ${bestLine()}
@@ -125,6 +126,11 @@ export function createHud(root) {
   }
 
   return { update };
+}
+
+function idolLine(type) {
+  const idol = IDOLS[type];
+  return `<span class="idol">Idol: ${idol.name} — ${idol.why}.</span>`;
 }
 
 function bestLine() {

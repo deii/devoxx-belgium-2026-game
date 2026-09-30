@@ -163,6 +163,7 @@ export function updateDiagnostic(state, dt) {
     return;
   }
   const name = diagnostic.robot.spec.name;
+  bug.lastDiagnosedType = diagnostic.robot.type;
   if (diagnostic.robot.type === bug.culprit) {
     bug.patched = true;
     bug.active = null;

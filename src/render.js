@@ -6,6 +6,7 @@ import {
   drawAdapter, drawBarriers, drawCrates, drawDoor, drawFusePanel, drawMaintenanceBay, drawRoom8,
 } from './render-props.js';
 import { drawRobotBody, drawRobotShadow } from './robot-art.js';
+import { drawSpeech } from './speech.js';
 
 const VISIBLE_METRES_MIN = 24;  // the shorter screen side always shows at least this many metres
 const MIN_PIXELS_PER_METRE = 18;
@@ -67,7 +68,7 @@ export function createRenderer(canvas, level) {
     };
   }
 
-  function draw(state, effects) {
+  function draw(state, effects, speech) {
     const ratio = window.devicePixelRatio || 1;
     const view = createView(state, effects);
     const mission = state.mission;
@@ -109,6 +110,7 @@ export function createRenderer(canvas, level) {
 
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
     drawLabels(ctx, level, view.toScreen);
+    drawSpeech(ctx, speech, state, view.toScreen);
   }
 
   return { draw };
