@@ -378,3 +378,26 @@ background? It's too bright in a darker game." — the light studio background w
 ImageMagick flood fills from the corners (fuzz 9 %) into transparent PNGs; the portraits now sit on a
 dark radial backdrop faintly lit in each robot's colour. Cards shrank to 72 px selected / 44 px
 otherwise.
+
+### Polish, tests, performance and a requirements check (17:37)
+**Prompt:** "Polish code, check tests and performance, verify all requirements and goals from the
+Devoxx website are met."
+- **Tests:** the repository had none — every check so far had been a throwaway simulation script.
+  The model turned them into a dependency-free `node --test` suite (`npm test`, 10 tests, ~3 s)
+  that plays the real level headlessly: lift needs power, Biggy refuses stairs, crates stop Voxxy
+  and Droid, a full run from the hall to the crates, hall reachability for every robot, only Voxxy
+  fits into the lounge, people never touch walls, and both self-test outcomes.
+- **Review:** a second agent reviewed the code read-only. Fixed from its report: the audio kept the
+  previous game's event memory, so restarting could play a stray buzz, ding or thud; a person with
+  nowhere to walk retried the whole search every frame; the closed-door wall list was re-copied 120
+  times a second; Biggy's step length was defined in three files; dead code (unused taglines, zones,
+  `isHeld`, a canvas reference, exports) and stale comments. The carousel's mass and top speed are
+  now computed from the drive model instead of typed in.
+- **Performance** (Chromium, 1920×1080): a steady 60 fps (16.6 ms frames, p95 16.8 ms, no long
+  tasks) in every area, still 60 fps with the CPU throttled 4×; ~1.7 ms of script per frame, heap
+  under 5 MB. The review's remaining micro-optimisations (gradient caching, view culling) were left
+  alone as not worth the risk on deadline day.
+- **Requirements** re-read from game.devoxx.be/game.html: all three robots with a job only they can
+  do; the exhibition hall, the cinema floor and stairs between them; playable by a newcomer with an
+  opening tip and objective list; README from clone to playing; MIT LICENSE; public repository;
+  GenAI use and prompts documented here.

@@ -1,0 +1,10 @@
+{
+  "name": "heisenbug-keynote-in-10",
+  "private": true,
+  "description": "Devoxx Belgium 2026 Robot Games entry. No build and no dependencies; package.json only marks the sources as ES modules and runs the tests.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/*.test.js"
+  }
+}

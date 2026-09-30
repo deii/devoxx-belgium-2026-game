@@ -39,9 +39,6 @@ export function createInput(target = window) {
       const length = Math.hypot(x, y);
       return length > 0 ? { x: x / length, y: y / length } : { x: 0, y: 0 };
     },
-    isHeld(code) {
-      return held.has(code);
-    },
     /** Key presses since the last call (each press reported once). */
     consumePresses() {
       return presses.splice(0);

@@ -7,7 +7,6 @@ const THROTTLE_RELEASE_FACTOR = 3; // motors spool down faster than they spool u
 export const ROBOT_SPECS = {
   voxxy: {
     name: 'Voxxy',
-    tagline: 'Light, curious and quick. Slips through gaps, carries small things.',
     color: '#ff8a1f',
     radius: 0.4,
     mass: 45,           // kg
@@ -22,7 +21,6 @@ export const ROBOT_SPECS = {
   },
   droid: {
     name: 'Droid',
-    tagline: 'Has been in this building for years. Knows every service door.',
     color: '#ffc46b',
     radius: 0.5,
     mass: 140,
@@ -37,7 +35,6 @@ export const ROBOT_SPECS = {
   },
   biggy: {
     name: 'Biggy',
-    tagline: 'Short legs, heavy armour. Slow to start, hard to stop.',
     color: '#6f8aa8',
     radius: 0.85,
     mass: 460,
@@ -53,6 +50,7 @@ export const ROBOT_SPECS = {
 };
 
 export const ROBOT_ORDER = ['voxxy', 'droid', 'biggy'];
+export const BIGGY_STEP_LENGTH = 0.9;   // m per footfall: the thud, the dust and the waddle share it
 
 export function createRobot(type, spawn) {
   const spec = ROBOT_SPECS[type];

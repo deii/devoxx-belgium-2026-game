@@ -32,7 +32,7 @@ const CRATE = {
   mass: 300,
   restitution: 0.1,
   drag: 2,               // 1/s
-  groundFriction: 0.8,   // m/s² — sliding friction on the foyer carpet
+  groundFriction: 0.8,   // m/s² — sliding friction on the corridor floor
   minPusherMass: 300,    // lighter robots cannot shift a crate at all
 };
 
@@ -64,7 +64,11 @@ export function createMission(level) {
 
 /** Wall segments that currently block movement: the static level plus a closed door. */
 export function activeSegments(level, mission) {
-  return mission.doorOpen ? level.segments : [...level.segments, mission.doorSegment];
+  if (mission.doorOpen) {
+    return level.segments;
+  }
+  mission.segmentsWithDoor ??= [...level.segments, mission.doorSegment];   // built once per game
+  return mission.segmentsWithDoor;
 }
 
 export function crateMassFor(robot, crate) {

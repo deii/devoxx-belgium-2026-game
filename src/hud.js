@@ -16,15 +16,15 @@ const CAROUSEL_INTERVAL = 6000;   // ms between slides until the player takes ov
 const CAST = {
   voxxy: {
     role: "Light and quick — fits where others don't and carries the small things.",
-    facts: '45 kg · top speed 4.5 m/s · takes the stairs',
+    floors: 'takes the stairs',
   },
   droid: {
     role: 'Has been in this building for years — knows the stairs, the breakers and the service doors.',
-    facts: '140 kg · top speed 2.9 m/s · takes the stairs',
+    floors: 'takes the stairs',
   },
   biggy: {
     role: '460 kg of armour — slow to start, hard to stop, moves what nobody else can.',
-    facts: '460 kg · top speed 2.5 m/s · no stairs, takes the lift',
+    floors: 'no stairs, takes the lift',
   },
 };
 
@@ -79,7 +79,6 @@ export function createHud(root) {
     clockValue: root.querySelector('.clock-value'),
     objectives: root.querySelector('.objectives'),
     logLines: root.querySelector('.log-lines'),
-    canvas: document.getElementById('game'),
     prompt: root.querySelector('.prompt'),
     screen: root.querySelector('.screen'),
     panel: root.querySelector('.screen .panel'),
@@ -181,7 +180,7 @@ function castCarousel() {
         <figcaption>
           <h2><span class="key">${index + 1}</span> ${spec.name}</h2>
           <p>${CAST[type].role}</p>
-          <p class="facts">${CAST[type].facts}</p>
+          <p class="facts">${factsLine(spec, CAST[type].floors)}</p>
           <p class="idol"><b>Idol: ${idol.name}</b> — ${idol.why}.</p>
         </figcaption>
       </figure>`;
@@ -194,6 +193,12 @@ function castCarousel() {
       <button class="nav next" aria-label="Next robot">›</button>
       <div class="dots">${dots}</div>
     </div>`;
+}
+
+/** Mass and top speed straight from the drive model: top speed ≈ force / (mass · drag). */
+function factsLine(spec, floors) {
+  const topSpeed = spec.driveForce / (spec.mass * spec.drag);
+  return `${spec.mass} kg · top speed ${topSpeed.toFixed(1)} m/s · ${floors}`;
 }
 
 function createCarousel(root) {

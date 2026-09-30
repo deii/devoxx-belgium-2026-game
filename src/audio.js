@@ -3,11 +3,11 @@
 // triggered by diffing the game state between frames, so the rest of the game does not need to know
 // sound exists.
 
+import { BIGGY_STEP_LENGTH } from './robots.js';
 import { LIFT_RIDE_DURATION } from './travel.js';
 
 const MASTER_VOLUME = 0.5;
 const HEARING_RANGE = 22;            // m — robots further from the camera are silent
-const BIGGY_STEP_LENGTH = 0.9;       // m, matches the footfall dust in effects.js
 const IMPACT_THRESHOLD = 0.35;       // m/s — gentler touches are silent
 const IMPACT_DEBOUNCE = 0.18;        // s — one bounce sequence makes one sound
 const CRATE_SCRAPE_THRESHOLD = 0.15; // m/s
@@ -413,7 +413,17 @@ export function createAudio() {
     }
   }
 
-  return { unlock, toggleMute, update };
+  /** Forgets the previous game's state, so a restart does not look like a burst of events. */
+  function reset() {
+    for (const key of Object.keys(previous)) {
+      delete previous[key];
+    }
+    if (context) {
+      stopLiftMusic();
+    }
+  }
+
+  return { unlock, toggleMute, update, reset };
 }
 
 function proximity(state, body) {

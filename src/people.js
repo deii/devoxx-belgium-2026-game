@@ -83,7 +83,7 @@ export function updatePeople(state, dt, random = Math.random) {
     if (state.phase !== 'playing') {
       continue;
     }
-    const robot = nearestRobot(state.robots, person);
+    const robot = robotInRange(state.robots, person);
     if (robot && person.reactionCooldown === 0) {
       react(person, robot, random);
       continue;
@@ -110,6 +110,9 @@ function walk(person, dt, random) {
     if (person.pause <= 0) {
       person.target = pickTarget(person, random);
       person.speed = between(WALK_SPEED, random);
+      if (!person.target) {
+        person.pause = between(PAUSE, random);    // stay put a while, then try again
+      }
     }
     return;
   }
@@ -136,7 +139,7 @@ function pickTarget(person, random) {
       return spot;
     }
   }
-  return null;                            // nowhere to go from here right now; try again later
+  return null;                            // nowhere to go from here right now
 }
 
 function randomSpot(area, walls, random) {
@@ -162,7 +165,7 @@ function pathClear(from, to, walls) {
   return true;
 }
 
-function nearestRobot(robots, person) {
+function robotInRange(robots, person) {
   return robots.find(robot => Math.hypot(robot.x - person.x, robot.y - person.y) - robot.radius < REACTION_RANGE);
 }
 

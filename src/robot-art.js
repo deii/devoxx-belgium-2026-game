@@ -1,12 +1,13 @@
 // Top-down vector drawings of the three robots, drawn from the Devoxx model sheets.
-// Units are metres; the caller has already translated to the robot and rotated so +x is forward.
+// Units are metres; each robot is drawn around its own centre with +x pointing forward.
+
+import { BIGGY_STEP_LENGTH } from './robots.js';
 
 const SHADOW_OFFSET = { x: 0.1, y: 0.16 };
 const BLINK_INTERVAL = 3.7;          // s between Voxxy's blinks
 const BLINK_DURATION = 0.12;         // s
 const IDLE_SPEED = 0.3;              // m/s — below this a robot counts as standing still
 const DROID_STEP_LENGTH = 0.6;       // m per step
-const BIGGY_STEP_LENGTH = 0.9;       // m per step, matches the footfall dust and thuds
 
 /**
  * Where Droid is looking, relative to its heading: into turns while walking, and slowly scanning

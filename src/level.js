@@ -10,7 +10,6 @@ export function loadLevel(...areaData) {
   const areas = areaData.map(loadArea);
   const primary = areas[0];
   return {
-    name: primary.name,
     plans: areas.map(area => area.plan),
     outlines: areas.map(area => area.outline),
     walls: areas.flatMap(area => area.walls),
@@ -21,7 +20,6 @@ export function loadLevel(...areaData) {
     mission: Object.assign({}, ...areas.map(area => area.mission)),
     lighting: mergeLighting(areas.map(area => area.lighting)),
     links: linkTravelPoints(areas.flatMap(area => area.travel)),
-    zones: primary.zones,
     decor: areas.flatMap(area => area.decor),
     people: areas.flatMap(area => area.people),
     labels: areas.flatMap(area => area.labels),
@@ -42,7 +40,6 @@ function loadArea(data) {
   const seatRows = data.seatRows.map(polyline => polyline.map(toWorld));
 
   return {
-    name: data.name,
     plan: { src: data.plan.src, metresPerPx: scale, offset },
     outline,
     walls,
@@ -61,7 +58,6 @@ function loadArea(data) {
     decor: transform(data.decor || []),
     people: transform(data.people || []),
     travel: (data.travel || []).map(end => ({ ...transform(end), exit: toWorld(end.exit) })),
-    zones: transform(data.zones || []),
     labels: data.labels.map(label => ({ text: label.text, ...toWorld([label.x, label.y]) })),
     spawns: Object.fromEntries(Object.entries(data.spawns || {}).map(
       ([id, spawn]) => [id, { ...toWorld([spawn.x, spawn.y]), heading: spawn.heading }])),

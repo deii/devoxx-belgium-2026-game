@@ -1,8 +1,9 @@
 // Physical feel: dust where robots skid, stomp or crash, and camera shake scaled by mass × impact.
 
+import { BIGGY_STEP_LENGTH } from './robots.js';
+
 const SKID_THRESHOLD = 0.7;          // m/s of sideways slip before dust appears
 const SKID_DUST_PER_SECOND = 40;
-const BIGGY_STEP_LENGTH = 0.9;       // m travelled per footfall
 const BIGGY_STEP_SHAKE = 0.035;      // m of camera shake per footfall
 const IMPACT_THRESHOLD = 0.6;        // m/s
 const IMPACT_DUST_PER_MPS = 10;

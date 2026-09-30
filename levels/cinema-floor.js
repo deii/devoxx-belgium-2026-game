@@ -175,11 +175,6 @@ export default {
     { link: 'service-lift', x: 792, y: 740, radius: 14, exit: [770, 720], label: 'Service lift down to the exhibition hall' },
   ],
 
-  // Non-solid areas with a gameplay meaning (used from milestone 3 on).
-  zones: [
-    { id: 'grand-staircase', label: 'Grand staircase', x1: 710, y1: 1230, x2: 830, y2: 1295 },
-  ],
-
   labels: [
     { text: 'FOYER', x: 560, y: 150 },
     { text: "SPEAKERS' LOUNGE", x: 485, y: 470 },

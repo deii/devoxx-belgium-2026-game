@@ -14,7 +14,7 @@ const FRUSTRATION_MAX_PER_BUMP = 0.35;
 const FRUSTRATION_COOLDOWN = 0.04;    // per s — from furious to calm in about 25 s
 const BUMP_DEBOUNCE = 0.6;            // s — one bounce sequence counts as one bump
 const BUMP_LINE_COOLDOWN = 3;         // s between complaints from the same robot
-export const MOOD_LEVELS = [
+const MOOD_LEVELS = [
   { name: 'calm', from: 0 },
   { name: 'annoyed', from: 0.35 },
   { name: 'furious', from: 0.7 },

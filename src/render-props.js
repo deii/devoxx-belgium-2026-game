@@ -1,4 +1,5 @@
-// Mission props, drawn in world units (metres).
+// Props and furniture — mission props, decor, stage, lift, electrical room, maintenance bay — drawn
+// in world units (metres).
 
 import { DIAGNOSTIC_DURATION } from './glitch.js';
 
@@ -22,7 +23,6 @@ export function drawRoom8(ctx, level) {
     ctx.lineTo(end.x - SEAT_ROW_WIDTH / 3, end.y);
     ctx.stroke();
   }
-
 }
 
 const STAGE_DEPTH = 5;             // m from the screen to the stage lip

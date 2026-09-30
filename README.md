@@ -57,6 +57,17 @@ the end screen tells you who it was either way.
 
 No build step, no dependencies — plain HTML, CSS and JavaScript on a 2D canvas.
 
+### Tests
+
+```bash
+npm test             # or: node --test test/*.test.js   (Node 22+, nothing to install)
+```
+
+The tests play the real level headlessly: the lift refuses to move without power, Biggy cannot take
+the stairs, the crates stop Voxxy and Droid, a full run from the exhibition hall to the crates
+upstairs, every robot can reach what it needs in the hall, only Voxxy fits into the speakers' lounge,
+people never walk through walls, and the Heisenbug's self-test.
+
 ## The robots
 
 | Robot | Role |

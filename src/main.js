@@ -106,6 +106,7 @@ function handlePresses() {
       state = createGameState('playing');
       effects = createEffects();
       speech = createSpeech();
+      audio.reset();
     }
   }
 }
