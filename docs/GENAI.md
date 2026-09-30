@@ -144,7 +144,7 @@ generator (tiny first value), confirmed by re-running against `Math.random`.
 - **Replay:** best time per browser in `localStorage` (guarded for private windows), an opening tip
   that points first-time players at Biggy, and the README screenshots (taken with Playwright).
 
-### M6 — the robots' idols (14:00)
+### M6 — the robots' idols (14:20)
 **Prompt (first version):** style the robots *after* three conference speakers — Voxxy as Josh
 Long, Droid as Dr. Venkat Subramaniam, Biggy as Victor Rentea.
 
