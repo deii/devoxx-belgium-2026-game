@@ -69,8 +69,15 @@ export default {
   lighting: {
     daylight: [],
     exitSigns: [[172, 560], [1138, 560], [700, 1392], [1138, 230]].map(point),
-    emergencyLights: [[480, 780], [900, 780], [640, 420], [250, 320], [756, 300]].map(point),
+    emergencyLights: [[480, 780], [900, 780], [640, 420], [250, 320], [756, 300], [650, 830]].map(point),
     ceilingLamps: [240, 520, 800, 1080].flatMap(x => [300, 560, 820, 1080].map(y => point([x, y]))),
+  },
+
+  // The robots spent the night parked in the middle of the hall.
+  spawns: {
+    voxxy: { ...labelAt(560, 860), heading: -Math.PI / 2 },
+    droid: { ...labelAt(640, 860), heading: -Math.PI / 2 },
+    biggy: { ...labelAt(740, 870), heading: -Math.PI / 2 },
   },
 
   labels: [

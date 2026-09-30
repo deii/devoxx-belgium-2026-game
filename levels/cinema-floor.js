@@ -85,10 +85,12 @@ export default {
 
   // Everything the mission needs, in plan pixels.
   mission: {
-    // A wall of sponsor crates across the corridor, about 5 m past the Megacandy corner so Biggy
-    // has room to build up speed. The gaps between crates (0.2 m) are too narrow even for Voxxy.
+    // A wall of sponsor crates across the corridor, cutting it off from the foyer and the speakers'
+    // lounge. The gaps between crates (0.2 m) are too narrow even for Voxxy. Biggy arrives by the
+    // service lift and has the whole corridor as a run-up. The bottleneck band hugs the crate row,
+    // so a crate shoved north into the pocket under Megacandy no longer counts as blocking.
     crates: [[732.5, 455], [752.5, 455], [772.5, 455], [792.5, 455]],
-    bottleneck: { x1: 720, y1: 440, x2: CORRIDOR_EAST, y2: 470 },
+    bottleneck: { x1: 720, y1: 445, x2: CORRIDOR_EAST, y2: 465 },
     adapter: { x: 485, y: 560 },
     room8Door: { x1: CORRIDOR_EAST, y1: ROOM8_DOOR_TOP, x2: CORRIDOR_EAST, y2: ROOM8_SOUTH },
     room8: { x1: CORRIDOR_EAST, y1: 960, x2: 1105, y2: ROOM8_SOUTH },
@@ -98,7 +100,7 @@ export default {
     maintenanceBay: { x: 685, y: 780, radius: 16 },
   },
 
-  // Light sources. Daylight and exit signs work without power; ceiling lamps need the fuse panel.
+  // Light sources. Daylight and exit signs work without power; ceiling lamps need the main breaker.
   lighting: {
     daylight: [
       [335, 195], [380, 250], [420, 315], [440, 380], [452, 450], [452, 520], [448, 590], // glass facade
@@ -165,9 +167,4 @@ export default {
     { text: 'GRAND STAIRCASE', x: 770, y: 1262 },
   ],
 
-  spawns: {
-    voxxy: { x: 600, y: 190, heading: Math.PI / 2 },
-    droid: { x: 545, y: 230, heading: Math.PI / 2 },
-    biggy: { x: 690, y: 170, heading: Math.PI / 2 },
-  },
 };

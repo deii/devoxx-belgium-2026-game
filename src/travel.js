@@ -1,5 +1,6 @@
 // Changing floors. The stairs by Rooms 4 and 9 are instant but Biggy cannot climb them; the
-// service lift takes anyone, but it takes a while: the robot waits in the cabin, then arrives.
+// service lift takes anyone, but only with power, and it takes a while: the robot waits in the
+// cabin, then arrives.
 
 const STAIR_CLIMBERS = new Set(['voxxy', 'droid']);
 const LIFT_RIDE_DURATION = 2.5;   // s
@@ -23,6 +24,9 @@ export function travelAct(state, robot) {
   }
   const { link, end } = found;
   if (link.kind === 'stairs' && !STAIR_CLIMBERS.has(robot.type)) {
+    return true; // the prompt explains why; the key press is still used up
+  }
+  if (link.kind === 'lift' && !state.mission.power) {
     return true; // the prompt explains why; the key press is still used up
   }
   const destination = link.ends.find(other => other !== end);
@@ -57,7 +61,10 @@ export function travelPrompt(state, robot) {
     return '';
   }
   if (found.link.kind === 'stairs' && !STAIR_CLIMBERS.has(robot.type)) {
-    return `Stairs. ${robot.spec.name} does not do stairs — the service lift is by Room 10 upstairs.`;
+    return `Stairs. ${robot.spec.name} does not do stairs — it needs the service lift.`;
+  }
+  if (found.link.kind === 'lift' && !state.mission.power) {
+    return 'Service lift — dead. The main breaker in the electrical room has tripped.';
   }
   return `E — ${found.end.label.charAt(0).toLowerCase()}${found.end.label.slice(1)}`;
 }

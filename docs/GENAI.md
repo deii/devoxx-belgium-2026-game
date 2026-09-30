@@ -191,3 +191,19 @@ the stairs" a real consequence by moving part of the mission to the ground floor
   proportional to the normal impulse. That changed how the crates spread, so the "bottleneck
   cleared" check was re-tuned (1.4 m gap) and re-verified: Biggy still clears the crates, Voxxy and
   Droid still cannot.
+
+### Playtest fix — no lift without power (15:15)
+**Prompt:** "It does not make sense that the lift is working when the electricity is off. Robots can
+start in the basement."
+
+- The robots now start in the exhibition hall. The lift refuses to move until the main breaker is
+  reset, and says why; the objectives were reordered: booth → breaker → lift up → crates →
+  adapter → door → delivery.
+- The crates are now pushed from the corridor side. Before changing the level, the model checked by
+  simulation that they still matter: every stair and lift exit upstairs lies south of the crates,
+  and the speakers' lounge is reachable only through the foyer, so Voxxy still needs Biggy's push.
+  A grid flood-fill (Voxxy's radius against walls and crates) confirmed the path is closed before
+  the push and open after it.
+- The "cleared" band now hugs the crate row, so a crate shoved north into the pocket under
+  Megacandy stops counting as blocking — the old band still counted it and underreported.
+- Full run simulated from the new spawn: booth 18 s, breaker, lift 16 s, crates open in one ram.

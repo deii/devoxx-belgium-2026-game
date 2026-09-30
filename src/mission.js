@@ -8,7 +8,7 @@ const REAL_TIME_LIMIT = 450;                      // s of real play time the clo
 const CLOCK_RATE = KEYNOTE_CLOCK_START / REAL_TIME_LIMIT;
 const INTERACT_RANGE = 1.3;                       // m between robot edge and a prop
 const CRATE_HINT_RANGE = 0.4;                     // m between robot edge and crate edge
-const CLEARED_GAP = 1.4;                          // m — enough for Droid (1.0 m) and Voxxy; crates end up staggered, so Biggy slips through diagonal gaps the 1-D measure underrates
+const CLEARED_GAP = 1.4;                          // m — enough for Voxxy (0.8 m); crates end up staggered, so the 1-D measure underrates diagonal gaps
 const WALL_CLEARANCE = 0.15;                      // m — half the wall thickness
 const ADAPTER_CARRY_OFFSET = 0.55;                // m in front of Voxxy's centre
 const DOOR_OPEN_SPEED = 1.2;                      // fraction of the door per second
@@ -52,10 +52,10 @@ export function createMission(level) {
     adapter: { x: data.adapter.x, y: data.adapter.y, carrier: null, delivered: false },
     prompt: '',
     objectives: [
-      { id: 'crates', robot: 'biggy', text: 'Shove the sponsor crates out of the Megacandy bottleneck', done: false },
-      { id: 'adapter', robot: 'voxxy', text: "Fetch the HDMI adapter from the speakers' lounge", done: false },
-      { id: 'booth', robot: 'biggy', text: 'Take the service lift down and shove the fallen booth off the electrical room', done: false },
-      { id: 'power', robot: 'droid', text: 'Take the stairs down and reset the main breaker in the exhibition hall', done: false },
+      { id: 'booth', robot: 'biggy', text: 'Shove the fallen booth away from the electrical room', done: false },
+      { id: 'power', robot: 'droid', text: 'Reset the main breaker in the electrical room', done: false },
+      { id: 'crates', robot: 'biggy', text: 'Take the service lift up and shove the sponsor crates out of the Megacandy bottleneck', done: false },
+      { id: 'adapter', robot: 'voxxy', text: "Take the stairs up and fetch the HDMI adapter from the speakers' lounge", done: false },
       { id: 'door', robot: 'droid', text: 'Open the Room 8 service door', done: false },
       { id: 'deliver', robot: 'voxxy', text: 'Plug the adapter into the projector on the Room 8 stage', done: false },
     ],
@@ -229,7 +229,7 @@ function promptFor(mission, level, robot) {
     return best.text;
   }
   if (mission.clock > KEYNOTE_CLOCK_START - OPENING_HINT_DURATION) {
-    return 'Tip: Biggy (3) takes ages to get going — start it towards the crates first.';
+    return 'Tip: nothing upstairs works without power — start with Biggy (3) and the fallen booth.';
   }
   return '';
 }

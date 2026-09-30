@@ -13,8 +13,9 @@ const SCREENS = {
   title: () => `
     <h1>Heisenbug<span>Keynote in 10</span></h1>
     <p>Kinepolis Antwerp, Devoxx morning. The opening keynote in <strong>Room 8</strong> starts in ten
-    minutes — and the main breaker downstairs in the exhibition hall has tripped, the room is locked,
-    and the speaker's HDMI adapter is lying in the speakers' lounge behind a queue of barriers.</p>
+    minutes. The robots spent the night downstairs in the exhibition hall, a sponsor booth has toppled
+    against the electrical room, the main breaker has tripped — so the lift and Room 8 are dead —
+    and the speaker's HDMI adapter is lying upstairs in the speakers' lounge.</p>
     <p>Three robots are awake. None of them can do this alone — and one of them has a bug nobody
     has diagnosed yet. Watch the system log, work out which robot misbehaves, and run diagnostics
     on it in the maintenance bay. Guess wrong and it costs you keynote time.</p>

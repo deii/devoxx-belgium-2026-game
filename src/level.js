@@ -23,7 +23,7 @@ export function loadLevel(...areaData) {
     links: linkTravelPoints(areas.flatMap(area => area.travel)),
     zones: primary.zones,
     labels: areas.flatMap(area => area.labels),
-    spawns: primary.spawns,
+    spawns: Object.assign({}, ...areas.map(area => area.spawns)),
   };
 }
 

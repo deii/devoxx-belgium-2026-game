@@ -2,7 +2,7 @@
 
 A browser game for the [Devoxx Belgium 2026 Robot Games](https://game.devoxx.be/) competition.
 
-The keynote in Room 8 at Kinepolis Antwerp starts in ten minutes, the auditorium is dark and the
+The keynote in Room 8 at Kinepolis Antwerp starts in ten minutes, the power is out and the
 speaker's HDMI adapter is on the wrong side of the building. Three robots have to fix it together —
 and one of them has a glitch nobody has diagnosed yet.
 
@@ -11,17 +11,19 @@ and one of them has a glitch nobody has diagnosed yet.
 ## The mission
 
 The keynote clock counts down from 10:00 (seven and a half minutes of real time). Everything has to be
-done by the three robots together:
+done by the three robots together. They spent the night parked in the **exhibition hall** on the
+ground floor:
 
-1. **Biggy** shoves the wall of sponsor crates out of the Megacandy bottleneck — the only way from
-   the foyer into the central corridor. Voxxy and Droid are too light to move a crate at all.
-2. **Voxxy** squeezes between the queue barriers of the speakers' lounge (too narrow for the other
-   two) and picks up the speaker's HDMI adapter.
-3. The main breaker downstairs has tripped, and a sponsor booth has toppled in front of the
-   electrical room in the **exhibition hall** on the ground floor. **Biggy** cannot take the stairs,
-   so it rides the **service lift** by Room 10 down and shoves the booth clear…
-4. …then **Droid** takes the stairs by Room 4 or Room 9, resets the main breaker…
-5. …climbs back up and opens the Room 8 service door.
+1. A sponsor booth has toppled against the electrical room. **Biggy** shoves it away — nobody
+   else can move it.
+2. **Droid** resets the tripped main breaker. Until then the service lift, the ceiling lamps and
+   Room 8 upstairs are dead.
+3. **Biggy** cannot take the stairs, so it rides the now-working **service lift** up to the cinema
+   floor and rams the wall of sponsor crates out of the Megacandy bottleneck, the only way from the
+   corridor to the foyer. Voxxy and Droid are too light to move a crate at all.
+4. **Voxxy** takes the stairs up, squeezes between the queue barriers of the speakers' lounge (too
+   narrow for the other two) and picks up the speaker's HDMI adapter.
+5. **Droid** opens the Room 8 service door.
 6. **Voxxy** carries the adapter onto the Room 8 stage. The projector starts, you win.
 
 If the clock reaches zero first, the keynote starts in the dark.
@@ -96,8 +98,9 @@ up to speed, coasts for two metres after you let go, and knocks Voxxy aside on c
 
 ## Light and weight
 
-The cinema floor starts without power. Daylight falls through the glass facade of the foyer; the
-central corridor has only green exit signs and emergency lights, and Room 8 is pitch black.
+The morning starts without power. The exhibition hall and the central corridor upstairs have
+only green exit signs and emergency lights, daylight falls through the glass facade of the foyer,
+and Room 8 is pitch black.
 Droid's amber eyes are a real torch, Voxxy's visor glows. Resetting the main breaker downstairs brings the
 ceiling lamps back with a fluorescent flicker, turns on Room 8's house lights and starts the
 projector — a blue "no signal" beam until the adapter is plugged in.
