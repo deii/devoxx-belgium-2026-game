@@ -1,6 +1,7 @@
-// Synthesised sound — no audio files. Motors are continuous voices whose pitch and volume follow
-// each robot's speed; everything else is a one-shot triggered by diffing the game state between
-// frames, so the rest of the game does not need to know sound exists.
+// Synthesised sound — the only audio file is the elevator music for Biggy's lift ride. Motors are
+// continuous voices whose pitch and volume follow each robot's speed; everything else is a one-shot
+// triggered by diffing the game state between frames, so the rest of the game does not need to know
+// sound exists.
 
 const MASTER_VOLUME = 0.5;
 const HEARING_RANGE = 22;            // m — robots further from the camera are silent
@@ -8,6 +9,12 @@ const BIGGY_STEP_LENGTH = 0.9;       // m, matches the footfall dust in effects.
 const IMPACT_THRESHOLD = 0.6;        // m/s
 const CRATE_SCRAPE_THRESHOLD = 0.15; // m/s
 const MOTOR_SMOOTHING = 0.05;        // s time constant for motor parameter changes
+// "Local Forecast – Elevator" by Kevin MacLeod (incompetech.com), CC BY 4.0, trimmed to 24 s.
+const LIFT_MUSIC_URL = 'assets/audio/local-forecast-elevator.mp3';
+const LIFT_MUSIC_VOLUME = 0.7;
+const LIFT_MUSIC_BACKGROUND_SHARE = 0.4; // volume share while another robot is selected
+const LIFT_MUSIC_FADE = 0.4;             // s time constant of the fade-out after arrival
+const LIFT_DING = [1319, 1047];          // Hz — the arrival chime
 const WANDER_SMOOTHING = 1.5;        // 1/s — how quickly the pitch drifts towards a new random offset
 const WANDER_INTERVAL = [0.4, 1.4];  // s between new random pitch offsets
 
@@ -44,6 +51,8 @@ export function createAudio() {
   const motors = {};
   let scrape = null;
   let lastUpdateTime = null;
+  let liftMusic = null;                  // decoded AudioBuffer, loaded after the first key press
+  let liftMusicVoice = null;
   const previous = {};
 
   /** Browsers only allow audio after a user gesture; call this from a key handler. */
@@ -65,6 +74,41 @@ export function createAudio() {
       motors[type] = createMotorVoice(context, master, noise, spec);
     }
     scrape = createScrapeVoice(context, master, noise);
+    loadLiftMusic();
+  }
+
+  function loadLiftMusic() {
+    fetch(LIFT_MUSIC_URL)
+      .then(response => response.arrayBuffer())
+      .then(data => context.decodeAudioData(data))
+      .then(buffer => { liftMusic = buffer; })
+      .catch(() => { /* no music then — the ride still whooshes */ });
+  }
+
+  function startLiftMusic(volume) {
+    if (!liftMusic || liftMusicVoice) {
+      return false;
+    }
+    const source = context.createBufferSource();
+    source.buffer = liftMusic;
+    const gain = context.createGain();
+    gain.gain.setValueAtTime(0.0001, context.currentTime);
+    gain.gain.exponentialRampToValueAtTime(volume, context.currentTime + 0.15);
+    source.connect(gain);
+    gain.connect(master);
+    source.start();
+    liftMusicVoice = { source, gain };
+    return true;
+  }
+
+  function stopLiftMusic() {
+    if (!liftMusicVoice) {
+      return;
+    }
+    const now = context.currentTime;
+    liftMusicVoice.gain.gain.setTargetAtTime(0, now, LIFT_MUSIC_FADE);
+    liftMusicVoice.source.stop(now + LIFT_MUSIC_FADE * 6);
+    liftMusicVoice = null;
   }
 
   function toggleMute() {
@@ -123,9 +167,21 @@ export function createAudio() {
     if (changed('power', mission.power) && mission.power) {
       powerOn();
     }
-    const rides = state.travel.rides.length;
-    if (changed('rides', rides) && rides > 0) {
-      whoosh(2.5, 180, 420);
+    const rides = state.travel.rides;
+    const ridesBefore = previous.rideCount ?? 0;
+    previous.rideCount = rides.length;
+    if (rides.length > ridesBefore) {
+      const biggy = rides.find(ride => ride.robot.type === 'biggy');
+      const active = state.robots[state.activeIndex];
+      const volume = LIFT_MUSIC_VOLUME * (biggy?.robot === active ? 1 : LIFT_MUSIC_BACKGROUND_SHARE);
+      if (!biggy || !startLiftMusic(volume)) {
+        whoosh(2.5, 180, 420);
+      }
+    } else if (rides.length < ridesBefore) {
+      blip(LIFT_DING, 0.35);
+    }
+    if (!rides.some(ride => ride.robot.type === 'biggy') || state.phase !== 'playing') {
+      stopLiftMusic();
     }
     if (changed('door', mission.doorOpen) && mission.doorOpen) {
       whoosh(1.2, 300, 1200);

@@ -245,6 +245,17 @@ kbd {
   font-size: 14px;
 }
 
+.screen .credit {
+  margin-top: 14px;
+  font-size: 11px;
+  color: #7f8796;
+}
+
+.screen .credit a {
+  color: inherit;
+  pointer-events: auto;
+}
+
 .screen .start {
   margin-bottom: 0;
   font-weight: 600;

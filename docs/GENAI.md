@@ -239,3 +239,14 @@ stay in character (Droid stays deliberate, Biggy blames code smells), and the ro
 FURIOUS next to the name. Crates and the booth are excluded — shoving them is Biggy's job, not an
 accident. Checked in the browser (four wall crashes took Voxxy from calm to furious) and headlessly
 (Biggy into Droid: both complain, each naming the other).
+
+### Elevator music (16:01)
+**Prompt:** "Add classic meme elevator music from Kevin MacLeod when Biggy takes the elevator."
+The model identified the track ("Local Forecast – Elevator", incompetech.com) and its licence,
+CC BY 4.0 — usable in an MIT project only with attribution and kept under its own licence. It
+downloaded the original, cut the first 24 s at MP3 frame boundaries with a small Node script (no
+ffmpeg on the machine; 7.6 MB → 0.96 MB), and credited it on the title screen, in the README credits
+and as an exception in the README's licence section. The music starts when Biggy boards, plays
+quieter if another robot is selected, and fades out on arrival with a two-tone ding; other robots'
+rides keep the synthesised whoosh. Checked in the browser that the file loads and a 24 s buffer
+starts on Biggy's ride.

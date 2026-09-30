@@ -118,14 +118,15 @@ are solid: robots reach the stage through the side aisles, the way people do.
 
 ## Sound
 
-All sound is synthesised with the Web Audio API — there are no audio files. Each robot has a motor
+All sound but one is synthesised with the Web Audio API. Each robot has a motor
 voice whose pitch and volume follow its speed (Voxxy whines, Droid's servos buzz, Biggy growls).
 Two detuned oscillators beat against each other, the tone strains when a motor pulls harder than
 it moves and bends when it turns, the volume pulses with wheel turns, servo steps or footfalls, and
 the pitch drifts a little, so even top speed never settles into one flat drone.
 Biggy's footfalls thud, impacts thump in proportion to mass × speed, crates scrape, and the
-Heisenbug announces itself with a zap. Browsers start audio only after a key press; <kbd>M</kbd>
-toggles sound.
+Heisenbug announces itself with a zap. The one exception: when Biggy takes the service lift, it
+rides to the classic elevator-music meme, Kevin MacLeod's "Local Forecast – Elevator", and the lift
+dings on arrival. Browsers start audio only after a key press; <kbd>M</kbd> toggles sound.
 
 ## How generative AI was used
 
@@ -141,7 +142,11 @@ See [docs/GENAI.md](docs/GENAI.md).
   (`assets/exhibition-hall-plan.png`). The plan has no scale; 4.15 cm per pixel gives the hall its
   2 400 m² and the same 6.5 m pillar grid as upstairs. One pillar in front of the electrical room is
   left out so Biggy has room to push the booth.
+- Elevator music: "Local Forecast – Elevator" by Kevin MacLeod ([incompetech.com](https://incompetech.com)),
+  licensed under [Creative Commons: By Attribution 4.0](https://creativecommons.org/licenses/by/4.0/).
+  Trimmed to the first 24 seconds (`assets/audio/local-forecast-elevator.mp3`).
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) — except the elevator music in `assets/audio/`, which is Kevin MacLeod's and stays
+under CC BY 4.0 (see Credits).

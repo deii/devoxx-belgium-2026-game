@@ -26,7 +26,9 @@ const SCREENS = {
     </ul>
     <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact · <kbd>+</kbd><kbd>−</kbd>/wheel zoom · <kbd>M</kbd> sound on/off</p>
     ${bestLine()}
-    <p class="start">Press <kbd>Enter</kbd> to start</p>`,
+    <p class="start">Press <kbd>Enter</kbd> to start</p>
+    <p class="credit">Elevator music: "Local Forecast – Elevator" by Kevin MacLeod (incompetech.com),
+    licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>, trimmed.</p>`,
   won: (clock, verdict, record) => `
     <h1>The screen lights up<span>with ${clock} to spare</span></h1>
     <p>Room 8 fills, the projector hums, the speaker's first slide appears. Nobody in the audience
