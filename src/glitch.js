@@ -15,7 +15,6 @@ const LOG_LENGTH = 6;
 export const DIAGNOSTIC_DURATION = 3; // s the suspect has to stay in the bay
 const WRONG_GUESS_PENALTY = 30;       // s taken off the keynote clock
 const PHANTOM_SPEED = 0.8;            // input magnitude of an unrequested twitch
-const SCREEN_FLICKER_DURATION = 0.25; // s
 const KEYNOTE_START = 9 * 3600 + 30 * 60; // 09:30, in seconds of the day
 
 const GLITCHES = {
@@ -50,7 +49,7 @@ export function createHeisenbug(random = Math.random) {
     diagnostic: null,        // { robot, remaining }
     noiseIn: NOISE_INTERVAL / 2,
     noiseIndex: 0,
-    flicker: 0,
+    lastResult: null,        // { found, age } of the latest self-test, for the bay's console
     log: [],
   };
 }
@@ -84,7 +83,9 @@ export function applyGlitch(robot, command, state) {
 /** Timers, escalation and log noise. Returns nothing; everything lives on state.heisenbug. */
 export function updateHeisenbug(state, dt) {
   const bug = state.heisenbug;
-  bug.flicker = Math.max(0, bug.flicker - dt);
+  if (bug.lastResult) {
+    bug.lastResult.age += dt;
+  }
   updateNoise(state, dt);
   if (bug.patched) {
     return;
@@ -113,7 +114,6 @@ function triggerGlitch(state) {
     ? { x: Math.cos(angle) * PHANTOM_SPEED, y: Math.sin(angle) * PHANTOM_SPEED }
     : { ...bug.lastDrivenMove };
   bug.active = { kind, remaining: GLITCHES[kind].duration, move };
-  bug.flicker = SCREEN_FLICKER_DURATION;
   addLog(state, GLITCHES[kind].log, 'glitch');
 
   bug.interval = Math.max(MIN_GLITCH_INTERVAL, bug.interval * GLITCH_ESCALATION);
@@ -164,6 +164,7 @@ export function updateDiagnostic(state, dt) {
   }
   const name = diagnostic.robot.spec.name;
   bug.lastDiagnosedType = diagnostic.robot.type;
+  bug.lastResult = { found: diagnostic.robot.type === bug.culprit, age: 0 };
   if (diagnostic.robot.type === bug.culprit) {
     bug.patched = true;
     bug.active = null;

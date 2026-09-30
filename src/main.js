@@ -157,7 +157,9 @@ function resolveContacts(robots, mission) {
       recordBump(hit, robots[j], robots[i]);
     }
     for (const crate of crates) {
-      recordImpact(collideBodies(robots[i], crate, robots[i].mass, crateMassFor(robots[i], crate)), robots[i]);
+      const hit = collideBodies(robots[i], crate, robots[i].mass, crateMassFor(robots[i], crate));
+      recordImpact(hit, robots[i]);
+      robots[i].crateImpact = Math.max(robots[i].crateImpact, hit);
     }
   }
   for (let i = 0; i < crates.length; i++) {
@@ -224,6 +226,7 @@ function frame(now) {
   state.robots.forEach(robot => {
     robot.lastImpact = 0;
     robot.wallImpact = 0;
+    robot.crateImpact = 0;
     robot.bump = null;
   });
   requestAnimationFrame(frame);

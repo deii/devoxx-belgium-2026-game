@@ -555,12 +555,66 @@ export function drawAdapter(ctx, adapter, time) {
 
 const BAY_STRIPES = 16;
 
-export function drawMaintenanceBay(ctx, level, bug) {
+const BAY_RESULT_SHOWN = 4;        // s the console shows a self-test result
+const BAY_COLORS = { idle: '#e0b43a', running: '#5ac8ff', found: '#3ddc84', missed: '#ff5a4f' };
+
+/**
+ * Droid's old maintenance bay: a steel pad inside a hazard ring, four status lamps, a scanner arm
+ * that sweeps during a self-test, a console that shows the result, and a tool chest.
+ */
+export function drawMaintenanceBay(ctx, level, bug, time) {
   const bay = level.mission.maintenanceBay;
-  ctx.fillStyle = 'rgba(90, 200, 255, 0.06)';
+  const result = bug.lastResult && bug.lastResult.age < BAY_RESULT_SHOWN ? bug.lastResult : null;
+  const status = bug.diagnostic ? 'running' : result ? (result.found ? 'found' : 'missed') : 'idle';
+  const statusColor = BAY_COLORS[status];
+
+  drawToolChest(ctx, bay.x - bay.radius - 0.7, bay.y + 0.4);
+  const terminal = { x: bay.x + bay.radius + 0.7, y: bay.y - 0.3 };
+  ctx.strokeStyle = '#15171b';                                        // cable from console to pad
+  ctx.lineWidth = 0.05;
+  ctx.beginPath();
+  ctx.moveTo(terminal.x - 0.3, terminal.y + 0.3);
+  ctx.quadraticCurveTo(bay.x + bay.radius + 0.2, bay.y + 0.6, bay.x + bay.radius - 0.1, bay.y + 0.4);
+  ctx.stroke();
+  drawBayConsole(ctx, terminal, status, statusColor, bug, time);
+
+  const pad = ctx.createRadialGradient(bay.x - 0.3, bay.y - 0.3, 0.1, bay.x, bay.y, bay.radius);
+  pad.addColorStop(0, '#4a525e');
+  pad.addColorStop(1, '#2a2f37');
+  ctx.fillStyle = pad;
   ctx.beginPath();
   ctx.arc(bay.x, bay.y, bay.radius, 0, Math.PI * 2);
   ctx.fill();
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+  ctx.lineWidth = 0.03;
+  for (const ring of [0.35, 0.65, 0.9]) {
+    ctx.beginPath();
+    ctx.arc(bay.x, bay.y, bay.radius * ring, 0, Math.PI * 2);
+    ctx.stroke();
+  }
+  ctx.beginPath();                                                    // centring cross
+  ctx.moveTo(bay.x - 0.3, bay.y);
+  ctx.lineTo(bay.x + 0.3, bay.y);
+  ctx.moveTo(bay.x, bay.y - 0.3);
+  ctx.lineTo(bay.x, bay.y + 0.3);
+  ctx.stroke();
+
+  if (bug.diagnostic) {                                               // scanner sweep
+    const angle = time * 4;
+    ctx.fillStyle = 'rgba(90, 200, 255, 0.18)';
+    ctx.beginPath();
+    ctx.moveTo(bay.x, bay.y);
+    ctx.arc(bay.x, bay.y, bay.radius - 0.1, angle - 0.5, angle);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = '#5ac8ff';
+    ctx.lineWidth = 0.06;
+    ctx.beginPath();
+    ctx.moveTo(bay.x, bay.y);
+    ctx.lineTo(bay.x + Math.cos(angle) * (bay.radius - 0.1), bay.y + Math.sin(angle) * (bay.radius - 0.1));
+    ctx.stroke();
+  }
+
   ctx.lineWidth = 0.18;
   for (let i = 0; i < BAY_STRIPES; i++) {
     const start = (i / BAY_STRIPES) * Math.PI * 2;
@@ -577,13 +631,73 @@ export function drawMaintenanceBay(ctx, level, bug) {
     ctx.arc(bay.x, bay.y, bay.radius - 0.25, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
     ctx.stroke();
   }
+
+  const lampOn = status === 'idle' || Math.sin(time * 8) > -0.2;
+  for (let lamp = 0; lamp < 4; lamp++) {                              // status lamps on the ring
+    const angle = Math.PI / 4 + lamp * Math.PI / 2;
+    ctx.fillStyle = '#15171b';
+    ctx.beginPath();
+    ctx.arc(bay.x + Math.cos(angle) * (bay.radius + 0.18), bay.y + Math.sin(angle) * (bay.radius + 0.18), 0.13, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = lampOn ? statusColor : '#2a2d33';
+    ctx.beginPath();
+    ctx.arc(bay.x + Math.cos(angle) * (bay.radius + 0.18), bay.y + Math.sin(angle) * (bay.radius + 0.18), 0.08, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function drawBayConsole(ctx, terminal, status, color, bug, time) {
+  ctx.fillStyle = '#2b2f36';
+  ctx.fillRect(terminal.x - 0.35, terminal.y - 0.55, 0.7, 1.1);
+  ctx.fillStyle = '#0d1a22';
+  ctx.fillRect(terminal.x - 0.28, terminal.y - 0.48, 0.56, 0.6);          // screen
+  const text = {
+    idle: bug.patched ? 'CLEAN' : 'READY',
+    running: 'SCAN',
+    found: 'FIXED',
+    missed: 'NO FAULT',
+  }[status];
+  drawText(ctx, text, terminal.x, terminal.y - 0.3, 0.14, bug.patched && status === 'idle' ? BAY_COLORS.found : color, 0.5);
+  if (status === 'running') {                                           // progress bar
+    const progress = 1 - bug.diagnostic.remaining / DIAGNOSTIC_DURATION;
+    ctx.fillStyle = color;
+    ctx.fillRect(terminal.x - 0.22, terminal.y - 0.08, 0.44 * progress, 0.06);
+  }
+  ctx.fillStyle = '#4a505a';                                            // keys
+  for (let key = 0; key < 6; key++) {
+    ctx.fillRect(terminal.x - 0.26 + (key % 3) * 0.19, terminal.y + 0.2 + Math.floor(key / 3) * 0.14, 0.14, 0.09);
+  }
+  ctx.fillStyle = Math.sin(time * 2) > 0 ? '#3ddc84' : '#1c4a2c';      // power LED
+  ctx.fillRect(terminal.x + 0.22, terminal.y + 0.44, 0.06, 0.06);
+}
+
+function drawToolChest(ctx, x, y) {
+  ctx.fillStyle = '#a8322b';
+  ctx.fillRect(x - 0.35, y - 0.5, 0.7, 1);
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.4)';
+  ctx.lineWidth = 0.03;
+  ctx.beginPath();
+  for (let drawer = 1; drawer < 4; drawer++) {
+    ctx.moveTo(x - 0.35, y - 0.5 + drawer * 0.25);
+    ctx.lineTo(x + 0.35, y - 0.5 + drawer * 0.25);
+  }
+  ctx.stroke();
+  ctx.fillStyle = '#d8d2c4';
+  for (let drawer = 0; drawer < 4; drawer++) {
+    ctx.fillRect(x + 0.2, y - 0.4 + drawer * 0.25, 0.06, 0.06);
+  }
+  ctx.strokeStyle = '#c0c6cf';                                          // a spanner left on top
+  ctx.lineWidth = 0.04;
+  ctx.beginPath();
+  ctx.moveTo(x - 0.2, y + 0.1);
+  ctx.lineTo(x + 0.05, y - 0.2);
+  ctx.stroke();
 }
 
 const STAIR_TREADS = 5;
-
-/** Stairs as treads, the service lift as a door pair; each labelled by the level's text labels. */
 const LIFT_DOOR_GAP = 0.9;   // m the doors open to
 
+/** Stairs as treads, the service lift as a cabin with doors; each labelled by the level's text labels. */
 export function drawTravelPoints(ctx, level, state) {
   for (const link of level.links) {
     for (const end of link.ends) {

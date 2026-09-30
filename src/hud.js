@@ -139,7 +139,6 @@ export function createHud(root) {
       elements.logLines.innerHTML = bug.log.map(line =>
         `<div class="${line.kind}"><span>${line.time}</span> ${escapeHtml(line.text)}</div>`).join('');
     });
-    elements.canvas.classList.toggle('glitching', bug.flicker > 0);
 
     const prompt = state.phase === 'playing' ? mission.prompt : '';
     setIfChanged('prompt', prompt, value => {

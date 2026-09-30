@@ -8,7 +8,8 @@ import { LIFT_RIDE_DURATION } from './travel.js';
 const MASTER_VOLUME = 0.5;
 const HEARING_RANGE = 22;            // m — robots further from the camera are silent
 const BIGGY_STEP_LENGTH = 0.9;       // m, matches the footfall dust in effects.js
-const IMPACT_THRESHOLD = 0.6;        // m/s
+const IMPACT_THRESHOLD = 0.35;       // m/s — gentler touches are silent
+const IMPACT_DEBOUNCE = 0.18;        // s — one bounce sequence makes one sound
 const CRATE_SCRAPE_THRESHOLD = 0.15; // m/s
 const MOTOR_SMOOTHING = 0.05;        // s time constant for motor parameter changes
 // "Local Forecast – Elevator" by Kevin MacLeod (incompetech.com), CC BY 4.0, trimmed to 24 s.
@@ -147,8 +148,8 @@ export function createAudio() {
       const presence = playing ? proximity(state, robot) : 0;
       updateMotorVoice(motors[robot.type], MOTORS[robot.type], robot, presence, now, dt);
 
-      if (robot.lastImpact > IMPACT_THRESHOLD && presence > 0) {
-        thump(robot.lastImpact * robot.mass / 300 * presence, robot.type === 'biggy' ? 90 : 400);
+      if (presence > 0) {
+        collisionSounds(robot, presence, now);
       }
       if (robot.type === 'biggy') {
         const step = Math.floor(robot.stride / BIGGY_STEP_LENGTH);
@@ -176,9 +177,6 @@ export function createAudio() {
       return was !== undefined && was !== value;
     };
 
-    if (changed('glitch', bug.active) && bug.active) {
-      glitchZap();
-    }
     if (changed('power', mission.power) && mission.power) {
       powerOn();
     }
@@ -244,15 +242,72 @@ export function createAudio() {
     source.stop(context.currentTime + 0.3);
   }
 
-  function glitchZap() {
+  /**
+   * One sound per collision, by what was hit: a metallic clang off walls, a hollow two-tone bonk
+   * between robots (played once per pair), a dull thud on crates and the booth. Louder for heavier
+   * robots and harder hits.
+   */
+  function collisionSounds(robot, presence, now) {
+    const quietUntil = previous.impactQuietUntil ??= {};
+    if ((quietUntil[robot.type] ?? 0) > now) {
+      return;
+    }
+    const weight = Math.sqrt(robot.mass / 140);
+    const strength = speed => Math.min(1, speed / 3) * weight * presence;
+    let played = true;
+    if (robot.bump && robot.bump.speed > IMPACT_THRESHOLD) {
+      if (robot.type < robot.bump.other.type) {
+        bonk(strength(robot.bump.speed), robot, robot.bump.other);
+      }
+    } else if (robot.wallImpact > IMPACT_THRESHOLD) {
+      clang(strength(robot.wallImpact), robot);
+    } else if (robot.crateImpact > IMPACT_THRESHOLD) {
+      thump(strength(robot.crateImpact) * 0.8, 180);
+      knock(strength(robot.crateImpact) * 0.5, 140);
+    } else {
+      played = false;
+    }
+    if (played) {
+      quietUntil[robot.type] = now + IMPACT_DEBOUNCE;
+    }
+  }
+
+  /** Wall hit: a noise burst through a ringing band-pass plus a short inharmonic metal partial. */
+  function clang(strength, robot) {
+    const pitch = robot.type === 'biggy' ? 0.5 : robot.type === 'droid' ? 0.8 : 1.2;
+    const source = context.createBufferSource();
+    source.buffer = noise;
+    const filter = context.createBiquadFilter();
+    filter.type = 'bandpass';
+    filter.frequency.value = 900 * pitch;
+    filter.Q.value = 6;
+    source.connect(filter);
+    filter.connect(envelope(0.5 * strength, 0.003, 0.18));
+    source.start();
+    source.stop(context.currentTime + 0.25);
+    for (const ratio of [1, 2.76]) {
+      knock(0.12 * strength, 520 * pitch * ratio, 'triangle', 0.22);
+    }
+  }
+
+  /** Robot on robot: two hollow knocks, one pitched for each robot. */
+  function bonk(strength, robot, other) {
+    const pitchOf = type => ({ voxxy: 660, droid: 420, biggy: 190 })[type];
+    knock(0.3 * strength, pitchOf(robot.type), 'sine', 0.2);
+    setTimeout(() => knock(0.3 * strength, pitchOf(other.type), 'sine', 0.2), 40);
+    thump(0.4 * strength, 600);
+  }
+
+  /** A short pitched knock with a falling pitch, like a hollow shell being struck. */
+  function knock(strength, frequency, type = 'sine', decay = 0.12) {
     const oscillator = context.createOscillator();
-    oscillator.type = 'square';
+    oscillator.type = type;
     const now = context.currentTime;
-    oscillator.frequency.setValueAtTime(1400, now);
-    oscillator.frequency.exponentialRampToValueAtTime(90, now + 0.25);
-    oscillator.connect(envelope(0.12, 0.005, 0.25));
+    oscillator.frequency.setValueAtTime(frequency, now);
+    oscillator.frequency.exponentialRampToValueAtTime(frequency * 0.7, now + decay);
+    oscillator.connect(envelope(Math.max(0.0003, strength), 0.002, decay));
     oscillator.start();
-    oscillator.stop(now + 0.3);
+    oscillator.stop(now + decay + 0.05);
   }
 
   function powerOn() {

@@ -73,6 +73,7 @@ export function createRobot(type, spawn) {
     command: idleCommand(),
     lastImpact: 0,
     wallImpact: 0,          // m/s, strongest wall hit this frame
+    crateImpact: 0,         // m/s, strongest hit on a crate or the booth this frame
     bump: null,             // { other, speed } — strongest hit by another robot this frame
     frustration: 0,         // 0..1, rises with collisions and cools down over time
   };

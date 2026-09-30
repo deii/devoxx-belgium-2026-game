@@ -7,7 +7,6 @@ const BLINK_DURATION = 0.12;         // s
 const IDLE_SPEED = 0.3;              // m/s — below this a robot counts as standing still
 const DROID_STEP_LENGTH = 0.6;       // m per step
 const BIGGY_STEP_LENGTH = 0.9;       // m per step, matches the footfall dust and thuds
-const GLITCH_GHOST_OPACITY = 0.3;
 
 /**
  * Where Droid is looking, relative to its heading: into turns while walking, and slowly scanning
@@ -31,23 +30,10 @@ export function drawRobotShadow(ctx, robot) {
   ctx.restore();
 }
 
-/**
- * Draws a robot with its motion: stride-driven limbs, a lean into turns, idle breathing, and — for
- * the Heisenbug's culprit while a glitch is active — a faint jittering double.
- */
-export function drawRobotBody(ctx, robot, time = 0, glitching = false) {
-  if (glitching) {
-    ctx.save();
-    ctx.globalAlpha = GLITCH_GHOST_OPACITY;
-    drawPose(ctx, robot, time, { x: (Math.random() - 0.5) * 0.16, y: (Math.random() - 0.5) * 0.16 });
-    ctx.restore();
-  }
-  drawPose(ctx, robot, time, { x: 0, y: 0 });
-}
-
-function drawPose(ctx, robot, time, offset) {
+/** Draws a robot with its motion: stride-driven limbs, a lean into turns and idle breathing. */
+export function drawRobotBody(ctx, robot, time = 0) {
   ctx.save();
-  ctx.translate(robot.x + offset.x, robot.y + offset.y);
+  ctx.translate(robot.x, robot.y);
   ctx.rotate(robot.heading);
   // lean: the body swings a little to the outside of a turn
   ctx.translate(0, -robot.angularVelocity * 0.015 * robot.radius);

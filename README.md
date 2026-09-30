@@ -120,8 +120,7 @@ around, and have something to say when a robot rolls up ("Biggy! Mind my toes!")
 
 The exhibition hall is full of (made-up) sponsor booths, the foyer has its coffee bar and bean
 bags, and the robots are animated: Voxxy blinks and looks into turns, Droid walks and scans the room
-with its torch, Biggy waddles. A robot hit by the Heisenbug flickers with a faint double while it
-glitches.
+with its torch, Biggy waddles.
 
 Weight is visible, too: Voxxy kicks up dust when it skids, Biggy's footfalls puff dust and nudge
 the camera, and every hard impact shakes the view in proportion to mass × speed. Room 8's seat rows
@@ -134,8 +133,9 @@ voice whose pitch and volume follow its speed (Voxxy whines, Droid's servos buzz
 Two detuned oscillators beat against each other, the tone strains when a motor pulls harder than
 it moves and bends when it turns, the volume pulses with wheel turns, servo steps or footfalls, and
 the pitch drifts a little, so even top speed never settles into one flat drone.
-Biggy's footfalls thud, impacts thump in proportion to mass × speed, crates scrape, and the
-Heisenbug announces itself with a zap. The one exception: when Biggy takes the service lift, it
+Biggy's footfalls thud, crates scrape, and every collision sounds like what was hit: a metallic
+clang off walls, a hollow two-tone bonk between robots, a dull thud on crates — louder for heavier
+robots and harder hits. The one exception: when Biggy takes the service lift, it
 rides to the classic elevator-music meme, Kevin MacLeod's "Local Forecast – Elevator", and the lift
 dings on arrival. Winning plays a short 8-bit stage-clear fanfare: an original tune written in the
 style of classic platformer level-end jingles, synthesised like everything else. Browsers start audio only after a key press; <kbd>M</kbd> toggles sound.

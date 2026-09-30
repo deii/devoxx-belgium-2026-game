@@ -347,3 +347,19 @@ nobody walks through one. When a robot comes within ~2 m a person turns to it an
 depends on their role and the robot (speaker to Voxxy: "Have you seen my adapter?"). They never
 collide, so they cannot change the mission. The bubble drawing moved into a shared `drawBubble`.
 Two simulated minutes: every person moved, and nobody came closer than 0.37 m to a wall.
+
+### Playtest fixes — quieter glitches, collision sounds, maintenance bay (17:17)
+**Prompt:** "Remove the visual and audio hint when a robot glitch happens — it's a bit annoying. Add
+sound when robots collide with something — wall, robot, box… Improve the maintenance bay graphic."
+- Glitches are now silent and do not shake the screen: the canvas flicker, the zap and the
+  culprit's ghost double are gone. The log is the only witness — which also makes the Heisenbug
+  more of a deduction again.
+- Collisions sound like what was hit: a metallic clang off walls (band-passed noise plus an
+  inharmonic partial, pitched per robot), a hollow two-tone bonk between robots (one knock pitched for
+  each robot, played once per pair), a dull thud on crates and the booth. Louder for heavier robots
+  and harder hits, debounced so a bounce sequence makes one sound. Physics now reports crate hits
+  separately, next to wall and robot hits.
+- The maintenance bay is a steel pad with rings and a centring cross inside the hazard ring, four
+  status lamps (amber ready, blinking blue while scanning, green or red after), a sweeping scanner
+  arm and progress ring during the self-test, a console that reads READY / SCAN / FIXED / NO FAULT /
+  CLEAN, a cable to the pad and a red tool chest with a spanner on top.

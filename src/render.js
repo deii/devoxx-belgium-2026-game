@@ -120,7 +120,7 @@ export function createRenderer(canvas, level) {
     });
     ctx.globalAlpha = 1;
     drawRoom8(ctx, level);
-    drawMaintenanceBay(ctx, level, state.heisenbug);
+    drawMaintenanceBay(ctx, level, state.heisenbug, state.time);
     drawTravelPoints(ctx, level, state);
     drawWalls(ctx, level);
     drawStage(ctx, level, mission, state.time);
@@ -133,9 +133,7 @@ export function createRenderer(canvas, level) {
     drawPeople(ctx, state.people);
     robots.forEach(robot => drawRobotShadow(ctx, robot));
     drawParticles(ctx, effects);
-    const bug = state.heisenbug;
-    robots.forEach(robot => drawRobotBody(ctx, robot, state.time,
-      Boolean(bug.active) && bug.culprit === robot.type && !bug.patched));
+    robots.forEach(robot => drawRobotBody(ctx, robot, state.time));
     ctx.restore();
 
     lighting.draw(ctx, state, view);
