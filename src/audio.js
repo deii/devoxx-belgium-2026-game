@@ -17,6 +17,19 @@ const LIFT_MUSIC_VOLUME = 0.7;
 const LIFT_MUSIC_BACKGROUND_SHARE = 0.4; // volume share while another robot is selected
 const LIFT_MUSIC_FADE = 0.4;             // s time constant of the fade-out after arrival
 const LIFT_DING = [1319, 1047];          // Hz — the arrival chime
+
+// Stage-clear fanfare: an original 8-bit tune in the style of classic platformer level-end jingles —
+// rising arpeggios over C, A♭ and B♭, landing on a held C. Notes are [MIDI note or null, sixteenths].
+const FANFARE_SIXTEENTH = 0.075;         // s
+const FANFARE_LEAD = [
+  [55, 1], [60, 1], [64, 1], [67, 1], [72, 1], [76, 3],            // C major run
+  [56, 1], [60, 1], [63, 1], [68, 1], [72, 1], [75, 3],            // A♭ major run
+  [58, 1], [62, 1], [65, 1], [70, 1], [74, 1], [77, 2],            // B♭ major run
+  [74, 1], [76, 1], [79, 2], [84, 10],                              // up to the final C
+];
+const FANFARE_HARMONY = [[null, 27], [76, 10]];                     // E under the final C
+const FANFARE_BASS = [[48, 8], [44, 8], [46, 7], [43, 4], [36, 10]];
+const FANFARE_DRUMS = [0, 8, 16, 23, 25, 27];                        // sixteenths with a snare hit
 const WANDER_SMOOTHING = 1.5;        // 1/s — how quickly the pitch drifts towards a new random offset
 const WANDER_INTERVAL = [0.4, 1.4];  // s between new random pitch offsets
 
@@ -202,7 +215,7 @@ export function createAudio() {
     }
     if (changed('phase', state.phase)) {
       if (state.phase === 'won') {
-        chord([261.6, 329.6, 392, 523.3], 2.5);
+        fanfare();
       } else if (state.phase === 'lost') {
         chord([98, 116.5, 146.8], 3);
       }
@@ -300,6 +313,40 @@ export function createAudio() {
     oscillator.stop(context.currentTime + 0.55);
   }
 
+  function fanfare() {
+    const start = context.currentTime + 0.05;
+    const pulse = createPulseWave(context, 0.25);
+    playSequence(FANFARE_LEAD, start, oscillator => oscillator.setPeriodicWave(pulse), 0.07);
+    playSequence(FANFARE_HARMONY, start, oscillator => oscillator.setPeriodicWave(pulse), 0.04);
+    playSequence(FANFARE_BASS, start, oscillator => { oscillator.type = 'triangle'; }, 0.16);
+    for (const sixteenth of FANFARE_DRUMS) {
+      setTimeout(() => thump(0.3, 5000), (start - context.currentTime + sixteenth * FANFARE_SIXTEENTH) * 1000);
+    }
+  }
+
+  /** Plays [MIDI note, sixteenths] pairs back to back; each note is slightly detached, chiptune-style. */
+  function playSequence(notes, start, shape, volume) {
+    let time = start;
+    for (const [note, sixteenths] of notes) {
+      const duration = sixteenths * FANFARE_SIXTEENTH;
+      if (note !== null) {
+        const oscillator = context.createOscillator();
+        shape(oscillator);
+        oscillator.frequency.value = 440 * 2 ** ((note - 69) / 12);
+        const gain = context.createGain();
+        const release = Math.min(0.03, duration * 0.2);
+        gain.gain.setValueAtTime(volume, time);
+        gain.gain.setValueAtTime(volume, time + duration - release);
+        gain.gain.linearRampToValueAtTime(0, time + duration);
+        oscillator.connect(gain);
+        gain.connect(master);
+        oscillator.start(time);
+        oscillator.stop(time + duration + 0.01);
+      }
+      time += duration;
+    }
+  }
+
   function chord(frequencies, duration) {
     for (const frequency of frequencies) {
       const oscillator = context.createOscillator();
@@ -317,6 +364,17 @@ export function createAudio() {
 function proximity(state, body) {
   const distance = Math.hypot(body.x - state.camera.x, body.y - state.camera.y);
   return Math.max(0, 1 - distance / HEARING_RANGE);
+}
+
+/** A pulse wave with the given duty cycle — the thin, reedy lead of 8-bit consoles. */
+function createPulseWave(context, duty) {
+  const harmonics = 32;
+  const real = new Float32Array(harmonics);
+  const imag = new Float32Array(harmonics);
+  for (let n = 1; n < harmonics; n++) {
+    imag[n] = (2 / (n * Math.PI)) * Math.sin(n * Math.PI * duty);
+  }
+  return context.createPeriodicWave(real, imag);
 }
 
 function createNoiseBuffer(context) {

@@ -126,7 +126,8 @@ the pitch drifts a little, so even top speed never settles into one flat drone.
 Biggy's footfalls thud, impacts thump in proportion to mass × speed, crates scrape, and the
 Heisenbug announces itself with a zap. The one exception: when Biggy takes the service lift, it
 rides to the classic elevator-music meme, Kevin MacLeod's "Local Forecast – Elevator", and the lift
-dings on arrival. Browsers start audio only after a key press; <kbd>M</kbd> toggles sound.
+dings on arrival. Winning plays a short 8-bit stage-clear fanfare: an original tune written in the
+style of classic platformer level-end jingles, synthesised like everything else. Browsers start audio only after a key press; <kbd>M</kbd> toggles sound.
 
 ## How generative AI was used
 

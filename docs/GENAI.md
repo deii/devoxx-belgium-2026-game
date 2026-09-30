@@ -253,3 +253,12 @@ starts on Biggy's ride.
 
 **Follow-up** (16:05): "Yes, make it a bit longer." — the lift ride went from 2.5 s to 6 s for
 everyone, so the music gets a few bars; the whoosh for Voxxy and Droid reads the same constant.
+
+### Stage-clear fanfare (16:09)
+**Prompt:** "Add a stage clear fanfare similar to the Super Mario Bros. one."
+The model did not reproduce Nintendo's melody — it is a copyrighted composition, and this entry is
+public and MIT-licensed. It wrote an original tune in the same idiom instead: fast rising arpeggios
+over C, A♭ and B♭ (a common chord move in game fanfares) that land on a held C, played on a 25 %
+pulse wave (built with a PeriodicWave from its Fourier series) over a triangle bass with noise-snare
+hits, about 2.8 s. It replaces the plain win chord. Checked in the browser that all 28 notes are
+scheduled when the game is won.
