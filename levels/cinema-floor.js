@@ -15,6 +15,7 @@ const PILLAR_LAST_Y = 1120;
 const PILLAR_SPACING = 65;
 const PILLAR_HALF_SIZE = 3;
 const TOILET_BLOCK = { x1: 660, y1: 378, x2: 720, y2: 610 };
+const COFFEE_BAR = { x1: 500, y1: 63, x2: 570, y2: 80 };   // against the north windows of the foyer
 
 // Room 8 seat rows, parallel to the screen. They fan out towards the back of the room, leaving
 // side aisles that are wider at the back and still wide enough for Biggy at the front.
@@ -116,6 +117,18 @@ export default {
     projector: { x: 862, y: 1075 },
   },
 
+  // Furniture that is only drawn; solid pieces are also listed in blocks.
+  decor: [
+    { type: 'counter', x: (COFFEE_BAR.x1 + COFFEE_BAR.x2) / 2, y: (COFFEE_BAR.y1 + COFFEE_BAR.y2) / 2,
+      width: COFFEE_BAR.x2 - COFFEE_BAR.x1, height: COFFEE_BAR.y2 - COFFEE_BAR.y1, name: 'COFFEE' },
+    { type: 'beanbag', x: 445, y: 150, color: '#e8744f' },
+    { type: 'beanbag', x: 468, y: 138, color: '#4fa3e8' },
+    { type: 'beanbag', x: 458, y: 172, color: '#f2c14e' },
+    { type: 'rollup', x: 640, y: 68 },
+    { type: 'rollup', x: 770, y: 68 },
+    { type: 'rollup', x: 790, y: 590 },
+  ],
+
   // Solid obstacles (closed polygons).
   blocks: [
     rect(510, 345, CORRIDOR_WEST, 470),                   // Room 1
@@ -126,6 +139,7 @@ export default {
     [[620, 195], [645, 190], [668, 330], [648, 335]],                           // wall of fame
     [[705, 265], [770, 225], [805, 250], [805, 345], [785, 375], [755, 370], [720, 330]], // Megacandy
     rect(CORRIDOR_EAST, 1000, 858, ROOM8_DOOR_TOP),       // Room 8 projection booth
+    rect(COFFEE_BAR.x1, COFFEE_BAR.y1, COFFEE_BAR.x2, COFFEE_BAR.y2), // coffee bar
     ...pillars(),
   ],
 

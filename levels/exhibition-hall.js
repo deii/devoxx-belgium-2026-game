@@ -25,6 +25,21 @@ const PILLARS = [
   [447, 1186], [865, 1186], [1005, 1186], [1143, 1186],
 ];
 
+// Sponsor booths, 3 m × 2 m, between the pillars and away from the robots' routes to the stairs,
+// the lift and the electrical room. The sponsors are made up.
+const BOOTH_HALF = { width: 32, height: 22 };
+const BOOTH_COLORS = ['#e8744f', '#4fa3e8', '#8bc34a', '#b07be8', '#f2c14e', '#4ec9b0'];
+const BOOTHS = [
+  [935, 420, 'Bean Factory'], [1074, 420, 'Lambda Lounge'],
+  [935, 560, 'Byte Bakery'], [1074, 560, 'Heap & Co.'],
+  [377, 700, 'Thread Pool'], [377, 837, 'Monad Mart'],
+  [935, 837, 'Refactor Studio'], [377, 977, 'NullPointer Labs'],
+  [935, 977, 'Compile Time'], [1074, 977, 'Garbage Collectors'],
+  [377, 1116, 'Deadlock Consulting'], [517, 1116, 'Race Condition'],
+  [795, 1116, 'Mutable State'], [935, 1116, 'Cache Me If You Can'],
+  [1074, 1116, 'Stack Smashers'],
+];
+
 export default {
   name: 'Kinepolis Antwerp — exhibition hall',
   plan: { src: 'assets/exhibition-hall-plan.png', metresPerPx: 0.0415 },
@@ -48,7 +63,14 @@ export default {
     rect(1185, 768, 1283, 1065), // stock bar
     rect(408, 1295, 930, 1400),  // tiered steps down to the reception
     ...PILLARS.map(([x, y]) => rect(x - PILLAR_HALF_SIZE, y - PILLAR_HALF_SIZE, x + PILLAR_HALF_SIZE, y + PILLAR_HALF_SIZE)),
+    ...BOOTHS.map(([x, y]) => rect(x - BOOTH_HALF.width, y - BOOTH_HALF.height, x + BOOTH_HALF.width, y + BOOTH_HALF.height)),
   ],
+
+  // Furniture that is only drawn; solid pieces are also listed in blocks.
+  decor: BOOTHS.map(([x, y, name], index) => ({
+    type: 'booth', ...labelAt(x, y), width: v(BOOTH_HALF.width * 2), height: v(BOOTH_HALF.height * 2),
+    name, color: BOOTH_COLORS[index % BOOTH_COLORS.length],
+  })),
 
   // Where robots change floors. Ends with the same link id are connected; exit is where a robot
   // arriving at this end is placed (outside the zone, so it does not travel straight back).

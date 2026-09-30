@@ -293,3 +293,13 @@ brother Josef from the Czech *robota*, forced labour. Each robot that drives up 
 "Robota. Still robota."), the log records it, and the end screen reports how many of the three paid
 their respects — and says nothing if nobody found it. The poster title first rendered blank:
 canvas fonts below 1 px do not draw, so the text is drawn at 100× and scaled down.
+
+### Furnished rooms (16:40)
+The empty hall got fifteen solid 3 m × 2 m sponsor booths between the pillars, each with a coloured
+back wall, a counter with laptops and swag, and a made-up developer-pun sponsor ("Bean Factory",
+"Deadlock Consulting", "Cache Me If You Can" — no real brands). The foyer got a coffee bar against
+the north windows, bean bags and Devoxx-orange roll-up banners. Booths were placed away from the
+mission routes; a grid flood-fill confirmed that every robot still reaches both staircases, the
+lift, the electrical room and the maintenance bay from its start, and the full simulated run still
+passes. Decor is plain level data (`decor`), drawn under the lighting, so the hall stays dark
+until Droid resets the breaker.

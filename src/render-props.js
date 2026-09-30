@@ -95,6 +95,90 @@ export function drawMainBreaker(ctx, level, mission, time) {
   ctx.fill();
 }
 
+// Furniture seen from above. Text is drawn at 100× and scaled down: canvas fonts below 1 px do not
+// draw.
+const DEVOXX_ORANGE = '#ff8a1f';
+
+export function drawDecor(ctx, level) {
+  for (const item of level.decor) {
+    if (item.type === 'booth') {
+      drawBooth(ctx, item);
+    } else if (item.type === 'counter') {
+      drawCounter(ctx, item);
+    } else if (item.type === 'beanbag') {
+      drawBeanbag(ctx, item);
+    } else if (item.type === 'rollup') {
+      drawRollup(ctx, item);
+    }
+  }
+}
+
+function drawBooth(ctx, booth) {
+  const left = booth.x - booth.width / 2;
+  const top = booth.y - booth.height / 2;
+  ctx.fillStyle = '#2d323c';
+  ctx.fillRect(left, top, booth.width, booth.height);
+  ctx.fillStyle = booth.color;
+  ctx.fillRect(left, top, booth.width, 0.45);                           // back wall with the logo
+  ctx.fillStyle = '#4a505c';
+  ctx.fillRect(left + 0.3, top + booth.height - 0.65, booth.width - 0.6, 0.45); // counter
+  ctx.fillStyle = '#aab3c2';
+  ctx.fillRect(booth.x - 0.8, top + booth.height - 0.58, 0.4, 0.3);      // laptops
+  ctx.fillRect(booth.x + 0.4, top + booth.height - 0.58, 0.4, 0.3);
+  ctx.fillStyle = booth.color;
+  for (let i = 0; i < 4; i++) {                                          // swag on the counter
+    ctx.beginPath();
+    ctx.arc(booth.x - 0.1 + i * 0.12, top + booth.height - 0.42, 0.05, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  drawText(ctx, booth.name, booth.x, top + 0.24, 0.3, '#15171c', booth.width - 0.2);
+}
+
+function drawCounter(ctx, counter) {
+  const left = counter.x - counter.width / 2;
+  const top = counter.y - counter.height / 2;
+  ctx.fillStyle = '#5a4030';
+  ctx.fillRect(left, top, counter.width, counter.height);
+  ctx.fillStyle = '#7a5a42';
+  ctx.fillRect(left, top + counter.height - 0.4, counter.width, 0.4);
+  ctx.fillStyle = '#f1e4c8';
+  for (let i = 0; i < 6; i++) {                                          // cups waiting in a row
+    ctx.beginPath();
+    ctx.arc(left + 1 + i * 0.5, top + counter.height - 0.2, 0.09, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  drawText(ctx, counter.name, counter.x, top + 0.55, 0.45, '#f1e4c8', counter.width);
+}
+
+function drawBeanbag(ctx, beanbag) {
+  ctx.fillStyle = beanbag.color;
+  ctx.beginPath();
+  ctx.ellipse(beanbag.x, beanbag.y, 0.55, 0.48, 0.4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+  ctx.beginPath();
+  ctx.ellipse(beanbag.x - 0.12, beanbag.y - 0.1, 0.25, 0.2, 0.4, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+function drawRollup(ctx, rollup) {
+  ctx.fillStyle = '#20232a';
+  ctx.fillRect(rollup.x - 0.5, rollup.y - 0.12, 1, 0.24);
+  ctx.fillStyle = DEVOXX_ORANGE;
+  ctx.fillRect(rollup.x - 0.45, rollup.y - 0.06, 0.9, 0.12);
+}
+
+function drawText(ctx, text, x, y, size, color, maxWidth) {
+  ctx.save();
+  ctx.scale(0.01, 0.01);
+  ctx.font = `bold ${size * 100}px system-ui, sans-serif`;
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = color;
+  ctx.fillText(text, x * 100, y * 100, maxWidth * 100);
+  ctx.restore();
+}
+
 // The R.U.R. poster lies flat against the wall of fame, whose west face leans about 11° from north.
 const RUR_POSTER_ANGLE = -0.197;   // rad
 const RUR_POSTER_SIZE = { width: 1.1, height: 1.6 };
