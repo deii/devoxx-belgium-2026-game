@@ -23,6 +23,19 @@ done by the three robots together:
 
 If the clock reaches zero first, the keynote starts in the dark.
 
+### The Heisenbug
+
+One of the three robots — a different one every run — has a bug nobody has diagnosed yet. Every
+so often it misbehaves: steering flips left/right, a sensor blackout drops its commands, the
+throttle latches after you let go, or, while you are driving someone else, it twitches on its own.
+The glitches get more frequent as the morning goes on.
+
+The system log in the corner reports every symptom but never says *which* unit it was — you have to
+work that out from what you see. Drive your suspect into **Droid's old maintenance bay** (in the
+corridor, against the Room 4 wall) and press <kbd>E</kbd> for a three-second self-test. Right, and
+the glitches stop for good. Wrong, and the keynote clock loses 30 seconds. Finding it is optional —
+the end screen tells you who it was either way.
+
 ## Play
 
 - **Live:** https://deii.github.io/devoxx-belgium-2026-game/

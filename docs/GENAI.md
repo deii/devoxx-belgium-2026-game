@@ -84,3 +84,25 @@ floor plan is shipped, with attribution.
 **Verified:** Voxxy and Droid cannot pass the crates; Biggy opens a path on its second push;
 only Voxxy passes the barriers; the fuse panel and door react only to Droid, the door only with
 power; win on delivery; loss when the clock runs out (6 real minutes).
+
+### M3.5 — Heisenbug (13:30)
+**Prompt:** "Played by hand and fine. Agree with swap. Go ahead" — i.e. Heisenbug before lighting,
+because originality is worth 40 points and realism 20.
+
+Design decisions the model made and why:
+- **The robot is the mystery, not the symptom.** Every glitch kind can hit any robot, and log lines
+  say "unit ██". If each robot had its own glitch, the log would give the answer away.
+- **The best clue is physical:** while you drive someone else, the culprit twitches on its own
+  (the "phantom" glitch) — visible only if it is on screen.
+- **Escalation** (interval × 0.85 per glitch, 14 s down to 5 s) turns an optional side quest into
+  something worth solving; **a wrong diagnosis costs 30 s** so guessing blindly is not free.
+- No visual tell on the robot itself (no sparks) — that would end the deduction instantly. The
+  whole screen flickers instead.
+- The `applyGlitch()` hook planned in M1 needed no change to the game loop; the maintenance-bay
+  action consumes the interact key so it cannot also drop the adapter.
+
+**Verified:** 3 000 runs give an even culprit split (953/1033/1014); only the culprit's commands
+are altered; wrong guess −30 s, right guess patches and stops all further glitches; leaving the bay
+aborts the self-test; browser run shows the log, progress ring and the verdict on the end screen.
+**Caught in testing:** a seeded test RNG always picked the same culprit — a flaw of the test's
+generator (tiny first value), confirmed by re-running against `Math.random`.

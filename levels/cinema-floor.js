@@ -74,6 +74,8 @@ export default {
     room8: { x1: CORRIDOR_EAST, y1: 960, x2: 1105, y2: ROOM8_SOUTH },
     screen: { x: 1095, y1: 985, y2: 1165 },
     stage: { x: 1070, y: 1075, radius: 25 },
+    // Droid's old maintenance bay, an alcove against the Room 4 wall.
+    maintenanceBay: { x: 685, y: 850, radius: 16 },
   },
 
   // Solid obstacles (closed polygons).
@@ -98,6 +100,7 @@ export default {
     { text: 'FOYER', x: 560, y: 150 },
     { text: "SPEAKERS' LOUNGE", x: 485, y: 470 },
     { text: 'FUSE PANEL', x: 695, y: 1352 },
+    { text: 'MAINTENANCE BAY', x: 700, y: 878 },
     { text: 'MEGACANDY', x: 755, y: 310 },
     { text: 'ROOM 1', x: 585, y: 408 },
     { text: 'ROOM 2', x: 585, y: 578 },

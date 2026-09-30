@@ -1,5 +1,7 @@
 // Mission props, drawn in world units (metres).
 
+import { DIAGNOSTIC_DURATION } from './glitch.js';
+
 const STANCHION_SPACING = 0.9;
 const SEAT_ROW_SPACING = 1.1;
 const SEAT_ROW_MARGIN = 2.2;
@@ -131,4 +133,30 @@ export function drawAdapter(ctx, adapter, time) {
   ctx.fillStyle = '#d9dde4';
   ctx.fillRect(0.12, -0.06, 0.12, 0.12);
   ctx.restore();
+}
+
+const BAY_STRIPES = 16;
+
+export function drawMaintenanceBay(ctx, level, bug) {
+  const bay = level.mission.maintenanceBay;
+  ctx.fillStyle = 'rgba(90, 200, 255, 0.06)';
+  ctx.beginPath();
+  ctx.arc(bay.x, bay.y, bay.radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.lineWidth = 0.18;
+  for (let i = 0; i < BAY_STRIPES; i++) {
+    const start = (i / BAY_STRIPES) * Math.PI * 2;
+    ctx.strokeStyle = i % 2 === 0 ? '#e0b43a' : '#1d2027';
+    ctx.beginPath();
+    ctx.arc(bay.x, bay.y, bay.radius, start, start + Math.PI * 2 / BAY_STRIPES);
+    ctx.stroke();
+  }
+  if (bug.diagnostic) {
+    const progress = 1 - bug.diagnostic.remaining / DIAGNOSTIC_DURATION;
+    ctx.strokeStyle = '#5ac8ff';
+    ctx.lineWidth = 0.12;
+    ctx.beginPath();
+    ctx.arc(bay.x, bay.y, bay.radius - 0.25, -Math.PI / 2, -Math.PI / 2 + progress * Math.PI * 2);
+    ctx.stroke();
+  }
 }

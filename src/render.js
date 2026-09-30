@@ -1,7 +1,8 @@
 // Canvas renderer: venue first, then robots, camera centred on the active robot.
 
 import {
-  drawAdapter, drawBarriers, drawCrates, drawDoor, drawFusePanel, drawRoom8, drawRoom8Darkness,
+  drawAdapter, drawBarriers, drawCrates, drawDoor, drawFusePanel, drawMaintenanceBay, drawRoom8,
+  drawRoom8Darkness,
 } from './render-props.js';
 import { drawRobotBody, drawRobotShadow } from './robot-art.js';
 
@@ -65,6 +66,7 @@ export function createRenderer(canvas, level) {
     }
     const mission = state.mission;
     drawRoom8(ctx, level, mission);
+    drawMaintenanceBay(ctx, level, state.heisenbug);
     drawWalls(ctx, level);
     drawBarriers(ctx, level);
     drawFusePanel(ctx, level, mission, state.time);

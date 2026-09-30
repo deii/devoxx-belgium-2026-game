@@ -1,5 +1,7 @@
 import cinemaFloor from '../levels/cinema-floor.js';
-import { applyGlitch } from './glitch.js';
+import {
+  applyGlitch, createHeisenbug, heisenbugAct, heisenbugPrompt, updateDiagnostic, updateHeisenbug,
+} from './glitch.js';
 import { createHud } from './hud.js';
 import { createInput } from './input.js';
 import { loadLevel } from './level.js';
@@ -32,6 +34,7 @@ function createGameState(phase) {
     level,
     robots,
     mission: createMission(level),
+    heisenbug: createHeisenbug(),
     activeIndex: 0,
     time: 0,
     camera: { x: robots[0].x, y: robots[0].y },
@@ -75,7 +78,15 @@ function step(dt) {
     integrate(crate, dt);
   });
   resolveContacts(robots, mission);
-  updateMission(mission, level, robots, robots[state.activeIndex], dt);
+
+  const activeRobot = robots[state.activeIndex];
+  if (heisenbugAct(state, activeRobot)) {
+    activeRobot.command.action = false;
+  }
+  updateMission(mission, level, robots, activeRobot, dt);
+  updateHeisenbug(state, dt);
+  updateDiagnostic(state, dt);
+  mission.prompt = heisenbugPrompt(state, activeRobot) || mission.prompt;
   if (mission.outcome) {
     state.phase = mission.outcome;
   }

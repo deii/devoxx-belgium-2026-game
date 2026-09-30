@@ -1,6 +1,7 @@
 // DOM overlay: robot roster, keynote clock, objectives, context prompt and title/end screens.
 // Every element is only rewritten when its content actually changes.
 
+import { culpritName } from './glitch.js';
 import { formatClock } from './mission.js';
 import { ROBOT_ORDER, ROBOT_SPECS } from './robots.js';
 
@@ -12,7 +13,9 @@ const SCREENS = {
     <p>Kinepolis Antwerp, Devoxx morning. The opening keynote in <strong>Room 8</strong> starts in ten
     minutes — and the floor is dark, the room is locked, and the speaker's HDMI adapter is lying in
     the speakers' lounge behind a queue of barriers.</p>
-    <p>Three robots are awake. None of them can do this alone.</p>
+    <p>Three robots are awake. None of them can do this alone — and one of them has a bug nobody
+    has diagnosed yet. Watch the system log, work out which robot misbehaves, and run diagnostics
+    on it in the maintenance bay. Guess wrong and it costs you keynote time.</p>
     <ul class="cast">
       <li style="--robot-color: ${ROBOT_SPECS.voxxy.color}"><b>Voxxy</b> light and quick — fits where others don't, carries small things</li>
       <li style="--robot-color: ${ROBOT_SPECS.droid.color}"><b>Droid</b> has been here for years — knows the fuse panel and the service doors</li>
@@ -20,15 +23,17 @@ const SCREENS = {
     </ul>
     <p class="keys"><kbd>WASD</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd>/<kbd>Tab</kbd> switch robot · <kbd>E</kbd> interact</p>
     <p class="start">Press <kbd>Enter</kbd> to start</p>`,
-  won: clock => `
+  won: (clock, verdict) => `
     <h1>The screen lights up<span>with ${clock} to spare</span></h1>
     <p>Room 8 fills, the projector hums, the speaker's first slide appears. Nobody in the audience
     will ever know about the crates, the fuses or the adapter.</p>
+    <p class="verdict">${verdict}</p>
     <p class="start">Press <kbd>R</kbd> to play again</p>`,
-  lost: () => `
+  lost: (clock, verdict) => `
     <h1>09:30 — the keynote starts<span>in the dark</span></h1>
     <p>Two thousand developers stare at a black screen. Somewhere, a speaker is still holding a laptop
     with no way to plug it in.</p>
+    <p class="verdict">${verdict}</p>
     <p class="start">Press <kbd>R</kbd> to try again</p>`,
 };
 
@@ -37,6 +42,7 @@ export function createHud(root) {
     <div class="roster"></div>
     <div class="clock"><span class="clock-label">Keynote in</span><span class="clock-value"></span></div>
     <ol class="objectives"></ol>
+    <div class="log"><div class="log-title">/var/log/robots</div><div class="log-lines"></div></div>
     <div class="prompt"></div>
     <div class="controls">
       <kbd>WASD</kbd>/<kbd>arrows</kbd> drive · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> or <kbd>Tab</kbd> switch · <kbd>E</kbd> interact
@@ -48,6 +54,8 @@ export function createHud(root) {
     clock: root.querySelector('.clock'),
     clockValue: root.querySelector('.clock-value'),
     objectives: root.querySelector('.objectives'),
+    logLines: root.querySelector('.log-lines'),
+    canvas: document.getElementById('game'),
     prompt: root.querySelector('.prompt'),
     screen: root.querySelector('.screen'),
     panel: root.querySelector('.screen .panel'),
@@ -80,14 +88,24 @@ export function createHud(root) {
     setIfChanged('clock', clock, value => { elements.clockValue.textContent = value; });
     elements.clock.classList.toggle('warning', mission.clock < CLOCK_WARNING_SECONDS);
 
-    const objectivesKey = mission.objectives.map(objective => (objective.done ? 1 : 0)).join('');
+    const bug = state.heisenbug;
+    const objectivesKey = mission.objectives.map(objective => (objective.done ? 1 : 0)).join('') + bug.patched;
     setIfChanged('objectives', objectivesKey, () => {
       elements.objectives.innerHTML = mission.objectives.map(objective => {
         const spec = ROBOT_SPECS[objective.robot];
         return `<li class="${objective.done ? 'done' : ''}" style="--robot-color: ${spec.color}">
           <b>${spec.name}</b> ${objective.text}</li>`;
-      }).join('');
+      }).join('') + `<li class="optional ${bug.patched ? 'done' : ''}" style="--robot-color: #5ac8ff">
+          <b>Optional</b> One robot has a Heisenbug. Find it, then run diagnostics on it in the
+          maintenance bay</li>`;
     });
+
+    const logKey = bug.log.map(line => line.time + line.text).join('|');
+    setIfChanged('log', logKey, () => {
+      elements.logLines.innerHTML = bug.log.map(line =>
+        `<div class="${line.kind}"><span>${line.time}</span> ${escapeHtml(line.text)}</div>`).join('');
+    });
+    elements.canvas.classList.toggle('glitching', bug.flicker > 0);
 
     const prompt = state.phase === 'playing' ? mission.prompt : '';
     setIfChanged('prompt', prompt, value => {
@@ -99,9 +117,24 @@ export function createHud(root) {
     setIfChanged('screen', screenKey, () => {
       const screen = SCREENS[state.phase];
       elements.screen.classList.toggle('visible', Boolean(screen));
-      elements.panel.innerHTML = typeof screen === 'function' ? screen(clock) : (screen || '');
+      elements.panel.innerHTML = typeof screen === 'function' ? screen(clock, verdictFor(bug)) : (screen || '');
     });
   }
 
   return { update };
+}
+
+function verdictFor(bug) {
+  const name = culpritName(bug);
+  const misses = bug.wrongGuesses === 1 ? 'one wrong guess' : `${bug.wrongGuesses} wrong guesses`;
+  if (bug.patched) {
+    return bug.wrongGuesses === 0
+      ? `Heisenbug: it was <b>${name}</b> — and you found it on the first try.`
+      : `Heisenbug: it was <b>${name}</b>. Found after ${misses}.`;
+  }
+  return `Heisenbug: it was <b>${name}</b> all along. It is still in there.`;
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
