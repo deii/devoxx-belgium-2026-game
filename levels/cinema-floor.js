@@ -96,8 +96,6 @@ export default {
     room8: { x1: CORRIDOR_EAST, y1: 960, x2: 1105, y2: ROOM8_SOUTH },
     screen: { x: 1095, y1: 985, y2: 1165 },
     stage: { x: 1070, y: 1075, radius: 25 },
-    // Droid's old maintenance bay, an alcove against the Room 4 wall.
-    maintenanceBay: { x: 685, y: 780, radius: 16 },
   },
 
   // Light sources. Daylight and exit signs work without power; ceiling lamps need the main breaker.
@@ -145,7 +143,6 @@ export default {
   labels: [
     { text: 'FOYER', x: 560, y: 150 },
     { text: "SPEAKERS' LOUNGE", x: 485, y: 470 },
-    { text: 'MAINTENANCE BAY', x: 700, y: 808 },
     { text: 'STAIRS ↓', x: 675, y: 855 },
     { text: 'STAIRS ↓', x: 790, y: 855 },
     { text: 'SERVICE LIFT', x: 772, y: 718 },

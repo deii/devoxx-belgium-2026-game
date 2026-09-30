@@ -36,8 +36,8 @@ throttle latches after you let go, or, while you are driving someone else, it tw
 The glitches get more frequent as the morning goes on.
 
 The system log in the corner reports every symptom but never says *which* unit it was — you have to
-work that out from what you see. Drive your suspect into **Droid's old maintenance bay** (in the
-corridor, against the Room 4 wall) and press <kbd>E</kbd> for a three-second self-test. Right, and
+work that out from what you see. Drive your suspect into **Droid's old maintenance bay** (downstairs
+in the exhibition hall, just south of where the robots start) and press <kbd>E</kbd> for a three-second self-test. Right, and
 the glitches stop for good. Wrong, and the keynote clock loses 30 seconds. Finding it is optional —
 the end screen tells you who it was either way.
 

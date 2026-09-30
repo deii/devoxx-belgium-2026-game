@@ -213,3 +213,10 @@ start in the basement."
 <kbd>+</kbd>/<kbd>−</kbd>, the mouse wheel and <kbd>0</kbd> (reset) scale the camera between 0.5× and 2×
 of the screen-size default, eased over about a tenth of a second. Everything already worked in
 metres, so the change was one scale factor in the renderer's view; lighting and labels followed.
+
+### Playtest fix — maintenance bay downstairs (15:21)
+**Prompt:** "Move the service place downstairs. Now it's too frustrating to go there all the way with
+broken Biggy. It also makes sense to have it downstairs."
+The maintenance bay moved from the corridor upstairs to the exhibition hall, between four pillars
+12 m south of where the robots start, with its own emergency light. A glitching Biggy no longer
+has to take the lift up and cross the corridor for a three-second self-test.

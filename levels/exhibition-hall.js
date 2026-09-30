@@ -64,12 +64,15 @@ export default {
     booth: point([756, 237]),
     electricalDoor: point([756, 205]),
     mainBreaker: point([756, 112]),
+    // Droid's old maintenance bay, between four pillars just south of where the robots park, so a
+    // glitching robot does not have to drag itself across the building for a self-test.
+    maintenanceBay: zone(656, 1115, 34),
   },
 
   lighting: {
     daylight: [],
     exitSigns: [[172, 560], [1138, 560], [700, 1392], [1138, 230]].map(point),
-    emergencyLights: [[480, 780], [900, 780], [640, 420], [250, 320], [756, 300], [650, 830]].map(point),
+    emergencyLights: [[480, 780], [900, 780], [640, 420], [250, 320], [756, 300], [650, 830], [656, 1115]].map(point),
     ceilingLamps: [240, 520, 800, 1080].flatMap(x => [300, 560, 820, 1080].map(y => point([x, y]))),
   },
 
@@ -87,6 +90,7 @@ export default {
     { text: 'STAIRS ↑', ...labelAt(823, 700) },
     { text: 'SERVICE LIFT', ...labelAt(215, 255) },
     { text: 'STOCK BAR', ...labelAt(1234, 915) },
+    { text: 'MAINTENANCE BAY', ...labelAt(656, 1170) },
   ],
 };
 
