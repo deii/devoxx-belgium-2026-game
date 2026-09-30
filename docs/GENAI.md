@@ -314,3 +314,17 @@ until Droid resets the breaker.
   feet, and its antenna lags behind turns and blinks.
 - Every robot leans into turns and breathes when idle. While the Heisenbug's culprit glitches it
   gets a faint jittering double — a visual clue to go with the log, but it never names the robot.
+
+### Backstage, lift, electrical room and service door (16:56)
+**Prompt:** "Improve backstage, service lift, electrical room, service door graphics."
+- Room 8: a planked stage with a lit lip, a lectern with the speaker's laptop and microphone, stage
+  monitors, a taped cable to a framed screen; the projection booth shows racks with status LEDs
+  and the projector, whose lens lights up with power.
+- Service lift: shaft and checker-plate cabin, sliding doors on the exit side (closed without power
+  and while riding), a hazard-striped threshold and a call lamp — red, amber while riding, green.
+- Electrical room: switch cabinets with vents and LEDs along both walls, a cable tray, a hazard
+  stripe across the doorway and a lightning warning sign; the main breaker is now a panel with a
+  lever that flips up when Droid resets it.
+- Service door: frame posts, a ribbed steel panel with a handle sliding into the wall, and a keypad
+  that is dead without power, blinks amber, then turns green.
+All drawn with canvas primitives from existing level data; checked in the browser with screenshots.

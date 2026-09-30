@@ -3,7 +3,7 @@
 import { cameraShakeOffset, drawParticles } from './effects.js';
 import { createLighting } from './lighting.js';
 import {
-  drawAdapter, drawBarriers, drawCrates, drawDecor, drawDoor, drawMainBreaker, drawMaintenanceBay, drawRoom8, drawRurPoster,
+  drawAdapter, drawBarriers, drawCrates, drawDecor, drawDoor, drawElectricalRoom, drawMainBreaker, drawStage, drawMaintenanceBay, drawRoom8, drawRurPoster,
   drawTravelPoints,
 } from './render-props.js';
 import { drawRobotBody, drawRobotShadow } from './robot-art.js';
@@ -118,14 +118,16 @@ export function createRenderer(canvas, level) {
       }
     });
     ctx.globalAlpha = 1;
-    drawRoom8(ctx, level, mission);
+    drawRoom8(ctx, level);
     drawMaintenanceBay(ctx, level, state.heisenbug);
-    drawTravelPoints(ctx, level);
+    drawTravelPoints(ctx, level, state);
     drawWalls(ctx, level);
+    drawStage(ctx, level, mission, state.time);
+    drawElectricalRoom(ctx, level, mission, state.time);
     drawDecor(ctx, level);
     drawRurPoster(ctx, level);
     drawBarriers(ctx, level);
-    drawDoor(ctx, level, mission);
+    drawDoor(ctx, level, mission, state.time);
     drawCrates(ctx, mission.crates);
     robots.forEach(robot => drawRobotShadow(ctx, robot));
     drawParticles(ctx, effects);

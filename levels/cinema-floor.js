@@ -97,6 +97,7 @@ export default {
     room8: { x1: CORRIDOR_EAST, y1: 960, x2: 1105, y2: ROOM8_SOUTH },
     screen: { x: 1095, y1: 985, y2: 1165 },
     stage: { x: 1070, y: 1075, radius: 25 },
+    projectionBooth: { x1: CORRIDOR_EAST, y1: 1000, x2: 858, y2: ROOM8_DOOR_TOP },
     // Easter egg: an R.U.R. poster hanging on the west face of the wall of fame.
     rurPoster: { x: 627, y: 262 },
   },

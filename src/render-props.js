@@ -5,9 +5,7 @@ import { DIAGNOSTIC_DURATION } from './glitch.js';
 const STANCHION_SPACING = 0.9;
 const SEAT_ROW_WIDTH = 0.4;
 
-export function drawRoom8(ctx, level, mission) {
-  const screen = level.mission.screen;
-
+export function drawRoom8(ctx, level) {
   // Seat rows: red upholstery with a darker backrest edge.
   ctx.lineCap = 'butt';
   for (const [start, end] of level.seatRows) {
@@ -25,14 +23,75 @@ export function drawRoom8(ctx, level, mission) {
     ctx.stroke();
   }
 
-  ctx.strokeStyle = mission.adapter.delivered ? '#f4f1ea' : (mission.power ? '#6b7385' : '#2e323c');
-  ctx.lineWidth = 0.5;
+}
+
+const STAGE_DEPTH = 5;             // m from the screen to the stage lip
+const STAGE_MARGIN = 1.5;          // m between the stage ends and the side walls
+const PLANK_WIDTH = 0.3;
+
+/** The Room 8 stage: planks, lectern with the speaker's laptop, monitors, taped cables, screen. */
+export function drawStage(ctx, level, mission, time) {
+  const screen = level.mission.screen;
+  const stage = level.mission.stage;
+  const lip = screen.x - STAGE_DEPTH;
+  const top = screen.y1 + STAGE_MARGIN / 2;
+  const bottom = screen.y2 - STAGE_MARGIN / 2;
+
+  ctx.fillStyle = '#3a2d23';
+  ctx.fillRect(lip, top, screen.x - lip, bottom - top);
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+  ctx.lineWidth = 0.02;
   ctx.beginPath();
-  ctx.moveTo(screen.x, screen.y1);
-  ctx.lineTo(screen.x, screen.y2);
+  for (let x = lip + PLANK_WIDTH; x < screen.x; x += PLANK_WIDTH) {
+    ctx.moveTo(x, top);
+    ctx.lineTo(x, bottom);
+  }
+  ctx.stroke();
+  ctx.strokeStyle = '#7a5d44';                         // the stage lip catches the light
+  ctx.lineWidth = 0.1;
+  ctx.beginPath();
+  ctx.moveTo(lip, top);
+  ctx.lineTo(lip, bottom);
   ctx.stroke();
 
-  const stage = level.mission.stage;
+  // gaffer-taped cable from the lectern to the screen
+  const lectern = { x: lip + 1.2, y: stage.y - 3.2 };
+  ctx.strokeStyle = '#141414';
+  ctx.lineWidth = 0.05;
+  ctx.beginPath();
+  ctx.moveTo(lectern.x, lectern.y);
+  ctx.bezierCurveTo(lectern.x + 1.5, lectern.y + 0.8, screen.x - 1.5, stage.y - 1, screen.x - 0.3, stage.y);
+  ctx.stroke();
+
+  for (const offset of [-1, 1]) {                       // stage monitors facing the speaker
+    ctx.fillStyle = '#1c1e22';
+    ctx.beginPath();
+    ctx.moveTo(lip + 0.1, stage.y + offset * 1.6 - 0.35);
+    ctx.lineTo(lip + 0.55, stage.y + offset * 1.6 - 0.25);
+    ctx.lineTo(lip + 0.55, stage.y + offset * 1.6 + 0.25);
+    ctx.lineTo(lip + 0.1, stage.y + offset * 1.6 + 0.35);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  ctx.fillStyle = '#23262c';                             // lectern
+  ctx.fillRect(lectern.x - 0.3, lectern.y - 0.35, 0.6, 0.7);
+  ctx.fillStyle = mission.power ? '#9fd3ff' : '#3a4250';  // the speaker's laptop, waiting
+  ctx.fillRect(lectern.x - 0.12, lectern.y - 0.18, 0.26, 0.36);
+  ctx.strokeStyle = '#5b606b';                           // microphone on its gooseneck
+  ctx.lineWidth = 0.025;
+  ctx.beginPath();
+  ctx.moveTo(lectern.x - 0.3, lectern.y + 0.2);
+  ctx.quadraticCurveTo(lectern.x - 0.55, lectern.y + 0.25, lectern.x - 0.6, lectern.y + 0.05);
+  ctx.stroke();
+
+  // the screen, framed; white once the adapter is in
+  ctx.fillStyle = '#15171b';
+  ctx.fillRect(screen.x - 0.15, screen.y1 - 0.3, 0.45, screen.y2 - screen.y1 + 0.6);
+  ctx.fillStyle = mission.adapter.delivered ? '#f4f1ea' : (mission.power ? '#4d5a70' : '#2a2e37');
+  ctx.fillRect(screen.x - 0.1, screen.y1, 0.2, screen.y2 - screen.y1);
+
+  // tape mark for the delivery spot
   ctx.setLineDash([0.4, 0.3]);
   ctx.strokeStyle = mission.power ? 'rgba(255, 138, 31, 0.8)' : 'rgba(255, 138, 31, 0.3)';
   ctx.lineWidth = 0.08;
@@ -40,6 +99,31 @@ export function drawRoom8(ctx, level, mission) {
   ctx.arc(stage.x, stage.y, stage.radius, 0, Math.PI * 2);
   ctx.stroke();
   ctx.setLineDash([]);
+
+  drawProjectionBooth(ctx, level, mission, time);
+}
+
+/** The projection booth behind Room 8's back wall: racks, a console and the projector itself. */
+function drawProjectionBooth(ctx, level, mission, time) {
+  const booth = level.mission.projectionBooth;
+  const projector = level.lighting.projector;
+  ctx.fillStyle = '#2a2d33';
+  ctx.fillRect(booth.x1 + 0.2, booth.y1 + 0.2, booth.x2 - booth.x1 - 0.4, booth.y2 - booth.y1 - 0.4);
+  for (let y = booth.y1 + 0.6; y < booth.y2 - 1.2; y += 1.4) {   // equipment racks
+    ctx.fillStyle = '#1a1c20';
+    ctx.fillRect(booth.x1 + 0.4, y, 1.2, 1);
+    for (let led = 0; led < 4; led++) {
+      const on = mission.power && Math.sin(time * 3 + y * 7 + led * 2) > -0.3;
+      ctx.fillStyle = on ? '#3ddc84' : '#3a1414';
+      ctx.fillRect(booth.x1 + 1.35, y + 0.15 + led * 0.2, 0.08, 0.08);
+    }
+  }
+  ctx.fillStyle = '#3c4048';                                        // projector body
+  ctx.fillRect(projector.x - 2.2, projector.y - 0.45, 1.6, 0.9);
+  ctx.fillStyle = mission.power ? '#cfe8ff' : '#20242a';            // lens
+  ctx.beginPath();
+  ctx.arc(projector.x - 0.55, projector.y, 0.22, 0, Math.PI * 2);
+  ctx.fill();
 }
 
 export function drawBarriers(ctx, level) {
@@ -83,16 +167,101 @@ export function drawCrates(ctx, crates) {
   }
 }
 
+/** The main breaker panel: lever down and a blinking red lamp until Droid resets it. */
 export function drawMainBreaker(ctx, level, mission, time) {
   const [x, y] = level.mission.mainBreaker;
-  const panel = { x, y };
-  ctx.fillStyle = '#3a3f48';
-  ctx.fillRect(panel.x - 0.5, panel.y - 0.35, 1, 0.5);
+  ctx.fillStyle = '#4a505a';
+  ctx.fillRect(x - 0.7, y - 0.45, 1.4, 0.7);
+  ctx.strokeStyle = '#2a2e35';
+  ctx.lineWidth = 0.03;
+  ctx.strokeRect(x - 0.7, y - 0.45, 1.4, 0.7);
+  ctx.fillStyle = '#1f2227';                                        // lever slot
+  ctx.fillRect(x - 0.08, y - 0.38, 0.16, 0.56);
+  ctx.fillStyle = '#d8d2c4';                                        // lever handle
+  ctx.fillRect(x - 0.14, mission.power ? y - 0.38 : y + 0.06, 0.28, 0.12);
   const lit = mission.power || Math.sin(time * 5) > 0;
   ctx.fillStyle = mission.power ? '#3ddc84' : (lit ? '#ff3b30' : '#5a1a18');
   ctx.beginPath();
-  ctx.arc(panel.x, panel.y - 0.1, 0.1, 0, Math.PI * 2);
+  ctx.arc(x + 0.42, y - 0.2, 0.09, 0, Math.PI * 2);
   ctx.fill();
+  ctx.fillStyle = '#9aa3b2';                                        // row of smaller breakers
+  for (let i = 0; i < 4; i++) {
+    ctx.fillRect(x - 0.6 + i * 0.1, y - 0.3, 0.06, 0.18);
+  }
+}
+
+/** The electrical room behind the fallen booth: switch cabinets, cable trays and a warning sign. */
+export function drawElectricalRoom(ctx, level, mission, time) {
+  const room = level.mission.electricalRoom;
+  if (!room) {
+    return;
+  }
+  const width = room.x2 - room.x1;
+  ctx.fillStyle = '#2f343c';
+  ctx.fillRect(room.x1, room.y1, width, room.y2 - room.y1);
+  for (const x of [room.x1 + 0.15, room.x2 - 0.75]) {              // cabinets along both walls
+    for (let y = room.y1 + 1.2; y < room.y2 - 0.9; y += 0.9) {
+      ctx.fillStyle = '#5a616c';
+      ctx.fillRect(x, y, 0.6, 0.8);
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+      ctx.lineWidth = 0.02;
+      ctx.beginPath();
+      for (let vent = 0.2; vent < 0.7; vent += 0.1) {
+        ctx.moveTo(x + 0.1, y + vent);
+        ctx.lineTo(x + 0.5, y + vent);
+      }
+      ctx.stroke();
+      const on = mission.power ? Math.sin(time * 2 + y * 5) > -0.8 : Math.sin(time * 6 + y) > 0.6;
+      ctx.fillStyle = mission.power ? (on ? '#3ddc84' : '#1c4a2c') : (on ? '#ff3b30' : '#3a1414');
+      ctx.fillRect(x + 0.45, y + 0.08, 0.08, 0.08);
+    }
+  }
+  ctx.strokeStyle = '#222';                                         // cable tray down the middle
+  ctx.lineWidth = 0.12;
+  ctx.beginPath();
+  ctx.moveTo(room.x1 + width / 2, room.y1 + 0.9);
+  ctx.lineTo(room.x1 + width / 2, room.y2 - 0.3);
+  ctx.stroke();
+  drawHazardStripe(ctx, room.x1, room.y2 - 0.15, room.x2, room.y2 - 0.15, 0.2);
+  drawWarningSign(ctx, room.x1 - 0.5, room.y2 + 0.45);
+}
+
+function drawHazardStripe(ctx, x1, y1, x2, y2, width) {
+  const length = Math.hypot(x2 - x1, y2 - y1);
+  ctx.save();
+  ctx.translate(x1, y1);
+  ctx.rotate(Math.atan2(y2 - y1, x2 - x1));
+  ctx.fillStyle = '#f2c14e';
+  ctx.fillRect(0, -width / 2, length, width);
+  ctx.fillStyle = '#1a1a1a';
+  for (let s = 0; s < length; s += width * 2) {
+    ctx.beginPath();
+    ctx.moveTo(s, -width / 2);
+    ctx.lineTo(s + width, -width / 2);
+    ctx.lineTo(s + width * 0.5, width / 2);
+    ctx.lineTo(s - width * 0.5, width / 2);
+    ctx.closePath();
+    ctx.fill();
+  }
+  ctx.restore();
+}
+
+function drawWarningSign(ctx, x, y) {
+  ctx.fillStyle = '#f2c14e';
+  ctx.beginPath();
+  ctx.moveTo(x, y - 0.3);
+  ctx.lineTo(x + 0.3, y + 0.22);
+  ctx.lineTo(x - 0.3, y + 0.22);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = '#1a1a1a';                                      // lightning bolt
+  ctx.lineWidth = 0.04;
+  ctx.beginPath();
+  ctx.moveTo(x + 0.04, y - 0.14);
+  ctx.lineTo(x - 0.06, y + 0.04);
+  ctx.lineTo(x + 0.05, y + 0.02);
+  ctx.lineTo(x - 0.04, y + 0.17);
+  ctx.stroke();
 }
 
 // Furniture seen from above. Text is drawn at 100× and scaled down: canvas fonts below 1 px do not
@@ -211,19 +380,39 @@ export function drawRurPoster(ctx, level) {
   ctx.restore();
 }
 
-export function drawDoor(ctx, level, mission) {
+const DOOR_THICKNESS = 0.24;
+
+/** The Room 8 service door: a steel panel sliding into the wall, a frame, and a keypad beside it. */
+export function drawDoor(ctx, level, mission, time) {
   const door = level.mission.room8Door;
   const closedLength = door.y2 - door.y1;
   const visibleLength = closedLength * (1 - mission.doorOpenAmount);
-  if (visibleLength <= 0.01) {
-    return;
+
+  ctx.fillStyle = '#6b7385';                                       // frame posts
+  ctx.fillRect(door.x1 - 0.2, door.y1 - 0.12, 0.4, 0.24);
+  ctx.fillRect(door.x1 - 0.2, door.y2 - 0.12, 0.4, 0.24);
+
+  if (visibleLength > 0.01) {
+    ctx.fillStyle = mission.power ? '#8c7a4e' : '#4f4632';
+    ctx.fillRect(door.x1 - DOOR_THICKNESS / 2, door.y1, DOOR_THICKNESS, visibleLength);
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.35)';
+    ctx.lineWidth = 0.02;
+    ctx.beginPath();
+    for (let y = door.y1 + 0.5; y < door.y1 + visibleLength; y += 0.5) {  // ribbed steel
+      ctx.moveTo(door.x1 - DOOR_THICKNESS / 2, y);
+      ctx.lineTo(door.x1 + DOOR_THICKNESS / 2, y);
+    }
+    ctx.stroke();
+    ctx.fillStyle = '#d8d2c4';                                     // handle
+    ctx.fillRect(door.x1 - DOOR_THICKNESS / 2 - 0.05, door.y1 + visibleLength - 0.5, 0.05, 0.3);
   }
-  ctx.strokeStyle = mission.power ? '#d7a13a' : '#7a6030';
-  ctx.lineWidth = 0.3;
-  ctx.beginPath();
-  ctx.moveTo(door.x1, door.y1);
-  ctx.lineTo(door.x1, door.y1 + visibleLength);
-  ctx.stroke();
+
+  // keypad on the corridor side: dead without power, blinking amber until opened, then green
+  const blink = Math.sin(time * 4) > 0;
+  ctx.fillStyle = '#1b1d22';
+  ctx.fillRect(door.x1 - 0.45, door.y1 - 0.75, 0.25, 0.4);
+  ctx.fillStyle = !mission.power ? '#2e1a1a' : (mission.doorOpen ? '#3ddc84' : (blink ? '#ffb347' : '#5a3d10'));
+  ctx.fillRect(door.x1 - 0.41, door.y1 - 0.7, 0.17, 0.08);
 }
 
 export function drawAdapter(ctx, adapter, time) {
@@ -276,7 +465,9 @@ export function drawMaintenanceBay(ctx, level, bug) {
 const STAIR_TREADS = 5;
 
 /** Stairs as treads, the service lift as a door pair; each labelled by the level's text labels. */
-export function drawTravelPoints(ctx, level) {
+const LIFT_DOOR_GAP = 0.9;   // m the doors open to
+
+export function drawTravelPoints(ctx, level, state) {
   for (const link of level.links) {
     for (const end of link.ends) {
       if (link.kind === 'stairs') {
@@ -290,18 +481,54 @@ export function drawTravelPoints(ctx, level) {
           ctx.stroke();
         }
       } else {
-        ctx.fillStyle = 'rgba(90, 200, 255, 0.08)';
-        ctx.strokeStyle = '#8fa3b8';
-        ctx.lineWidth = 0.08;
-        ctx.beginPath();
-        ctx.rect(end.x - end.radius, end.y - end.radius, end.radius * 2, end.radius * 2);
-        ctx.fill();
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(end.x, end.y - end.radius);
-        ctx.lineTo(end.x, end.y + end.radius);
-        ctx.stroke();
+        drawLift(ctx, end, state);
       }
     }
   }
+}
+
+/**
+ * One end of the service lift, seen from above: the cabin, two sliding doors on the side facing the
+ * exit, a hazard-striped threshold and a call lamp — red without power, amber while riding, green.
+ */
+function drawLift(ctx, end, state) {
+  const size = end.radius;
+  const riding = state.travel.rides.length > 0;
+  const power = state.mission.power;
+  const dx = end.exit.x - end.x;
+  const dy = end.exit.y - end.y;
+  const horizontal = Math.abs(dx) > Math.abs(dy);
+  const side = horizontal ? Math.sign(dx) : Math.sign(dy);
+
+  ctx.save();
+  ctx.translate(end.x, end.y);
+  if (!horizontal) {
+    ctx.rotate(Math.PI / 2);   // draw as if the doors face ±x
+  }
+  ctx.scale(side, 1);          // …and +x
+  ctx.fillStyle = '#23272e';
+  ctx.fillRect(-size, -size, size * 2, size * 2);
+  ctx.fillStyle = '#3a414c';   // cabin floor with a checker plate pattern
+  ctx.fillRect(-size + 0.15, -size + 0.15, size * 2 - 0.3, size * 2 - 0.3);
+  ctx.strokeStyle = 'rgba(0, 0, 0, 0.25)';
+  ctx.lineWidth = 0.02;
+  ctx.beginPath();
+  for (let t = -size; t < size; t += 0.35) {
+    ctx.moveTo(t, -size + 0.15);
+    ctx.lineTo(t + 0.3, size - 0.15);
+  }
+  ctx.stroke();
+
+  const open = power && !riding ? LIFT_DOOR_GAP / 2 : 0;
+  ctx.fillStyle = '#9aa6b5';   // two sliding door panels
+  ctx.fillRect(size - 0.12, -size + 0.1, 0.12, size - 0.1 - open);
+  ctx.fillRect(size - 0.12, open, 0.12, size - 0.1 - open);
+  drawHazardStripe(ctx, size + 0.12, -size, size + 0.12, size, 0.16);
+
+  const blink = Math.sin(state.time * 6) > 0;
+  ctx.fillStyle = !power ? '#5a1a18' : (riding ? (blink ? '#ffb347' : '#5a3d10') : '#3ddc84');
+  ctx.beginPath();
+  ctx.arc(size + 0.35, -size - 0.1, 0.1, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
 }

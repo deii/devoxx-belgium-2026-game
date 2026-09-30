@@ -86,6 +86,7 @@ export default {
     booth: point([756, 237]),
     electricalDoor: point([756, 205]),
     mainBreaker: point([756, 112]),
+    electricalRoom: { x1: v(ELECTRICAL_ROOM.x1), y1: v(ELECTRICAL_ROOM.y1), x2: v(ELECTRICAL_ROOM.x2), y2: v(ELECTRICAL_ROOM.y2) },
     // Droid's old maintenance bay, between four pillars just south of where the robots park, so a
     // glitching robot does not have to drag itself across the building for a self-test.
     maintenanceBay: zone(656, 1115, 34),
