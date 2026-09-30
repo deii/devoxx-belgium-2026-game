@@ -2,6 +2,24 @@
 // Units are metres; the caller has already translated to the robot and rotated so +x is forward.
 
 const SHADOW_OFFSET = { x: 0.1, y: 0.16 };
+const BLINK_INTERVAL = 3.7;          // s between Voxxy's blinks
+const BLINK_DURATION = 0.12;         // s
+const IDLE_SPEED = 0.3;              // m/s — below this a robot counts as standing still
+const DROID_STEP_LENGTH = 0.6;       // m per step
+const BIGGY_STEP_LENGTH = 0.9;       // m per step, matches the footfall dust and thuds
+const GLITCH_GHOST_OPACITY = 0.3;
+
+/**
+ * Where Droid is looking, relative to its heading: into turns while walking, and slowly scanning
+ * the room while it stands still. The torch in lighting.js follows the same angle.
+ */
+export function droidLook(robot, time) {
+  return robot.angularVelocity * 0.12 + Math.sin(time * 0.7) * 0.35 * idleShare(robot);
+}
+
+function idleShare(robot) {
+  return Math.max(0, 1 - Math.hypot(robot.vx, robot.vy) / IDLE_SPEED);
+}
 
 export function drawRobotShadow(ctx, robot) {
   ctx.save();
@@ -13,17 +31,35 @@ export function drawRobotShadow(ctx, robot) {
   ctx.restore();
 }
 
-export function drawRobotBody(ctx, robot) {
+/**
+ * Draws a robot with its motion: stride-driven limbs, a lean into turns, idle breathing, and — for
+ * the Heisenbug's culprit while a glitch is active — a faint jittering double.
+ */
+export function drawRobotBody(ctx, robot, time = 0, glitching = false) {
+  if (glitching) {
+    ctx.save();
+    ctx.globalAlpha = GLITCH_GHOST_OPACITY;
+    drawPose(ctx, robot, time, { x: (Math.random() - 0.5) * 0.16, y: (Math.random() - 0.5) * 0.16 });
+    ctx.restore();
+  }
+  drawPose(ctx, robot, time, { x: 0, y: 0 });
+}
+
+function drawPose(ctx, robot, time, offset) {
   ctx.save();
-  ctx.translate(robot.x, robot.y);
+  ctx.translate(robot.x + offset.x, robot.y + offset.y);
   ctx.rotate(robot.heading);
+  // lean: the body swings a little to the outside of a turn
+  ctx.translate(0, -robot.angularVelocity * 0.015 * robot.radius);
+  const breathing = 1 + Math.sin(time * 2.2 + robot.radius * 7) * 0.012 * idleShare(robot);
+  ctx.scale(breathing, breathing);
   const swing = Math.sin(robot.stride * 6) * 0.05;
   if (robot.type === 'voxxy') {
-    drawVoxxy(ctx, swing);
+    drawVoxxy(ctx, swing, robot, time);
   } else if (robot.type === 'droid') {
-    drawDroid(ctx, swing);
+    drawDroid(ctx, robot, time);
   } else {
-    drawBiggy(ctx, swing);
+    drawBiggy(ctx, robot, time);
   }
   ctx.restore();
 }
@@ -51,7 +87,12 @@ function glow(ctx, x, y, radius, color) {
 
 // Voxxy: glossy orange, bear ears, black visor with glowing eyes, white "headphone" discs,
 // long arms with white bands.
-function drawVoxxy(ctx, swing) {
+function drawVoxxy(ctx, swing, robot, time) {
+  const speed = Math.hypot(robot.vx, robot.vy);
+  const earTwitch = Math.sin(time * 18) * 0.015 * Math.min(1, speed / 3);
+  const lookAround = Math.sin(time * 0.9) * 0.05 * idleShare(robot);
+  const eyeShift = Math.max(-0.05, Math.min(0.05, robot.angularVelocity * 0.012)) + lookAround;
+  const blinking = (time + 1.3) % BLINK_INTERVAL < BLINK_DURATION;
   for (const side of [-1, 1]) {
     const armX = -0.04 + swing * side;
     glossy(ctx, armX, side * 0.43, 0.17, 0.085, '#ffa64d', '#d9620a');
@@ -60,7 +101,7 @@ function drawVoxxy(ctx, swing) {
   }
   glossy(ctx, 0, 0, 0.36, 0.41, '#ffb060', '#e2680c');
   for (const side of [-1, 1]) {
-    glossy(ctx, -0.14, side * 0.29, 0.1, 0.1, '#ffa64d', '#cc5c08');
+    glossy(ctx, -0.14 + earTwitch * side, side * 0.29, 0.1, 0.1, '#ffa64d', '#cc5c08');
     ctx.fillStyle = '#f4f4f4';
     ctx.beginPath();
     ctx.arc(0.04, side * 0.4, 0.085, 0, Math.PI * 2);
@@ -74,8 +115,19 @@ function drawVoxxy(ctx, swing) {
   ctx.beginPath();
   ctx.ellipse(0.25, 0, 0.12, 0.27, 0, 0, Math.PI * 2);
   ctx.fill();
-  glow(ctx, 0.3, -0.1, 0.035, '#ff9d2e');
-  glow(ctx, 0.3, 0.1, 0.035, '#ff9d2e');
+  if (blinking) {
+    ctx.strokeStyle = '#ff9d2e';
+    ctx.lineWidth = 0.015;
+    ctx.beginPath();
+    ctx.moveTo(0.3, -0.13 + eyeShift);
+    ctx.lineTo(0.3, -0.07 + eyeShift);
+    ctx.moveTo(0.3, 0.07 + eyeShift);
+    ctx.lineTo(0.3, 0.13 + eyeShift);
+    ctx.stroke();
+  } else {
+    glow(ctx, 0.3, -0.1 + eyeShift, 0.035, '#ff9d2e');
+    glow(ctx, 0.3, 0.1 + eyeShift, 0.035, '#ff9d2e');
+  }
   ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
   ctx.beginPath();
   ctx.ellipse(-0.1, -0.13, 0.12, 0.06, -0.5, 0, Math.PI * 2);
@@ -83,7 +135,15 @@ function drawVoxxy(ctx, swing) {
 }
 
 // Droid: tall graphite frame, rust-rimmed shoulder joints, long arms, small dome head with amber eyes.
-function drawDroid(ctx, swing) {
+function drawDroid(ctx, robot, time) {
+  const step = Math.sin(robot.stride * Math.PI / DROID_STEP_LENGTH);
+  ctx.fillStyle = '#1f2328';
+  for (const side of [-1, 1]) {                                   // feet, one ahead of the other
+    ctx.beginPath();
+    ctx.ellipse(0.02 + step * side * 0.18, side * 0.15, 0.11, 0.06, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  const swing = step * 0.07;
   for (const side of [-1, 1]) {
     const reach = swing * side;
     ctx.strokeStyle = '#2d3137';
@@ -117,13 +177,31 @@ function drawDroid(ctx, swing) {
   ctx.moveTo(-0.1, 0.16);
   ctx.lineTo(0.02, 0.12);
   ctx.stroke();
-  glossy(ctx, 0.06, 0, 0.19, 0.17, '#4a5058', '#23272c');
-  glow(ctx, 0.21, -0.06, 0.03, '#ffc46b');
-  glow(ctx, 0.21, 0.06, 0.03, '#ffc46b');
+  ctx.save();
+  ctx.translate(0.06, 0);
+  ctx.rotate(droidLook(robot, time));
+  glossy(ctx, 0, 0, 0.19, 0.17, '#4a5058', '#23272c');
+  const eyeRadius = 0.028 + Math.sin(time * 3) * 0.004;
+  glow(ctx, 0.15, -0.06, eyeRadius, '#ffc46b');
+  glow(ctx, 0.15, 0.06, eyeRadius, '#ffc46b');
+  ctx.restore();
 }
 
 // Biggy: round blue-grey helmet over a rusty orange belly, bolted portholes, arm pods, antenna.
-function drawBiggy(ctx, swing) {
+function drawBiggy(ctx, robot, time) {
+  const phase = robot.stride * Math.PI / BIGGY_STEP_LENGTH;
+  const step = Math.sin(phase);
+  const speedShare = Math.min(1, Math.hypot(robot.vx, robot.vy) / 2.5);
+  const swing = step * 0.06;
+  ctx.fillStyle = '#20262d';
+  for (const side of [-1, 1]) {                                   // feet peeking out at the front
+    ctx.beginPath();
+    ctx.ellipse(0.72 + step * side * 0.1, side * 0.36, 0.16, 0.12, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+  ctx.rotate(step * 0.05 * speedShare);                              // waddle
+  const spread = 1 + Math.abs(Math.cos(phase)) * 0.035 * speedShare;  // flattens out as a foot lands
+  ctx.scale(spread, spread);
   for (const side of [-1, 1]) {
     ctx.fillStyle = '#4b5b6f';
     ctx.beginPath();
@@ -161,11 +239,15 @@ function drawBiggy(ctx, swing) {
   ctx.moveTo(0.65, -0.04);
   ctx.lineTo(0.65, 0.04);
   ctx.stroke();
+  // the antenna tip lags behind turns and bounces with each step
+  const tipX = -0.75 + Math.cos(phase * 2) * 0.03 * speedShare;
+  const tipY = 0.42 + robot.angularVelocity * 0.08 + Math.sin(time * 5) * 0.01;
   ctx.strokeStyle = '#1e242b';
   ctx.lineWidth = 0.02;
   ctx.beginPath();
   ctx.moveTo(-0.35, 0.2);
-  ctx.lineTo(-0.75, 0.42);
+  ctx.quadraticCurveTo(-0.55, 0.3, tipX, tipY);
   ctx.stroke();
-  glow(ctx, -0.75, 0.42, 0.025, '#ff6a3d');
+  const antennaOn = Math.sin(time * 4) > -0.6;
+  glow(ctx, tipX, tipY, 0.025, antennaOn ? '#ff6a3d' : '#5a2618');
 }

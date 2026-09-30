@@ -303,3 +303,14 @@ mission routes; a grid flood-fill confirmed that every robot still reaches both 
 lift, the electrical room and the maintenance bay from its start, and the full simulated run still
 passes. Decor is plain level data (`decor`), drawn under the lighting, so the hall stays dark
 until Droid resets the breaker.
+
+### Robot animation (16:42)
+- Voxxy blinks every few seconds, its eyes look into turns (and around the room when idle), and its
+  ears twitch at speed.
+- Droid walks on visible feet, its arms swing with the step, its head turns with its gaze, and the
+  eyes pulse. When it stands still it slowly scans the room — and the torch in the lighting pass
+  follows the same angle (`droidLook`), so the light and the drawing never disagree.
+- Biggy waddles, spreads a little on each footfall (in step with the thud and the dust), shows its
+  feet, and its antenna lags behind turns and blinks.
+- Every robot leans into turns and breathes when idle. While the Heisenbug's culprit glitches it
+  gets a faint jittering double — a visual clue to go with the log, but it never names the robot.

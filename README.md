@@ -114,6 +114,11 @@ projector — a blue "no signal" beam until the adapter is plugged in.
 
 ![Room 8 with the house lights on and the projector's "no signal" beam](docs/screenshot-room8.png)
 
+The exhibition hall is full of (made-up) sponsor booths, the foyer has its coffee bar and bean
+bags, and the robots are animated: Voxxy blinks and looks into turns, Droid walks and scans the room
+with its torch, Biggy waddles. A robot hit by the Heisenbug flickers with a faint double while it
+glitches.
+
 Weight is visible, too: Voxxy kicks up dust when it skids, Biggy's footfalls puff dust and nudge
 the camera, and every hard impact shakes the view in proportion to mass × speed. Room 8's seat rows
 are solid: robots reach the stage through the side aisles, the way people do.

@@ -129,7 +129,9 @@ export function createRenderer(canvas, level) {
     drawCrates(ctx, mission.crates);
     robots.forEach(robot => drawRobotShadow(ctx, robot));
     drawParticles(ctx, effects);
-    robots.forEach(robot => drawRobotBody(ctx, robot));
+    const bug = state.heisenbug;
+    robots.forEach(robot => drawRobotBody(ctx, robot, state.time,
+      Boolean(bug.active) && bug.culprit === robot.type && !bug.patched));
     ctx.restore();
 
     lighting.draw(ctx, state, view);

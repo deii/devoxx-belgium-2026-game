@@ -1,7 +1,9 @@
 // Lighting: a darkness mask with lights cut out of it, then a thin additive pass for coloured glow.
-// Before the fuse panel is reset the floor runs on daylight, exit signs and emergency lights;
+// Before the main breaker is reset the floor runs on daylight, exit signs and emergency lights;
 // Droid's eyes are the only real torch. Power brings the ceiling lamps back with a fluorescent
 // flicker, turns on Room 8's house lights and starts the projector.
+
+import { droidLook } from './robot-art.js';
 
 const DARKNESS_RGB = '3, 5, 10';
 const AMBIENT_DARKNESS_UNPOWERED = 0.9;
@@ -165,7 +167,8 @@ function robotLights(ctx, robot, state) {
   }
   if (robot.type === 'droid') {
     const torch = LIGHTS.droidTorch;
-    coneLight(ctx, robot.x, robot.y, robot.heading, torch.radius, torch.halfAngle, `rgba(0, 0, 0, ${torch.intensity})`);
+    coneLight(ctx, robot.x, robot.y, robot.heading + droidLook(robot, state.time), torch.radius, torch.halfAngle,
+      `rgba(0, 0, 0, ${torch.intensity})`);
     pointLight(ctx, robot.x, robot.y, LIGHTS.droidEyes.radius, LIGHTS.droidEyes.intensity);
   } else if (robot.type === 'voxxy') {
     pointLight(ctx, robot.x, robot.y, LIGHTS.voxxyVisor.radius, LIGHTS.voxxyVisor.intensity);
@@ -180,7 +183,8 @@ function robotGlow(ctx, robot, state) {
   }
   if (robot.type === 'droid') {
     const torch = LIGHTS.droidTorch;
-    coneLight(ctx, robot.x, robot.y, robot.heading, torch.radius, torch.halfAngle, torch.glow);
+    coneLight(ctx, robot.x, robot.y, robot.heading + droidLook(robot, state.time), torch.radius, torch.halfAngle,
+      torch.glow);
   } else if (robot.type === 'voxxy') {
     pointGlow(ctx, robot.x, robot.y, LIGHTS.voxxyVisor.radius * 0.6, LIGHTS.voxxyVisor.glow);
   }
